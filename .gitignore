@@ -22,6 +22,11 @@ ehthumbs.db
 Icon?
 Thumbs.db
 
+# Project Configuration #
+#####################
+.project
+.classpath
+
 # WPILibJ #
 ###########
 WPILibJ/*
