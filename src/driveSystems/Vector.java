@@ -1,4 +1,4 @@
-package _static;
+package driveSystems;
 
 public class Vector {
 	public final double x, y;
@@ -14,7 +14,7 @@ public class Vector {
 		return new Vector(x / magnitude, y / magnitude);
 	}
 	public Vector rotate(double theta) {
-		double sin = Math.sin(theta), cos = 1 - sin * sin;
+		double sin = Math.sin(theta), cos = Math.cos(theta);
 		return new Vector(x * cos  - y * sin, x * sin + y * cos);
 	}
 	public double magnitude() {

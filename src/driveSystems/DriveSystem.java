@@ -1,10 +1,10 @@
-package _static;
+package driveSystems;
 
 import edu.wpi.first.wpilibj.SpeedController;
 import exceptions.*;
 
 public abstract class DriveSystem {
-	public static int LEFT = 0,
+	public final static int LEFT = 0,
 					  RIGHT = 1,
 					  FRONT = 0,
 					  BACK = 2,
@@ -21,6 +21,8 @@ public abstract class DriveSystem {
 		}
 		this.motors = motors;
 		this.motorCoefficients = motorCoefficients;
+		this.movement = new Movement(new Vector(0, 0), 0);
+		updateMovement();
 	}
 	public Movement movement() {
 		return movement;

@@ -1,9 +1,8 @@
 package _static;
 
 import y2011.*;
-import edu.wpi.first.wpilibj.IterativeRobot;
 
-public final class InternalController extends IterativeRobot {
+public final class InternalController extends edu.wpi.first.wpilibj.IterativeRobot {
 	private Robot robot;
 	private AutonomousController autonomousController;
 	private TeleopController teleopController;
