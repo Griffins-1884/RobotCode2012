@@ -1,11 +1,12 @@
 package driveSystems;
 
 import edu.wpi.first.wpilibj.SpeedController;
-import exceptions.*;
 
-public class SwerveDriveBak extends DriveSystem {
+import exceptions.InvalidArrayException;
+
+public class SwerveDriveWithThread extends DriveSystem {
 	protected MovementThread movementThread;
-	protected SwerveDriveBak(SpeedController[] motors, double[] motorCoefficients) {
+	public SwerveDriveWithThread(SpeedController[] motors, double[] motorCoefficients) {
 		super(motors, motorCoefficients);
 		movementThread = new MovementThread();
 		movementThread.run();

@@ -1,6 +1,6 @@
 package _static;
 
-import driveSystems.*;
+import driveSystems.DriveSystem;
 
 public abstract class AbstractRobot {
 	public DriveSystem driveSystem;

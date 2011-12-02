@@ -1,8 +1,9 @@
 package y2011;
 
-import _static.*;
+import _static.AbstractRobot;
+import _static.Controller;
 
-public class TeleopController extends AbstractController {
+public class TeleopController extends Controller {
 	public TeleopController(AbstractRobot robot) {
 		super(robot);
 	}

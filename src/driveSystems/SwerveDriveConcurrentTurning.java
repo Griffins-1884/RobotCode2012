@@ -1,12 +1,13 @@
 package driveSystems;
 
 import edu.wpi.first.wpilibj.SpeedController;
-import exceptions.*;
+
+import exceptions.InvalidArrayException;
 
 public class SwerveDriveConcurrentTurning extends DriveSystem {
 	// TODO figure out how to get these values
 	private double currentLeftRotation, currentRightRotation;
-	protected SwerveDriveConcurrentTurning(SpeedController[] motors, double[] motorCoefficients) {
+	public SwerveDriveConcurrentTurning(SpeedController[] motors, double[] motorCoefficients) {
 		super(motors, motorCoefficients);
 	}
 	protected void checkMotors(SpeedController[] motors) {

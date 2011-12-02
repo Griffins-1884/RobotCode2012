@@ -6,11 +6,12 @@ public class Gyro extends AnalogSensor {
 	}
 	
 	public final edu.wpi.first.wpilibj.Gyro sensor;
-	public Gyro(long sensorId, int slot, int channel) {
+	public Gyro(long sensorId, int channel) {
 		super(sensorId);
-		sensor = new edu.wpi.first.wpilibj.Gyro(slot, channel);
+		sensor = new edu.wpi.first.wpilibj.Gyro(channel);
+		setThreshold(Math.PI / 100);
 	}
-	public int type() {
+	public short type() {
 		return Types.GYRO;
 	}
 	public double value() {

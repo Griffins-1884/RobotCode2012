@@ -1,8 +1,9 @@
 package y2011;
 
-import _static.*;
+import _static.AbstractRobot;
+import _static.Controller;
 
-public class DisabledController extends AbstractController {
+public class DisabledController extends Controller {
 	public DisabledController(AbstractRobot robot) {
 		super(robot);
 	}

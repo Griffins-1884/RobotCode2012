@@ -1,5 +1,5 @@
 package _static;
 
-public class Apparatus {
+public abstract class Apparatus {
 	
 }
