@@ -9,7 +9,7 @@ public class SwerveDriveWithThread extends DriveSystem {
 	public SwerveDriveWithThread(SpeedController[] motors, double[] motorCoefficients) {
 		super(motors, motorCoefficients);
 		movementThread = new MovementThread();
-		movementThread.run();
+		movementThread.start();
 	}
 	protected void checkMotors(SpeedController[] motors) {
 		if(motors.length != 6) {

@@ -1,13 +1,13 @@
 package sensors;
 
 /**
- * An analog sensor (values are doubles), and should be extended to provide usable sensors.
+ * An analog sensor (provides real number values) which is easily extensible by more specific sensors.
  * 
  * @author Colin Poler
  */
 public abstract class AnalogSensor extends Sensor {
 	/**
-	 * A SensorListener for AnalogSensors.
+	 * An interface that should be extended by each AnalogSensor type to include a method they call with their events.
 	 * 
 	 * @author Colin Poler
 	 */
@@ -19,60 +19,59 @@ public abstract class AnalogSensor extends Sensor {
 	 * @author Colin Poler
 	 */
 	public static class AnalogSensorEvent extends SensorEvent {
-		public final double currentValue, deltaValue;
+		/**
+		 * The current value of the sensor.
+		 */
+		public final double currentValue;
+		
+		/**
+		 * The change from the previous value of the sensor.
+		 */
+		public final double deltaValue;
 		private final AnalogSensor source;
+		
+		/**
+		 * Constructs an AnalogSensorEvent from the specified source, value, and delta value.
+		 * 
+		 * @param source The source of the event.
+		 * @param currentValue The current value of the sensor.
+		 * @param deltaValue The delta value of the sensor.
+		 */
 		public AnalogSensorEvent(AnalogSensor source, double currentValue, double deltaValue) {
 			this.source = source;
 			this.currentValue = currentValue;
 			this.deltaValue = deltaValue;
 		}
+		
+		/**
+		 * Returns the source of the event.
+		 * 
+		 * @return The source of the event.
+		 */
 		public AnalogSensor source() {
 			return source;
 		}
 	}
 	
 	/**
-	 * A polling thread for an AnalogSensor.
-	 * 
-	 * @author Colin Poler
+	 * The previous value of the sensor.
 	 */
-	protected abstract class AnalogSensorThread extends SensorThread {
-		protected final AnalogSensor owner;
-		protected double oldValue, threshold;
-		protected AnalogSensorThread(AnalogSensor owner) {
-			this.owner = owner;
-			oldValue = value();
-			threshold = 0.01;
-		}
-		protected void checkForEvents() {
-			double currentValue = value(), deltaValue = currentValue - oldValue;
-			if(Math.abs(deltaValue) >= threshold) {
-				fireEvent(new AnalogSensorEvent(owner, currentValue, deltaValue));
-			}
-		}
-	}
+	protected double oldValue;
 	
 	/**
-	 * The polling thread of the AnalogSensor.
+	 * The threshold at which to notify listeners.
 	 */
-	protected AnalogSensorThread pollThread;
+	protected double threshold;
 	
 	/**
-	 * Constructs an AnalogSensor with the specified sensor ID.
+	 * Constructs an AnalogSensor with the specified ID.
 	 * 
 	 * @param sensorId The ID of the sensor.
 	 */
 	public AnalogSensor(long sensorId) {
 		super(sensorId);
-	}
-	
-	/**
-	 * Returns the polling thread, for use by the superclass.
-	 * 
-	 * @return The polling thread of the sensor.
-	 */
-	protected AnalogSensorThread thread() {
-		return pollThread;
+		oldValue = value();
+		threshold = 0.01;
 	}
 	
 	/**
@@ -81,7 +80,17 @@ public abstract class AnalogSensor extends Sensor {
 	 * @param threshold The threshold of the sensor
 	 */
 	public void setThreshold(double threshold) {
-		pollThread.threshold = threshold;
+		this.threshold = threshold;
+	}
+	
+	/**
+	 * Checks if the sensor should notify its listeners.
+	 */
+	protected void checkForEvents() {
+		double currentValue = value(), deltaValue = currentValue - oldValue;
+		if(Math.abs(deltaValue) >= threshold) {
+			fireEvent(new AnalogSensorEvent(this, currentValue, deltaValue));
+		}
 	}
 	
 	/**
@@ -99,9 +108,9 @@ public abstract class AnalogSensor extends Sensor {
 	public abstract double value();
 	
 	/**
-	 * Fires an event to all of the listeners.
+	 * Fires an AnalogSensorEvent to all of the listeners.
 	 * 
-	 * @param ev The event to be fired.
+	 * @param ev The AnalogSensorEvent to be fired.
 	 */
 	protected abstract void fireEvent(AnalogSensorEvent ev);
 	

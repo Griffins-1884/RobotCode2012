@@ -1,5 +1,7 @@
 package sensors;
 
+import java.util.Vector;
+
 /**
  * A sensor supporting listeners, encapsulating much of the functionality of the sensors in the package, and should be extended to provide more kinds of sensors.
  * 
@@ -8,7 +10,7 @@ package sensors;
 // TODO add tutorial for making new sensor
 public abstract class Sensor {
 	/**
-	 * An interface that should be extended by each sensor type with a method they call with their events.
+	 * An interface that should be extended by each sensor type to include a method they call with their events.
 	 * 
 	 * @author Colin Poler
 	 */
@@ -40,25 +42,6 @@ public abstract class Sensor {
 	}
 	
 	/**
-	 * A thread that polls the sensor, and checks for events.
-	 * 
-	 * @author Colin Poler
-	 */
-	// TODO should we have a centralized thread for all sensors? It would mean less ram and less CPU...
-	protected abstract class SensorThread extends Thread {
-		protected int pollFrequency = 20;
-		public void run() {
-			while(listeners.length > 0) {
-				checkForEvents();
-				try {
-					Thread.sleep(pollFrequency);
-				} catch(InterruptedException e) {}
-			}
-		}
-		protected abstract void checkForEvents();
-	}
-	
-	/**
 	 * The ID of the sensor. It is used to identify sensors so that duplicates are not made.
 	 */
 	public final long sensorId;
@@ -66,7 +49,7 @@ public abstract class Sensor {
 	/**
 	 * The objects that are listening to the sensor.
 	 */
-	protected SensorListener[] listeners;
+	protected Vector<SensorListener> listeners;
 	
 	/**
 	 * Constructs a new Sensor with the specified sensor ID.
@@ -84,14 +67,9 @@ public abstract class Sensor {
 	 */
 	public void addListener(SensorListener listener) {
 		if(listener != null && isValidListener(listener)) {
-			SensorListener[] newListeners = new SensorListener[listeners.length + 1];
-			for(int i = 0; i < listeners.length; i++) {
-				newListeners[i] = listeners[i];
-			}
-			newListeners[newListeners.length] = listener;
-			listeners = newListeners;
-			if(newListeners.length == 1) {
-				thread().start();
+			listeners.add(listener);
+			if(listeners.size() >= 1) {
+				SensorThread.thread.addSensor(this);
 			}
 		}
 	}
@@ -103,41 +81,12 @@ public abstract class Sensor {
 	 */
 	public void removeListener(SensorListener listener) {
 		if(listener != null) {
-			SensorListener[] newListeners = new SensorListener[listeners.length - 1];
-			boolean hasBeenPassed = false;
-			for(int i = 0; i < listeners.length - 1; i++) {
-				// This is safe; we should not use .equals, because we want to get the actual reference
-				if(listeners[i] == listener) {
-					hasBeenPassed = true;
-					continue;
-				}
-				if(!hasBeenPassed) {
-					newListeners[i] = listeners[i];
-				} else {
-					newListeners[i] = listeners[i - 1];
-				}
+			listeners.remove(listener);
+			if(listeners.size() == 0) {
+				SensorThread.thread.removeSensor(this);
 			}
-			listeners = newListeners;
 		}
 	}
-	
-	/**
-	 * Sets the frequency (actually the delay) that the sensor checks for changes. By default, it is every 20ms.
-	 * 
-	 * @param delay The delay between each poll of the sensor.
-	 */
-	public void setPollFrequency(int delay) {
-		if(thread() != null) {
-			thread().pollFrequency = delay;
-		}
-	}
-	
-	/**
-	 * Gets the polling thread from the sensor.
-	 * 
-	 * @return The polling thread of the sensor.
-	 */
-	protected abstract SensorThread thread();
 	
 	/**
 	 * Determines the type of the sensor. It should just return a value from Sensor.Types, no funny business.
@@ -145,6 +94,11 @@ public abstract class Sensor {
 	 * @return The type of the sensor.
 	 */
 	public abstract short type();
+	
+	/**
+	 * Checks if there are events from the sensor.
+	 */
+	protected abstract void checkForEvents();
 	
 	/**
 	 * Checks if the SensorListener is a listener for the actual sensor.
