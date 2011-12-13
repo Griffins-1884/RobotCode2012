@@ -14,11 +14,11 @@ public abstract class DriveSystem {
 	 * Defines the different motors, so that they can be easily identified.
 	 */
 	public final static int LEFT = 0,
-					  RIGHT = 1,
-					  FRONT = 0,
-					  BACK = 2,
-					  POWER = 0,
-					  CONTROL = 4;
+							RIGHT = 1,
+							FRONT = 0,
+							BACK = 2,
+							POWER = 0,
+							CONTROL = 4;
 	
 	/**
 	 * The motors used by the DriveSystem.

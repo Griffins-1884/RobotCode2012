@@ -74,6 +74,7 @@ public abstract class IntegralSensor extends Sensor {
 	protected void checkForEvents() {
 		int currentValue = value(), deltaValue = currentValue - oldValue;
 		if(deltaValue != 0) {
+			oldValue = currentValue;
 			fireEvent(new IntegralSensorEvent(this, currentValue, deltaValue));
 		}
 	}

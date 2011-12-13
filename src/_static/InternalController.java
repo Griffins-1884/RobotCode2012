@@ -1,9 +1,6 @@
 package _static;
 
-import y2011.AutonomousController;
-import y2011.DisabledController;
-import y2011.Robot;
-import y2011.TeleopController;
+import preY2011.Mecanum.*;
 
 /**
  * This class internally calls methods from a year's controllers.
@@ -20,7 +17,7 @@ public class InternalController extends edu.wpi.first.wpilibj.IterativeRobot {
 	 * Initializes the InternalController.
 	 */
 	public void robotInit() {
-		robot = new Robot();
+		robot = Robot.robot();
 		autonomousController = new AutonomousController(robot);
 		teleopController = new TeleopController(robot);
 		disabledController = new DisabledController(robot);

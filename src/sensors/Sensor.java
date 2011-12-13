@@ -38,6 +38,7 @@ public abstract class Sensor {
 								  ABSTRACT_BOOLEAN_SENSOR = 8192,
 									  PNEUMATIC_PRESSURE_SENSOR = 8193,
 								  ABSTRACT_DIGITAL_SENSOR = 16384,
+								  	  LIGHT_SENSOR = 16385,
 								  OTHER_SENSOR = 24576;
 	}
 	

@@ -89,6 +89,7 @@ public abstract class AnalogSensor extends Sensor {
 	protected void checkForEvents() {
 		double currentValue = value(), deltaValue = currentValue - oldValue;
 		if(Math.abs(deltaValue) >= threshold) {
+			oldValue = currentValue;
 			fireEvent(new AnalogSensorEvent(this, currentValue, deltaValue));
 		}
 	}

@@ -1,10 +1,10 @@
-package y2011;
+package preY2011.Mecanum;
 
 import _static.AbstractRobot;
 import _static.Controller;
 
-public class TeleopController extends Controller {
-	public TeleopController(AbstractRobot robot) {
+public class DisabledController extends Controller {
+	public DisabledController(AbstractRobot robot) {
 		super(robot);
 	}
 	public void initialize() {}
