@@ -78,6 +78,7 @@ public class Vector {
 	 * @return The direction of the vector.
 	 */
 	public double direction() {
-		return Math.atan2(y, x);
+		return 0;
+		// TODO this isn't valid in J2ME, if it is needed, we need atan2: return Math.atan2(y, x);
 	}
 }

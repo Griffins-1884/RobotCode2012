@@ -68,7 +68,7 @@ public abstract class Sensor {
 	 */
 	public void addListener(SensorListener listener) {
 		if(listener != null && isValidListener(listener)) {
-			listeners.add(listener);
+			listeners.addElement(listener);
 			if(listeners.size() >= 1) {
 				SensorThread.thread.addSensor(this);
 			}
@@ -82,7 +82,7 @@ public abstract class Sensor {
 	 */
 	public void removeListener(SensorListener listener) {
 		if(listener != null) {
-			listeners.remove(listener);
+			listeners.removeElement(listener);
 			if(listeners.size() == 0) {
 				SensorThread.thread.removeSensor(this);
 			}

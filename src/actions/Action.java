@@ -25,7 +25,7 @@ public abstract class Action {
 	 * @param listener The listener to add.
 	 */
 	public void addListener(ActionListener listener) {
-		listeners.add(listener);
+		listeners.addElement(listener);
 	}
 	
 	/**

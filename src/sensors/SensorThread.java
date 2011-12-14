@@ -42,7 +42,7 @@ public class SensorThread extends Thread {
 	public void addSensor(Sensor sensor) {
 		boolean threadNotRunning = sensors.isEmpty();
 		if(!sensors.contains(sensor)) {
-			sensors.add(sensor);
+			sensors.addElement(sensor);
 		}
 		if(threadNotRunning) {
 			start();
@@ -55,7 +55,7 @@ public class SensorThread extends Thread {
 	 * @param sensor The sensor to remove.
 	 */
 	public void removeSensor(Sensor sensor) {
-		sensors.remove(sensor);
+		sensors.removeElement(sensor);
 	}
 	
 	/**
