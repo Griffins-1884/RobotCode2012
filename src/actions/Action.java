@@ -12,11 +12,11 @@ public abstract class Action {
 	 * The parent of the action.
 	 */
 	public final MultiAction parent;
-	private final Vector<ActionListener> listeners;
+	private final Vector listeners;
 	
 	public Action(MultiAction parent) {
 		this.parent = parent;
-		this.listeners = new Vector<ActionListener>();
+		this.listeners = new Vector();
 	}
 	
 	/**
@@ -32,8 +32,8 @@ public abstract class Action {
 	 * Called by actions to indicate that they are finished.
 	 */
 	public void finished() {
-		for(ActionListener l : listeners) {
-			l.actionCompleted(this);
+		for(int i = 0; i < listeners.size(); i++) {
+			((ActionListener) listeners.elementAt(i)).actionCompleted(this);
 		}
 	}
 	

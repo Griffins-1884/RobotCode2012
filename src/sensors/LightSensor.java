@@ -54,7 +54,7 @@ public class LightSensor extends BooleanSensor {
 	 */
 	protected void fireEvent(BooleanSensorEvent ev) {
 		for(int i = 0; i < listeners.size(); i++) {
-			((LightSensorListener) listeners.get(i)).lightSensor(ev);
+			((LightSensorListener) listeners.elementAt(i)).lightSensor(ev);
 		}
 	}
 	

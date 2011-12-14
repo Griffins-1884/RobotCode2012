@@ -14,10 +14,10 @@ public class SensorThread extends Thread {
 	public static final SensorThread thread = new SensorThread();
 	
 	private int pollDelay;
-	private Vector<Sensor> sensors;
+	private Vector sensors;
 	private SensorThread() {
 		pollDelay = 20;
-		sensors = new Vector<Sensor>();
+		sensors = new Vector();
 	}
 	
 	/**
@@ -26,7 +26,7 @@ public class SensorThread extends Thread {
 	public void run() {
 		while(!sensors.isEmpty()) {
 			for(int i = 0; i < sensors.size(); i++) {
-				sensors.get(i).checkForEvents();
+				((Sensor) sensors.elementAt(i)).checkForEvents();
 			}
 			try {
 				Thread.sleep(pollDelay);

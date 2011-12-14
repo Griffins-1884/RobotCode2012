@@ -57,7 +57,7 @@ public class Encoder extends AnalogSensor {
 	 */
 	protected void fireEvent(AnalogSensorEvent ev) {
 		for(int i = 0; i < listeners.size(); i++) {
-			((EncoderListener) listeners.get(i)).encoder(ev);
+			((EncoderListener) listeners.elementAt(i)).encoder(ev);
 		}
 	}
 	

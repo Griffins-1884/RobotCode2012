@@ -56,7 +56,7 @@ public class Gyro extends AnalogSensor {
 	 */
 	protected void fireEvent(AnalogSensorEvent ev) {
 		for(int i = 0; i < listeners.size(); i++) {
-			((GyroListener) listeners.get(i)).gyro(ev);
+			((GyroListener) listeners.elementAt(i)).gyro(ev);
 		}
 	}
 	

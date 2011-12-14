@@ -50,7 +50,7 @@ public abstract class Sensor {
 	/**
 	 * The objects that are listening to the sensor.
 	 */
-	protected Vector<SensorListener> listeners;
+	protected Vector listeners;
 	
 	/**
 	 * Constructs a new Sensor with the specified sensor ID.
