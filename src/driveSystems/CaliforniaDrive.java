@@ -38,7 +38,7 @@ public class CaliforniaDrive extends DriveSystem {
 	 * @param movement The movement given to move().
 	 */
 	protected void checkMovement(Movement movement) {
-		if(movement.isAbsolute || movement.translation.x == 0) {
+		if(movement.isAbsolute || movement.translation.x != 0) {
 			throw new UnsupportedMovementException("California drive cannot move sideways");
 		}
 	}
