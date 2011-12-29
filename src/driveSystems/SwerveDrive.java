@@ -34,14 +34,21 @@ public class SwerveDrive extends DriveSystem implements EncoderListener {
 			while(currentAngle > Math.PI) {
 				currentAngle -= 2 * Math.PI;
 			}
-			double rotationAngle = currentAngle - targetAngle;
-			if(Math.abs(rotationAngle) <= Math.PI / 2) {
-				double deltaAngle = targetAngle - currentAngle;
-				return new AngularMovement(currentAngle + deltaAngle, deltaAngle, 1);
-			} else {
-				double deltaAngle = targetAngle - currentAngle - Math.PI;
-				return new AngularMovement(currentAngle + deltaAngle, deltaAngle, -1);
-			}
+
+                        // atan2(y, x) produces angles on the range (-PI, PI]
+                        // Readjust targetAngle so it is between 0 (right) and PI (left)
+
+                        int wheelDirection = 1;
+
+                        if(targetAngle < 0)
+                        {
+                            targetAngle += Math.PI;
+                            wheelDirection *= -1;
+                        }
+
+			double deltaAngle = targetAngle - currentAngle;
+			return new AngularMovement(currentAngle + deltaAngle, 
+                                deltaAngle, wheelDirection);
 		}
 		
 		/**
@@ -67,12 +74,6 @@ public class SwerveDrive extends DriveSystem implements EncoderListener {
 		 * @param direction The direction of the wheels.
 		 */
 		protected AngularMovement(double targetAngle, double deltaAngle, int direction) {
-			while(deltaAngle < -Math.PI) {
-				deltaAngle += 2 * Math.PI;
-			}
-			while(deltaAngle > Math.PI) {
-				deltaAngle -= 2 * Math.PI;
-			}
 			this.targetAngle = targetAngle;
 			this.deltaAngle = deltaAngle;
 			this.direction = direction;
@@ -173,8 +174,12 @@ public class SwerveDrive extends DriveSystem implements EncoderListener {
 	 * Updates the motors so that the desired motion is achieved.
 	 */
 	public synchronized void encoder(AnalogSensorEvent ev) {
-		currentLeftRotation = encoders[LEFT].value();
-		currentRightRotation = encoders[RIGHT].value();
+
+                // N.B. Adding PI/2 since (when we start) encoders have value 0,
+                // but wheels are facing forward (angle = pi/2)
+		currentLeftRotation = encoders[LEFT].value() + Math.PI/2;
+		currentRightRotation = encoders[RIGHT].value() + Math.PI/2;
+
 		double leftError = leftRotation.targetAngle - currentLeftRotation,
 				   rightError = rightRotation.targetAngle - currentRightRotation;
 			if(isConcurrentTurning || Math.abs(leftError) <= Math.PI / 100 && Math.abs(rightError) <= Math.PI / 100) {
