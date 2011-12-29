@@ -7,8 +7,8 @@ import _static.AbstractRobot;
 
 public class Robot extends AbstractRobot {
 	public static Robot robot() {
-		double[] motorCoefficients = new double[4];
-		DriveSystem driveSystem = new CaliforniaDrive(Wiring.motors, motorCoefficients);
+                // LB: Shouldn't this be Wiring.motorCoefficients?
+		DriveSystem driveSystem = new CaliforniaDrive(Wiring.motors, Wiring.motorCoefficients);
 		return new Robot(driveSystem, new Apparatus[] {});
 	}
 	public Robot(DriveSystem driveSystem, Apparatus[] apparatuses) {super(driveSystem, apparatuses);}
