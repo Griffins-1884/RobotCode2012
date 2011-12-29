@@ -43,11 +43,11 @@ public class SequentialActions extends Action implements ActionListener, MultiAc
 	 * @return The duration of the SequentialActions.
 	 */
 	public Interval duration() {
-		long longestDuration = 0;
+		long duration = 0;
 		for(int i = 0; i < actions.length; i++) {
-			longestDuration = Math.max(longestDuration, actions[i].duration().milliseconds);
+			duration += actions[i].duration().milliseconds;
 		}
-		return new Interval(longestDuration);
+		return new Interval(duration);
 	}
 	
 	/**
