@@ -35,10 +35,10 @@ public class MecanumDrive extends DriveSystem {
 	 */
 	protected void updateMovement() {
 		// TODO modify for absolute movements
-		double frontLeft = movement.translation.y + movement.translation.x - movement.rotation,
-				   backLeft = movement.translation.y - movement.translation.x - movement.rotation,
-				   frontRight = movement.translation.y - movement.translation.x + movement.rotation,
-				   backRight = movement.translation.y + movement.translation.x + movement.rotation;
+		double frontLeft = movement.translation.x + movement.translation.y - movement.rotation,
+				   backLeft = movement.translation.x - movement.translation.y - movement.rotation,
+				   frontRight = movement.translation.x - movement.translation.y + movement.rotation,
+				   backRight = movement.translation.x + movement.translation.y + movement.rotation;
 			double maxPowerValue = Math.max(Math.max(Math.abs(frontLeft), Math.abs(backLeft)), Math.max(Math.abs(frontRight), Math.abs(backRight)));
 			if(maxPowerValue > 1) {
 				frontLeft /= maxPowerValue;

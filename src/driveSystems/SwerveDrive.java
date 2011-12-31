@@ -14,86 +14,19 @@ import sensors.Encoder.EncoderListener;
  */
 public class SwerveDrive extends DriveSystem implements EncoderListener {
 	/**
-	 * An angular movement designed for the motors controlling the direction of the wheels.
-	 * 
-	 * @author Colin Poler
-	 */
-	protected static class AngularMovement {
-		/**
-		 * Finds the shortest angular movement between the specified angles.
-		 * 
-		 * @param currentAngle The current angle of the wheel.
-		 * @param targetAngle The target angle of the wheel.
-		 * @return The shortest angular movement.
-		 */
-		protected static AngularMovement shortestRotation(double currentAngle, double targetAngle) {
-			// TODO figure out if necessary
-			while(currentAngle < -Math.PI) {
-				currentAngle += 2 * Math.PI;
-			}
-			while(currentAngle > Math.PI) {
-				currentAngle -= 2 * Math.PI;
-			}
-
-                        // atan2(y, x) produces angles on the range (-PI, PI]
-                        // Readjust targetAngle so it is between 0 (right) and PI (left)
-
-                        int wheelDirection = 1;
-
-                        if(targetAngle < 0)
-                        {
-                            targetAngle += Math.PI;
-                            wheelDirection *= -1;
-                        }
-
-			double deltaAngle = targetAngle - currentAngle;
-			return new AngularMovement(currentAngle + deltaAngle, 
-                                deltaAngle, wheelDirection);
-		}
-		
-		/**
-		 * The angle change for this move.
-		 */
-		protected final double deltaAngle;
-		
-		/**
-		 * The target angle for this move.
-		 */
-		protected final double targetAngle;
-		
-		/**
-		 * Whether the wheels should go backwards or forwards after turning.
-		 */
-		protected final int direction;
-		
-		/**
-		 * Constructs an angular movement from the specified target angle, delta angle and direction [See description of direction field].
-		 * 
-		 * @param targetAngle The target angle.
-		 * @param deltaAngle The angle change.
-		 * @param direction The direction of the wheels.
-		 */
-		protected AngularMovement(double targetAngle, double deltaAngle, int direction) {
-			this.targetAngle = targetAngle;
-			this.deltaAngle = deltaAngle;
-			this.direction = direction;
-		}
-	}
-	
-	/**
 	 * The encoders for the two control motors.
 	 */
 	protected final Encoder[] encoders;
 	
 	/**
-	 * The current angular movements for the left side.
+	 * The desired rotation for the left side.
 	 */
-	protected AngularMovement leftRotation;
+	protected double targetLeftRotation;
 	
 	/**
-	 * The current angular movements for the right side.
+	 * The desired rotation for the right side.
 	 */
-	protected AngularMovement rightRotation;
+	protected double targetRightRotation;
 	
 	/**
 	 * The current rotation of the left control motor.
@@ -152,8 +85,8 @@ public class SwerveDrive extends DriveSystem implements EncoderListener {
 	 */
 	// TODO add support for absolute movement
 	protected void updateMovement() {
-		Vector leftVector = movement.translation.add(new Vector(0, -movement.rotation)),
-			   rightVector = movement.translation.add(new Vector(0, movement.rotation));
+		Vector leftVector = movement.translation.add(new Vector(-movement.rotation, 0)),
+			   rightVector = movement.translation.add(new Vector(movement.rotation, 0));
 		
 		if(leftVector.magnitude() > 1 || rightVector.magnitude() > 1) {
 			double maxMagnitude = Math.max(leftVector.magnitude(), rightVector.magnitude());
@@ -161,10 +94,26 @@ public class SwerveDrive extends DriveSystem implements EncoderListener {
 			rightVector = new Vector(rightVector.x / maxMagnitude, rightVector.y / maxMagnitude);
 		}
 		
-		leftRotation = AngularMovement.shortestRotation(currentLeftRotation, leftVector.direction());
-		rightRotation = AngularMovement.shortestRotation(currentRightRotation, rightVector.direction());
-		leftPower = leftVector.magnitude() * leftRotation.direction;
-		rightPower = rightVector.magnitude() * rightRotation.direction;
+		targetLeftRotation = leftVector.direction();
+		targetRightRotation = rightVector.direction();
+		leftPower = leftVector.magnitude();
+		rightPower = rightVector.magnitude();
+		while(targetLeftRotation > Math.PI / 2) {
+			targetLeftRotation -= Math.PI;
+			leftPower *= -1;
+		}
+		while(targetLeftRotation < -Math.PI / 2) {
+			targetLeftRotation += Math.PI;
+			leftPower *= -1;
+		}
+		while(targetRightRotation > Math.PI / 2) {
+			targetRightRotation -= Math.PI;
+			rightPower *= -1;
+		}
+		while(targetRightRotation < -Math.PI / 2) {
+			targetRightRotation += Math.PI;
+			rightPower *= -1;
+		}
 		currentLeftRotation = encoders[LEFT].value();
 		currentRightRotation = encoders[LEFT].value();
 		encoder(new AnalogSensorEvent(null, 0, 0));
@@ -180,8 +129,8 @@ public class SwerveDrive extends DriveSystem implements EncoderListener {
 		currentLeftRotation = encoders[LEFT].value() + Math.PI/2;
 		currentRightRotation = encoders[RIGHT].value() + Math.PI/2;
 
-		double leftError = leftRotation.targetAngle - currentLeftRotation,
-				   rightError = rightRotation.targetAngle - currentRightRotation;
+		double leftError = targetLeftRotation - currentLeftRotation,
+				   rightError = targetRightRotation - currentRightRotation;
 			if(isConcurrentTurning || Math.abs(leftError) <= Math.PI / 100 && Math.abs(rightError) <= Math.PI / 100) {
 				motors[LEFT + FRONT].set(leftPower * motorCoefficients[LEFT + FRONT]);
 				motors[LEFT + BACK].set(leftPower * motorCoefficients[LEFT + BACK]);

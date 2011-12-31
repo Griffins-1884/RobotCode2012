@@ -38,7 +38,7 @@ public class CaliforniaDrive extends DriveSystem {
 	 * @param movement The movement given to move().
 	 */
 	protected void checkMovement(Movement movement) {
-		if(movement.isAbsolute || movement.translation.x != 0) {
+		if(movement.isAbsolute || movement.translation.y != 0) {
 			throw new UnsupportedMovementException("California drive cannot move sideways");
 		}
 	}
@@ -47,8 +47,8 @@ public class CaliforniaDrive extends DriveSystem {
 	 * Updates the motors to the most recent movement.
 	 */
 	protected void updateMovement() {
-		double leftSpeed = movement.translation.y - movement.rotation;
-		double rightSpeed = movement.translation.y + movement.rotation;
+		double leftSpeed = movement.translation.x - movement.rotation;
+		double rightSpeed = movement.translation.x + movement.rotation;
 		double maxSpeed = Math.max(leftSpeed, rightSpeed);
 		if(maxSpeed > 1) {
 			leftSpeed /= maxSpeed;

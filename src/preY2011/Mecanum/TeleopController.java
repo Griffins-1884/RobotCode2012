@@ -17,9 +17,9 @@ public class TeleopController extends Controller {
 	public void initialize() {}
 	public void periodic() {
 		if(oneJoystick) {
-			robot.driveSystem.move(new Movement(new Vector(0, rightJoystick.getY()), rightJoystick.getTwist()));
+			robot.driveSystem.move(new Movement(new Vector(rightJoystick.getY(), 0), rightJoystick.getTwist()));
 		} else {
-			robot.driveSystem.move(new Movement(new Vector(0, (rightJoystick.getY() + leftJoystick.getY())/2.0), rightJoystick.getY() - leftJoystick.getY()));
+			robot.driveSystem.move(new Movement(new Vector((rightJoystick.getY() + leftJoystick.getY())/2.0, 0), rightJoystick.getY() - leftJoystick.getY()));
 		}
 	}
 	public void continuous() {}

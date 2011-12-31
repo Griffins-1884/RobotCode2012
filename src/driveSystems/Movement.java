@@ -24,6 +24,8 @@ public class Movement {
 	/**
 	 * Constructs a relative movement from the given translation vector, and the given rotation vector.
 	 * 
+	 * In said vector, the x-component determines the forward motion of the robot, and the y-component determines right-ward movement.
+	 * 
 	 * @param translation The translation vector of the movement.
 	 * @param rotation The amount of rotation in the movement.
 	 */
