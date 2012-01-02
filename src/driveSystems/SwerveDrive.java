@@ -1,5 +1,7 @@
 package driveSystems;
 
+import com.sun.squawk.util.MathUtils;
+
 import edu.wpi.first.wpilibj.SpeedController;
 
 import exceptions.InvalidArrayException;
@@ -13,6 +15,11 @@ import sensors.Encoder.EncoderListener;
  * @author Colin Poler
  */
 public class SwerveDrive extends DriveSystem implements EncoderListener {
+	/**
+	 * This constant describes how sharp the curve should be when correcting rotations of the wheels. Higher numbers mean sharper curves. To visualize, graph log((R-1)x+1)/log(R)
+	 */
+	protected static final double ROTATIONAL_CONSTANT = 10;
+	
 	/**
 	 * The encoders for the two control motors.
 	 */
@@ -123,11 +130,8 @@ public class SwerveDrive extends DriveSystem implements EncoderListener {
 	 * Updates the motors so that the desired motion is achieved.
 	 */
 	public synchronized void encoder(AnalogSensorEvent ev) {
-
-                // N.B. Adding PI/2 since (when we start) encoders have value 0,
-                // but wheels are facing forward (angle = pi/2)
-		currentLeftRotation = encoders[LEFT].value() + Math.PI/2;
-		currentRightRotation = encoders[RIGHT].value() + Math.PI/2;
+		currentLeftRotation = encoders[LEFT].value();
+		currentRightRotation = encoders[RIGHT].value();
 
 		double leftError = targetLeftRotation - currentLeftRotation,
 				   rightError = targetRightRotation - currentRightRotation;
@@ -142,8 +146,8 @@ public class SwerveDrive extends DriveSystem implements EncoderListener {
 				motors[RIGHT + FRONT].set(0);
 				motors[RIGHT + BACK].set(0);
 			}
-			// Dividing by pi/2 sets left error between -1 and 1 (it has to be between -pi/2 and pi/2 in the first place)
-			motors[LEFT + CONTROL].set(leftError * (2 / Math.PI) * motorCoefficients[LEFT + CONTROL]);
-			motors[RIGHT + CONTROL].set(rightError * (2 / Math.PI) * motorCoefficients[RIGHT + CONTROL]);
+			// Divide by pi sets left error between -1 and 1 (it has to be between -pi/2 and pi/2 in the first place). Using log(Rx+1)/log(R) creates a curve.
+			motors[LEFT + CONTROL].set(MathUtils.log1p((ROTATIONAL_CONSTANT - 1) * (leftError / Math.PI)) / MathUtils.log(ROTATIONAL_CONSTANT) * motorCoefficients[LEFT + CONTROL]);
+			motors[RIGHT + CONTROL].set(MathUtils.log1p((ROTATIONAL_CONSTANT - 1) * (rightError / Math.PI)) / MathUtils.log(ROTATIONAL_CONSTANT) * motorCoefficients[RIGHT + CONTROL]);
 	}
 }
