@@ -1,4 +1,4 @@
-package preY2011.Mecanum;
+package preY2011.California;
 
 import edu.wpi.first.wpilibj.Joystick;
 
@@ -16,6 +16,9 @@ public class TeleopController extends Controller {
 	}
 	public void initialize() {}
 	public void periodic() {
+		if(rightJoystick.getRawButton(9)) {
+			oneJoystick = !oneJoystick;
+		}
 		if(oneJoystick) {
 			robot.driveSystem.move(new Movement(new Vector(rightJoystick.getY(), 0), rightJoystick.getTwist()));
 		} else {

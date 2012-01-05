@@ -1,10 +1,10 @@
-package preY2011.Mecanum;
+package preY2011.California;
 
 import _static.AbstractRobot;
 import _static.Controller;
 
-public class AutonomousController extends Controller {
-	public AutonomousController(AbstractRobot robot) {
+public class DisabledController extends Controller {
+	public DisabledController(AbstractRobot robot) {
 		super(robot);
 	}
 	public void initialize() {}

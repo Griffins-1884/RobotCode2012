@@ -1,6 +1,6 @@
 package _static;
 
-import preY2011.Mecanum.*;
+import preY2011.California.*;
 
 /**
  * This class internally calls methods from a year's controllers.
