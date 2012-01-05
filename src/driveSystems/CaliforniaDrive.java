@@ -49,7 +49,7 @@ public class CaliforniaDrive extends DriveSystem {
 	protected void updateMovement() {
 		double leftSpeed = movement.translation.x - movement.rotation;
 		double rightSpeed = movement.translation.x + movement.rotation;
-		double maxSpeed = Math.max(leftSpeed, rightSpeed);
+		double maxSpeed = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
 		if(maxSpeed > 1) {
 			leftSpeed /= maxSpeed;
 			rightSpeed /= maxSpeed;

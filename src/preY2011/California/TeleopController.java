@@ -1,9 +1,9 @@
 package preY2011.California;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Watchdog;
 
 import driveSystems.*;
+import input.*;
 
 import _static.*;
 
@@ -17,13 +17,13 @@ public class TeleopController extends Controller {
 	}
 	public void initialize() {}
 	public void periodic() {
-		if(rightJoystick.getRawButton(9)) {
+		if(rightJoystick.getButton(9)) {
 			oneJoystick = !oneJoystick;
 		}
 		if(oneJoystick) {
-			robot.driveSystem.move(new Movement(new Vector(rightJoystick.getY(), 0), rightJoystick.getTwist()));
+			robot.driveSystem.move(new Movement(new Vector(rightJoystick.getForward(), 0), rightJoystick.getCounterClockwise()));
 		} else {
-			robot.driveSystem.move(new Movement(new Vector((rightJoystick.getY() + leftJoystick.getY())/2.0, 0), rightJoystick.getY() - leftJoystick.getY()));
+			robot.driveSystem.move(new Movement(new Vector(rightJoystick.getForward() + leftJoystick.getForward(), 0), rightJoystick.getForward() - leftJoystick.getForward()));
 		}
 		Watchdog.getInstance().feed();
 	}
