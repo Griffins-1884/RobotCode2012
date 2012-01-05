@@ -151,16 +151,8 @@ public class SwerveDrive extends DriveSystem implements EncoderListener {
 		// Use absolute value of errors to get a valid number from the log function.
 		double leftRotationalValue = MathUtils.log1p((ROTATIONAL_CONSTANT - 1) * (Math.abs(leftError) / Math.PI)) / MathUtils.log(ROTATIONAL_CONSTANT) * motorCoefficients[LEFT + CONTROL];
 		double rightRotationalValue = MathUtils.log1p((ROTATIONAL_CONSTANT - 1) * (Math.abs(rightError) / Math.PI)) / MathUtils.log(ROTATIONAL_CONSTANT) * motorCoefficients[RIGHT + CONTROL];
-	
-		int leftErrorSign = 1, rightErrorSign = 1;
 		
-		if(leftError < 0)
-			leftErrorSign = -1;
-		if(rightError < 0)
-			rightErrorSign = -1;
-		
-	
-		motors[LEFT + CONTROL].set(leftErrorSign*leftRotationalValue);
-		motors[RIGHT + CONTROL].set(rightErrorSign*rightRotationalValue);
+		motors[LEFT + CONTROL].set(Math.signum(leftError) * leftRotationalValue);
+		motors[RIGHT + CONTROL].set(Math.signum(rightError) * rightRotationalValue);
 	}
 }
