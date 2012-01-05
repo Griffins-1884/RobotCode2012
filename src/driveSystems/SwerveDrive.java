@@ -135,19 +135,32 @@ public class SwerveDrive extends DriveSystem implements EncoderListener {
 
 		double leftError = targetLeftRotation - currentLeftRotation,
 				   rightError = targetRightRotation - currentRightRotation;
-			if(isConcurrentTurning || Math.abs(leftError) <= Math.PI / 100 && Math.abs(rightError) <= Math.PI / 100) {
-				motors[LEFT + FRONT].set(leftPower * motorCoefficients[LEFT + FRONT]);
-				motors[LEFT + BACK].set(leftPower * motorCoefficients[LEFT + BACK]);
-				motors[RIGHT + FRONT].set(rightPower * motorCoefficients[RIGHT + FRONT]);
-				motors[RIGHT + BACK].set(rightPower * motorCoefficients[RIGHT + BACK]);
-			} else {
-				motors[LEFT + FRONT].set(0);
-				motors[LEFT + BACK].set(0);
-				motors[RIGHT + FRONT].set(0);
-				motors[RIGHT + BACK].set(0);
-			}
-			// Divide by pi sets left error between -1 and 1 (it has to be between -pi/2 and pi/2 in the first place). Using log(Rx+1)/log(R) creates a curve.
-			motors[LEFT + CONTROL].set(MathUtils.log1p((ROTATIONAL_CONSTANT - 1) * (leftError / Math.PI)) / MathUtils.log(ROTATIONAL_CONSTANT) * motorCoefficients[LEFT + CONTROL]);
-			motors[RIGHT + CONTROL].set(MathUtils.log1p((ROTATIONAL_CONSTANT - 1) * (rightError / Math.PI)) / MathUtils.log(ROTATIONAL_CONSTANT) * motorCoefficients[RIGHT + CONTROL]);
+		if(isConcurrentTurning || Math.abs(leftError) <= Math.PI / 100 && Math.abs(rightError) <= Math.PI / 100) {
+			motors[LEFT + FRONT].set(leftPower * motorCoefficients[LEFT + FRONT]);
+			motors[LEFT + BACK].set(leftPower * motorCoefficients[LEFT + BACK]);
+			motors[RIGHT + FRONT].set(rightPower * motorCoefficients[RIGHT + FRONT]);
+			motors[RIGHT + BACK].set(rightPower * motorCoefficients[RIGHT + BACK]);
+		} else {
+			motors[LEFT + FRONT].set(0);
+			motors[LEFT + BACK].set(0);
+			motors[RIGHT + FRONT].set(0);
+			motors[RIGHT + BACK].set(0);
+		}
+	
+		// Divide by pi sets left error between -1 and 1 (it has to be between -pi and pi in the first place). Using ln((R-1)x+1)/ln(R) creates a curve.
+		// Use absolute value of errors to get a valid number from the log function.
+		double leftRotationalValue = MathUtils.log1p((ROTATIONAL_CONSTANT - 1) * (Math.abs(leftError) / Math.PI)) / MathUtils.log(ROTATIONAL_CONSTANT) * motorCoefficients[LEFT + CONTROL];
+		double rightRotationalValue = MathUtils.log1p((ROTATIONAL_CONSTANT - 1) * (Math.abs(rightError) / Math.PI)) / MathUtils.log(ROTATIONAL_CONSTANT) * motorCoefficients[RIGHT + CONTROL];
+	
+		int leftErrorSign = 1, rightErrorSign = 1;
+		
+		if(leftError < 0)
+			leftErrorSign = -1;
+		if(rightError < 0)
+			rightErrorSign = -1;
+		
+	
+		motors[LEFT + CONTROL].set(leftErrorSign*leftRotationalValue);
+		motors[RIGHT + CONTROL].set(rightErrorSign*rightRotationalValue);
 	}
 }
