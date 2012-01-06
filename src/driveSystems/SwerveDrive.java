@@ -152,7 +152,7 @@ public class SwerveDrive extends DriveSystem implements EncoderListener {
 		double leftRotationalValue = MathUtils.log1p((ROTATIONAL_CONSTANT - 1) * (Math.abs(leftError) / Math.PI)) / MathUtils.log(ROTATIONAL_CONSTANT) * motorCoefficients[LEFT + CONTROL];
 		double rightRotationalValue = MathUtils.log1p((ROTATIONAL_CONSTANT - 1) * (Math.abs(rightError) / Math.PI)) / MathUtils.log(ROTATIONAL_CONSTANT) * motorCoefficients[RIGHT + CONTROL];
 		
-		motors[LEFT + CONTROL].set(Math.signum(leftError) * leftRotationalValue);
-		motors[RIGHT + CONTROL].set(Math.signum(rightError) * rightRotationalValue);
+		motors[LEFT + CONTROL].set(((leftError > 0) ? 1 : -1) * leftRotationalValue);
+		motors[RIGHT + CONTROL].set(((rightError > 0) ? 1 : -1) * rightRotationalValue);
 	}
 }

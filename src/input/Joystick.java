@@ -23,6 +23,9 @@ public class Joystick {
 	public double getClockwise() {
 		return -getCounterClockwise();
 	}
+	public double getThrottle() {
+		return joystick.getZ();
+	}
 	public boolean getButton(int number) {
 		return joystick.getRawButton(number);
 	}

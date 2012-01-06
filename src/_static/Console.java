@@ -1,7 +1,6 @@
 package _static;
 
 import java.util.Vector;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import sensors.Sensor;
 import sensors.SensorThread;
@@ -12,19 +11,28 @@ public class Console {
 		return console;
 	}
 	
-	private ConcurrentLinkedQueue messages;
+	private Vector messages;
 	private PrintThread thread;
 	private Console() {
-		messages = new ConcurrentLinkedQueue();
+		messages = new Vector();
 		thread = new PrintThread();
 	}
 	public void log(String key, String value) {
 		Message m = new Message(key, value);
-		messages.remove(m);
-		messages.add(m);
+		messages.removeElement(m);
+		messages.addElement(m);
 	}
 	public void log(String key, Object value) {
 		log(key, value.toString());
+	}
+	public void log(String key, long value) {
+		log(key, "" + value);
+	}
+	public void log(String key, boolean value) {
+		log(key, "" + value);
+	}
+	public void log(String key, double value) {
+		log(key, "" + value);
 	}
 	public void setDelay(long delay) {
 		thread.running = delay > 0;
@@ -52,14 +60,18 @@ public class Console {
 		}
 		public void run() {
 			while(running) {
-				for(Message m = (Message) messages.poll(); m != null; m = (Message) messages.poll()) {
+				for(Message m = poll(); m != null; m = poll()) {
 					System.out.println(m);
-					m = (Message) messages.poll();
 				}
 				try {
 					Thread.sleep(printDelay);
 				} catch(InterruptedException e) {}
 			}
 		}
+	}
+	public Message poll() {
+		Message m = (Message) messages.elementAt(0);
+		messages.removeElementAt(0);
+		return m;
 	}
 }

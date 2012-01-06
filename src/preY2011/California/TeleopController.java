@@ -12,18 +12,27 @@ public class TeleopController extends Controller {
 	private boolean oneJoystick = false;
 	public TeleopController(AbstractRobot robot) {
 		super(robot);
-		leftJoystick = new Joystick(1);
-		rightJoystick = new Joystick(2);
+		leftJoystick = new AdjustableJoystick(1);
+		rightJoystick = new AdjustableJoystick(2);
 	}
 	public void initialize() {}
+	private boolean previousButton2State = false;
 	public void periodic() {
-		if(rightJoystick.getButton(9)) {
+		if(rightJoystick.getButton(2) && !previousButton2State) {
 			oneJoystick = !oneJoystick;
+			previousButton2State = true;
+		} else if(!rightJoystick.getButton(2) && previousButton2State) {
+			previousButton2State = false;
 		}
 		if(oneJoystick) {
-			robot.driveSystem.move(new Movement(new Vector(rightJoystick.getForward(), 0), rightJoystick.getCounterClockwise()));
+			double rotation = rightJoystick.getRight() / 2;
+			if(rightJoystick.getButton(4)) {
+				rotation *= 2;
+			}
+			robot.driveSystem.move(new Movement(new Vector(rightJoystick.getForward(), 0), rotation));
 		} else {
-			robot.driveSystem.move(new Movement(new Vector(rightJoystick.getForward() + leftJoystick.getForward(), 0), rightJoystick.getForward() - leftJoystick.getForward()));
+			// Divide both by 2 so that sensitivity doesn't max out when both joysticks are at halfway
+			robot.driveSystem.move(new Movement(new Vector((rightJoystick.getForward() + leftJoystick.getForward()) / 2.0, 0), (rightJoystick.getForward() - leftJoystick.getForward()) / 2.0));
 		}
 		Watchdog.getInstance().feed();
 	}
