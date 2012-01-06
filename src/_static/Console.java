@@ -24,6 +24,7 @@ public class Console {
 	private Console() {
 		messages = new Vector();
 		thread = new PrintThread();
+		thread.start();
 	}
 	
 	/**
@@ -86,7 +87,6 @@ public class Console {
 	public void setDelay(long delay) {
 		thread.running = delay > 0;
 		thread.printDelay = delay;
-		thread.start();
 	}
 	
 	/**
@@ -95,9 +95,13 @@ public class Console {
 	 * @return The first message in the list.
 	 */
 	protected Message poll() {
-		Message m = (Message) messages.elementAt(0);
-		messages.removeElementAt(0);
-		return m;
+		if(messages.size() > 0) {
+			Message m = (Message) messages.elementAt(0);
+			messages.removeElementAt(0);
+			return m;
+		} else {
+			return null;
+		}
 	}
 	
 	/**
@@ -144,6 +148,7 @@ public class Console {
 		private boolean running;
 		private PrintThread() {
 			printDelay = 20;
+			running = true;
 		}
 		
 		/**
