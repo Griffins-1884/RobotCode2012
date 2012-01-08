@@ -90,7 +90,7 @@ public class Console {
 	}
 	
 	/**
-	 * Gets the first message in the list.
+	 * Gets (and removes) the first message in the list.
 	 * 
 	 * @return The first message in the list.
 	 */

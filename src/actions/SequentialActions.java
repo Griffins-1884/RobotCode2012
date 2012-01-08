@@ -10,7 +10,7 @@ public class SequentialActions extends Action implements ActionListener, MultiAc
 	 * The actions that will take place.
 	 */
 	public final Action[] actions;
-	private int actionsCompleted;
+	protected int actionsCompleted;
 	
 	/**
 	 * The thread executing the actions.
@@ -32,6 +32,10 @@ public class SequentialActions extends Action implements ActionListener, MultiAc
 	 * Starts calling Actions.
 	 */
 	public void act() {
+		if(actionsCompleted >= actions.length) {
+			finished();
+			return;
+		}
 		thread = new ActionThread(actions[actionsCompleted]);
 		actions[actionsCompleted].addListener(this);
 		thread.start();
@@ -55,13 +59,7 @@ public class SequentialActions extends Action implements ActionListener, MultiAc
 	 */
 	public void actionCompleted(Action source) {
 		actionsCompleted++;
-		if(actionsCompleted >= actions.length) {
-			finished();
-			return;
-		}
-		thread = new ActionThread(actions[actionsCompleted]);
-		actions[actionsCompleted].addListener(this);
-		thread.start();
+		act();
 	}
 	
 	/**
