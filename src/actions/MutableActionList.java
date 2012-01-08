@@ -31,7 +31,7 @@ public class MutableActionList extends SequentialActions {
 	 * @param a The action to add.
 	 */
 	public void add(Action a) {
-		actionList.add(a);
+		actionList.addElement(a);
 	}
 	
 	/**
