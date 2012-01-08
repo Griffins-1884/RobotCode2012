@@ -3,16 +3,24 @@ package actions;
 import java.util.Vector;
 
 public class MutableActionList extends SequentialActions {
-	private Vector actionList;
+	private final Vector actionList;
 	
 	/**
-	 * Constructs a SequentialActions from the array of actions, and the parent.
+	 * Constructs an empty MutableActionList.
+	 */
+	public MutableActionList() {
+		this(null, null);
+	}
+	
+	/**
+	 * Constructs a MutableActionList from the array of actions, and the parent.
 	 * 
 	 * @param actions The actions to be called sequentially.
 	 * @param parent The parent of the action. null if it has no parent.
 	 */
 	public MutableActionList(Action[] actions, MultiAction parent) {
 		super(null, parent);
+		actionList = new Vector();
 		for(int i = 0; i < actions.length; i++) {
 			actionList.addElement(actions[i]);
 		}
