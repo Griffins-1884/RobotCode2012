@@ -23,7 +23,11 @@ public abstract class BooleanSensor extends Sensor {
 		 * The current value of the sensor.
 		 */
 		public final boolean currentValue;
-		private final BooleanSensor source;
+		
+		/**
+		 * The sensor firing this event.
+		 */
+		public final BooleanSensor source;
 		
 		/**
 		 * Constructs a BooleanSensorEvent from the specified source and value..
@@ -34,15 +38,6 @@ public abstract class BooleanSensor extends Sensor {
 		public BooleanSensorEvent(BooleanSensor source, boolean currentValue) {
 			this.source = source;
 			this.currentValue = currentValue;
-		}
-		
-		/**
-		 * Returns the source of the event.
-		 * 
-		 * @return The source of the event.
-		 */
-		public BooleanSensor source() {
-			return source;
 		}
 	}
 	

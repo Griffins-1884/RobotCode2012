@@ -18,10 +18,10 @@ public class TeleopController extends Controller {
 	public void initialize() {}
 	private boolean previousButton2State = false;
 	public void periodic() {
-		if(rightJoystick.getButton(2) && !previousButton2State) {
+		if((leftJoystick.getButton(2) || rightJoystick.getButton(2)) && !previousButton2State) {
 			oneJoystick = !oneJoystick;
 			previousButton2State = true;
-		} else if(!rightJoystick.getButton(2) && previousButton2State) {
+		} else if(!leftJoystick.getButton(2) && !rightJoystick.getButton(2) && previousButton2State) {
 			previousButton2State = false;
 		}
 		if(oneJoystick) {

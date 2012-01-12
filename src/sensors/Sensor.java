@@ -39,7 +39,9 @@ public abstract class Sensor {
 									  PNEUMATIC_PRESSURE_SENSOR = 8193,
 								  ABSTRACT_DIGITAL_SENSOR = 16384,
 								  	  LIGHT_SENSOR = 16385,
-								  OTHER_SENSOR = 24576;
+								  OTHER_SENSOR = 24576,
+									  CAMERA = 24577,
+									  SHAPE_TRACKING_CAMERA = 24578;
 	}
 	
 	/**

@@ -28,7 +28,11 @@ public abstract class AnalogSensor extends Sensor {
 		 * The change from the previous value of the sensor.
 		 */
 		public final double deltaValue;
-		private final AnalogSensor source;
+		
+		/**
+		 * The sensor firing this event.
+		 */
+		public final AnalogSensor source;
 		
 		/**
 		 * Constructs an AnalogSensorEvent from the specified source, value, and delta value.
@@ -41,15 +45,6 @@ public abstract class AnalogSensor extends Sensor {
 			this.source = source;
 			this.currentValue = currentValue;
 			this.deltaValue = deltaValue;
-		}
-		
-		/**
-		 * Returns the source of the event.
-		 * 
-		 * @return The source of the event.
-		 */
-		public AnalogSensor source() {
-			return source;
 		}
 	}
 	

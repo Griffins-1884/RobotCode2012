@@ -28,7 +28,11 @@ public abstract class IntegralSensor extends Sensor {
 		 * The change from the previous value of the sensor.
 		 */
 		public final int deltaValue;
-		private final IntegralSensor source;
+		
+		/**
+		 * The sensor firing this event.
+		 */
+		public final IntegralSensor source;
 		
 		/**
 		 * Constructs an IntegralSensorEvent from the specified source, value, and delta value.
@@ -41,15 +45,6 @@ public abstract class IntegralSensor extends Sensor {
 			this.source = source;
 			this.currentValue = currentValue;
 			this.deltaValue = deltaValue;
-		}
-		
-		/**
-		 * Returns the source of the event.
-		 * 
-		 * @return The source of the event.
-		 */
-		public IntegralSensor source() {
-			return source;
 		}
 	}
 	
