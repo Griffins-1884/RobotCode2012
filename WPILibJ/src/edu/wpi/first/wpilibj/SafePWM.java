@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -97,6 +97,10 @@ public class SafePWM extends PWM implements MotorSafety {
 
     public void setSafetyEnabled(boolean enabled) {
         m_safetyHelper.setSafetyEnabled(enabled);
+    }
+    
+    public String getDescription() {
+        return "PWM "+getChannel()+" on module "+getModuleNumber();
     }
 
     public void disable() {

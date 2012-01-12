@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.parsing.IDeviceController;
  */
 public abstract class SolenoidBase extends SensorBase implements IDeviceController {
 
-    protected int m_chassisSlot; ///< Slot number where the module is plugged into the chassis.
+    protected int m_moduleNumber; ///< The number of the solenoid module being used.
     protected static Resource m_allocated = new Resource(tSolenoid.kDO7_0_NumElements * kSolenoidChannels);
 
     private static tSolenoid m_fpgaSolenoidModule; ///< FPGA Solenoid Module object.
@@ -25,11 +25,11 @@ public abstract class SolenoidBase extends SensorBase implements IDeviceControll
     /**
      * Constructor.
      *
-     * @param slot The slot that the 9472 module is plugged into.
+     * @param moduleNumber The number of the solenoid module to use.
      */
-    public SolenoidBase(final int slot) {
-        m_chassisSlot = slot;
-        checkSolenoidModule(m_chassisSlot);
+    public SolenoidBase(final int moduleNumber) {
+        m_moduleNumber = moduleNumber;
+        checkSolenoidModule(m_moduleNumber);
 
         m_refCount++;
         if (m_refCount == 1) {
@@ -40,22 +40,12 @@ public abstract class SolenoidBase extends SensorBase implements IDeviceControll
     /**
      * Destructor.
      */
-    protected synchronized void free() {
+    public synchronized void free() {
         if (m_refCount == 1) {
             m_fpgaSolenoidModule.Release();
             m_fpgaSolenoidModule = null;
         }
         m_refCount--;
-    }
-
-    /**
-     * Convert slot number to index.
-     *
-     * @param slot The slot in the chassis where the module is plugged in.
-     * @return An index to represent the module internally.
-     */
-    protected static int slotToIndex(final int slot) {
-        return 8 - slot;
     }
 
     /**
@@ -65,11 +55,11 @@ public abstract class SolenoidBase extends SensorBase implements IDeviceControll
      * @param mask The channels you want to be affected.
      */
     protected synchronized void set(int value, int mask) {
-        byte currentValue = (byte)tSolenoid.readDO7_0(slotToIndex(m_chassisSlot));
+        byte currentValue = (byte)tSolenoid.readDO7_0(m_moduleNumber - 1);
         // Zero out the values to change
         currentValue = (byte)(currentValue & ~mask);
         currentValue = (byte)(currentValue | (value & mask));
-        tSolenoid.writeDO7_0(slotToIndex(m_chassisSlot), currentValue);
+        tSolenoid.writeDO7_0(m_moduleNumber - 1, currentValue);
     }
 
     /**
@@ -78,11 +68,11 @@ public abstract class SolenoidBase extends SensorBase implements IDeviceControll
      * @return The current value of all 8 solenoids on this module.
      */
     public byte getAll() {
-        return (byte)tSolenoid.readDO7_0(slotToIndex(m_chassisSlot));
+        return (byte)tSolenoid.readDO7_0(m_moduleNumber - 1);
     }
 
     /**
-     * Read all 8 solenoids in the default solenoid module slot as a single byte
+     * Read all 8 solenoids in the default solenoid module as a single byte
      *
      * @return The current value of all 8 solenoids on the default module.
      */
@@ -91,11 +81,12 @@ public abstract class SolenoidBase extends SensorBase implements IDeviceControll
     }
 
     /**
-     * Read all 8 solenoids in the specified solenoid module slot as a single byte
+     * Read all 8 solenoids in the specified solenoid module as a single byte
      *
      * @return The current value of all 8 solenoids on the specified module.
      */
-    public static byte getAllFromModule(int slot) {
-        return (byte)tSolenoid.readDO7_0(slotToIndex(slot));
+    public static byte getAllFromModule(int moduleNumber) {
+        checkSolenoidModule(moduleNumber);
+        return (byte)tSolenoid.readDO7_0(moduleNumber - 1);
     }
 }

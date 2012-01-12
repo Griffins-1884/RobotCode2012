@@ -11,6 +11,7 @@ public class tGlobal extends tSystem
    public tGlobal()
    {
       super();
+
    }
 
    protected void finalize()
@@ -23,6 +24,10 @@ public class tGlobal extends tSystem
 
 
 
+
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Accessors for Version
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,21 +35,8 @@ public class tGlobal extends tSystem
 
    public static int readVersion()
    {
-      return (int)((NiRioSrv.peek32(m_DeviceHandle, kGlobal_Version_Address, status)) & 0x0000FFFF);
-   }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
-// Accessors for FPGA_LED
-//////////////////////////////////////////////////////////////////////////////////////////////////
-   private static final int kGlobal_FPGA_LED_Address = 0x811C;
-
-   public static void writeFPGA_LED(final boolean value)
-   {
-      NiRioSrv.poke32(m_DeviceHandle, kGlobal_FPGA_LED_Address, (value ? 1 : 0), status);
-   }
-   public static boolean readFPGA_LED()
-   {
-      return ((NiRioSrv.peek32(m_DeviceHandle, kGlobal_FPGA_LED_Address, status)) != 0 ? true : false);
+      return (int)((NiFpga.readU32(m_DeviceHandle, kGlobal_Version_Address, status)) & 0x0000FFFF);
    }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,7 +46,24 @@ public class tGlobal extends tSystem
 
    public static long readLocalTime()
    {
-      return (long)((NiRioSrv.peek32(m_DeviceHandle, kGlobal_LocalTime_Address, status)) & 0xFFFFFFFFl);
+
+      return (long)((NiFpga.readU32(m_DeviceHandle, kGlobal_LocalTime_Address, status)) & 0xFFFFFFFFl);
+   }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// Accessors for FPGA_LED
+//////////////////////////////////////////////////////////////////////////////////////////////////
+   private static final int kGlobal_FPGA_LED_Address = 0x810C;
+
+   public static void writeFPGA_LED(final boolean value)
+   {
+
+      NiFpga.writeU32(m_DeviceHandle, kGlobal_FPGA_LED_Address, (value ? 1 : 0), status);
+   }
+   public static boolean readFPGA_LED()
+   {
+
+      return ((NiFpga.readU32(m_DeviceHandle, kGlobal_FPGA_LED_Address, status)) != 0 ? true : false);
    }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +73,8 @@ public class tGlobal extends tSystem
 
    public static long readRevision()
    {
-      return (long)((NiRioSrv.peek32(m_DeviceHandle, kGlobal_Revision_Address, status)) & 0xFFFFFFFFl);
+
+      return (long)((NiFpga.readU32(m_DeviceHandle, kGlobal_Revision_Address, status)) & 0xFFFFFFFFl);
    }
 
 

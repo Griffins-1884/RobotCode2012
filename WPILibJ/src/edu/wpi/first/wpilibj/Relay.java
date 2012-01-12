@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -105,28 +105,28 @@ public class Relay extends SensorBase implements IDeviceController{
     private int m_channel;
     private Direction m_direction;
     private DigitalModule m_module;
-    private static Resource relayChannels = new Resource(tDIO.kNumSystems * kRelayChannels);
+    private static Resource relayChannels = new Resource(tDIO.kNumSystems * kRelayChannels * 2);
 
     /**
-     * Common relay intitialization methode.
+     * Common relay initialization method.
      * This code is common to all Relay constructors and initializes the relay and reserves
      * all resources that need to be locked. Initially the relay is set to both lines at 0v.
-     * @param slot The module slot number this relay is connected to.
+     * @param moduleNumber The number of the digital module to use.
      */
-    private void initRelay(final int slot) {
-        SensorBase.checkRelayModule(slot);
+    private void initRelay(final int moduleNumber) {
+        SensorBase.checkRelayModule(moduleNumber);
         SensorBase.checkRelayChannel(m_channel);
         try {
             if (m_direction == Direction.kBoth || m_direction == Direction.kForward) {
-                relayChannels.allocate((DigitalModule.slotToIndex(slot) * kRelayChannels + m_channel - 1) * 2);
+                relayChannels.allocate(((moduleNumber - 1) * kRelayChannels + m_channel - 1) * 2);
             }
             if (m_direction == Direction.kBoth || m_direction == Direction.kReverse) {
-                relayChannels.allocate((DigitalModule.slotToIndex(slot) * kRelayChannels + m_channel - 1) * 2 + 1);
+                relayChannels.allocate(((moduleNumber - 1) * kRelayChannels + m_channel - 1) * 2 + 1);
             }
         } catch (CheckedAllocationException e) {
-            throw new AllocationException("Relay channel " + m_channel + " on module " + slot + " is already allocated");
+            throw new AllocationException("Relay channel " + m_channel + " on module " + moduleNumber + " is already allocated");
         }
-        m_module = DigitalModule.getInstance(slot);
+        m_module = DigitalModule.getInstance(moduleNumber);
         m_module.setRelayForward(m_channel, false);
         m_module.setRelayReverse(m_channel, false);
     }
@@ -134,16 +134,16 @@ public class Relay extends SensorBase implements IDeviceController{
 
     /**
      * Relay constructor given the module and the channel.
-     * @param slot The module slot number this relay is connected to.
+     * @param moduileNumber The number of the digital module to use.
      * @param channel The channel number within the module for this relay.
      * @param direction The direction that the Relay object will control.
      */
-    public Relay(final int slot, final int channel, Direction direction) {
+    public Relay(final int moduileNumber, final int channel, Direction direction) {
         if (direction == null)
             throw new NullPointerException("Null Direction was given");
         m_channel = channel;
         m_direction = direction;
-        initRelay(slot);
+        initRelay(moduileNumber);
     }
 
     /**
@@ -161,13 +161,13 @@ public class Relay extends SensorBase implements IDeviceController{
 
     /**
      * Relay constructor given the module and the channel, allowing both directions.
-     * @param slot The module slot number this relay is connected to.
+     * @param moduleNumber The number of the digital module to use.
      * @param channel The channel number within the module for this relay.
      */
-    public Relay(final int slot, final int channel) {
+    public Relay(final int moduleNumber, final int channel) {
         m_channel = channel;
         m_direction = Direction.kBoth;
-        initRelay(slot);
+        initRelay(moduleNumber);
     }
 
     /**
@@ -181,15 +181,15 @@ public class Relay extends SensorBase implements IDeviceController{
         initRelay(getDefaultDigitalModule());
     }
 
-    protected void free() {
+    public void free() {
         m_module.setRelayForward(m_channel, false);
         m_module.setRelayReverse(m_channel, false);
 
         if (m_direction == Direction.kBoth || m_direction == Direction.kForward) {
-            relayChannels.free((DigitalModule.slotToIndex(m_module.getSlot()) * kRelayChannels + m_channel - 1) * 2);
+            relayChannels.free(((m_module.getModuleNumber() - 1) * kRelayChannels + m_channel - 1) * 2);
         }
         if (m_direction == Direction.kBoth || m_direction == Direction.kReverse) {
-            relayChannels.free((DigitalModule.slotToIndex(m_module.getSlot()) * kRelayChannels + m_channel - 1) * 2 + 1);
+            relayChannels.free(((m_module.getModuleNumber() - 1) * kRelayChannels + m_channel - 1) * 2 + 1);
         }
     }
 
@@ -198,8 +198,8 @@ public class Relay extends SensorBase implements IDeviceController{
      *
      * Valid values depend on which directions of the relay are controlled by the object.
      *
-     * When set to kBothDirections, the relay can only be one of the three reasonable
-     *    values, 0v-0v, 0v-12v, or 12v-0v.
+     * When set to kBothDirections, the relay can be set to any of the four states:
+	 *		0v-0v, 12v-0v, 0v-12v, 12v-12v
      *
      * When set to kForwardOnly or kReverseOnly, you can specify the constant for the
      *    direction or you can simply specify kOff_val and kOn_val.  Using only kOff_val and kOn_val is
@@ -218,11 +218,10 @@ public class Relay extends SensorBase implements IDeviceController{
                 }
                 break;
             case Value.kOn_val:
-                if (m_direction == Direction.kBoth)
-                    throw new InvalidValueException("A relay configured to both directions cannot be set to on");
-                if (m_direction == Direction.kForward) {
+                if (m_direction == Direction.kBoth || m_direction == Direction.kForward) {
                     m_module.setRelayForward(m_channel, true);
-                } else if (m_direction == Direction.kReverse) {
+                } 
+				if (m_direction == Direction.kBoth || m_direction == Direction.kReverse) {
                     m_module.setRelayReverse(m_channel, true);
                 }
                 break;
@@ -272,6 +271,6 @@ public class Relay extends SensorBase implements IDeviceController{
 
         m_direction = direction;
 
-        initRelay(m_module.getSlot());
+        initRelay(m_module.getModuleNumber());
     }
 }

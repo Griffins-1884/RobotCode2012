@@ -8,9 +8,15 @@
 
 package com.ni.rio;
 
-import com.sun.cldc.jna.*;
 import com.sun.cldc.jna.ptr.IntByReference;
 
+/**
+ * The NiRioStatus class encapsulates a cRIO status value.
+ * 
+ * The NiRioStatus class also defines the various status constants used by the cRIO. 
+ * 
+ * @todo Why are we storing the status value in an IntByReference? We should be able to use a simple int field.
+ */
 public class NiRioStatus
 {
    public static final class FatalStatusException extends IllegalStateException
@@ -305,6 +311,12 @@ public class NiRioStatus
       return status.getValue() >= 0;
    }
 
+   /**
+    * Update the status code to the most serious of the existing status code or the new status code. If the 
+    * resulting code is "fatal" throw NiRioStatus.FatalStatusException.
+    * 
+    * @param newStatusCode 
+    */
    public void setStatus(int newStatusCode)
    {
       if (status.getValue() >= 0 && (status.getValue() == 0 || newStatusCode < 0))
@@ -316,11 +328,7 @@ public class NiRioStatus
 
    public void setStatus(NiRioStatus newStatus)
    {
-      if (status.getValue() >= 0 && (status.getValue() == 0 || newStatus.getStatusCode() < 0))
-      {
-         status.setValue(newStatus.getStatusCode());
-      }
-      assertNonfatal();
+      setStatus(newStatus.getStatusCode());
    }
 
    public int getStatusCode()

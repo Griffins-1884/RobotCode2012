@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -22,21 +22,21 @@ public class DigitalOutput extends DigitalSource implements IInputOutput{
     private int m_pwmGenerator;
     private DigitalModule m_module;
 
-    private void initDigitalOutput(int slot, int channel) {
+    private void initDigitalOutput(int moduleNumber, int channel) {
         m_channel = channel;
         m_pwmGenerator = ~0;
-        m_module = DigitalModule.getInstance(slot);
+        m_module = DigitalModule.getInstance(moduleNumber);
         m_module.allocateDIO(m_channel, false);
     }
 
     /**
      * Create an instance of a digital output.
-     * Create an instance of a digital output given a slot and channel.
-     * @param slot the slot the digital module is in
+     * Create an instance of a digital output given a module number and channel.
+     * @param moduleNumber The number of the digital module to use
      * @param channel the port to use for the digital output
      */
-    public DigitalOutput(int slot, int channel) {
-        initDigitalOutput(slot, channel);
+    public DigitalOutput(int moduleNumber, int channel) {
+        initDigitalOutput(moduleNumber, channel);
     }
 
     /**
@@ -51,7 +51,7 @@ public class DigitalOutput extends DigitalSource implements IInputOutput{
     /**
      * Free the resources associated with a digital output.
      */
-    protected void free() {
+    public void free() {
         disablePWM();
         m_module.freeDIO(m_channel);
     }
@@ -158,7 +158,7 @@ public class DigitalOutput extends DigitalSource implements IInputOutput{
      * @return The value to be written to the module field of a routing mux.
      */
     public int getModuleForRouting() {
-	return DigitalModule.slotToIndex(m_module.getSlot());
+	return m_module.getModuleNumber() - 1;
     }
 
     /**

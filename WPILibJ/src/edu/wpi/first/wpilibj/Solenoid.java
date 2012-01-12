@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -24,14 +24,14 @@ public class Solenoid extends SolenoidBase {
      * Common function to implement constructor behavior.
      */
     private synchronized void initSolenoid() {
-        checkSolenoidModule(m_chassisSlot);
+        checkSolenoidModule(m_moduleNumber);
         checkSolenoidChannel(m_channel);
 
         try {
-            m_allocated.allocate(slotToIndex(m_chassisSlot) * kSolenoidChannels + m_channel - 1);
+            m_allocated.allocate((m_moduleNumber - 1) * kSolenoidChannels + m_channel - 1);
         } catch (CheckedAllocationException e) {
             throw new AllocationException(
-                    "Solenoid channel " + m_channel + " on module " + m_chassisSlot + " is already allocated");
+                    "Solenoid channel " + m_channel + " on module " + m_moduleNumber + " is already allocated");
         }
     }
 
@@ -49,11 +49,11 @@ public class Solenoid extends SolenoidBase {
     /**
      * Constructor.
      *
-     * @param slot The slot that the 9472 module is plugged into.
+     * @param moduleNumber The module number of the solenoid module to use.
      * @param channel The channel on the module to control.
      */
-    public Solenoid(final int slot, final int channel) {
-        super(slot);
+    public Solenoid(final int moduleNumber, final int channel) {
+        super(moduleNumber);
         m_channel = channel;
         initSolenoid();
     }
@@ -61,8 +61,8 @@ public class Solenoid extends SolenoidBase {
     /**
      * Destructor.
      */
-    protected synchronized void free() {
-        m_allocated.free(slotToIndex(m_chassisSlot) * kSolenoidChannels + m_channel - 1);
+    public synchronized void free() {
+        m_allocated.free((m_moduleNumber - 1) * kSolenoidChannels + m_channel - 1);
     }
 
     /**

@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.util.CheckedAllocationException;
  * Each analog channel is read from hardware as a 12-bit number representing -10V to 10V.
  *
  * Connected to each analog channel is an averaging and oversampling engine.  This engine accumulates
- * the specified ( by setAverageBits() and setOversampleBits() ) number of samples befor returning a new
+ * the specified ( by setAverageBits() and setOversampleBits() ) number of samples before returning a new
  * value.  This is not a sliding window average.  The only difference between the oversampled samples and
  * the averaged samples is that the oversampled samples are simply accumulated effectively increasing the
  * resolution, while the averaged samples are divided by the number of samples to retain the resolution,
@@ -27,7 +27,7 @@ public class AnalogChannel extends SensorBase implements PIDSource {
     private static final int kAccumulatorSlot = 1;
     private static Resource channels = new Resource(kAnalogModules * kAnalogChannels);
     private int m_channel;
-    private int m_slot;
+    private int m_moduleNumber;
     private AnalogModule m_module;
     private static final int[] kAccumulatorChannels = {
         1, 2
@@ -47,20 +47,20 @@ public class AnalogChannel extends SensorBase implements PIDSource {
     /**
      * Construct an analog channel on a specified module.
      *
-     * @param slot The slot that the analog module is plugged into.
+     * @param moduleNumber The digital module to use (1 or 2).
      * @param channel The channel number to represent.
      */
-    public AnalogChannel(final int slot, final int channel) {
-        checkAnalogModule(slot);
-        checkAnalogChannel(slot);
+    public AnalogChannel(final int moduleNumber, final int channel) {
+        checkAnalogModule(moduleNumber);
+        checkAnalogChannel(channel);
         m_channel = channel;
-        m_slot = slot;
-        m_module = AnalogModule.getInstance(slot);
+        m_moduleNumber = moduleNumber;
+        m_module = AnalogModule.getInstance(moduleNumber);
         try {
-            channels.allocate(AnalogModule.slotToIndex(slot) * kAnalogModules + m_channel - 1);
+            channels.allocate((moduleNumber - 1) * kAnalogChannels + m_channel - 1);
         } catch (CheckedAllocationException e) {
             throw new AllocationException(
-                    "Analog channel " + m_channel + " on module " + m_slot + " is already allocated");
+                    "Analog channel " + m_channel + " on module " + m_moduleNumber + " is already allocated");
         }
         if (channel == 1 || channel == 2) {
             m_accumulator = new tAccumulator((byte) (channel - 1));
@@ -73,10 +73,10 @@ public class AnalogChannel extends SensorBase implements PIDSource {
     /**
      * Channel destructor.
      */
-    protected void free() {
-        channels.free((AnalogModule.slotToIndex(m_slot) * kAnalogModules + m_channel - 1));
+    public void free() {
+        channels.free(((m_moduleNumber - 1) * kAnalogChannels + m_channel - 1));
         m_channel = 0;
-        m_slot = 0;
+        m_moduleNumber = 0;
 //        m_accumulator.Release();
         m_accumulator = null;
         m_accumulatorOffset = 0;
@@ -169,11 +169,11 @@ public class AnalogChannel extends SensorBase implements PIDSource {
     }
 
     /**
-     * Get the slot that the analog module is plugged into.
-     * @return The slot that the analog module is plugged into.
+     * Gets the number of the analog module this channel is on.
+     * @return The module number of the analog module this channel is on.
      */
-    public int getSlot() {
-        return m_module.getSlot();
+    public int getModuleNumber() {
+        return m_module.getModuleNumber();
     }
 
     /**
@@ -322,7 +322,7 @@ public class AnalogChannel extends SensorBase implements PIDSource {
      * @return The analog channel is attached to an accumulator.
      */
     public boolean isAccumulatorChannel() {
-        if (m_module.getSlot() != kAccumulatorSlot) {
+        if (m_module.getModuleNumber() != kAccumulatorSlot) {
             return false;
         }
         for (int i = 0; i < kAccumulatorChannels.length; i++) {

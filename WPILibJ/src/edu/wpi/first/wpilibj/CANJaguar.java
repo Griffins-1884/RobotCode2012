@@ -1,3 +1,10 @@
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
+
 package edu.wpi.first.wpilibj;
 
 import edu.wpi.first.wpilibj.can.*;
@@ -1361,6 +1368,10 @@ public class CANJaguar implements MotorSafety, PIDOutput, SpeedController {
 
     public void setSafetyEnabled(boolean enabled) {
         m_safetyHelper.setSafetyEnabled(enabled);
+    }
+    
+    public String getDescription() {
+        return "CANJaguar ID "+m_deviceNumber;
     }
 
     /**

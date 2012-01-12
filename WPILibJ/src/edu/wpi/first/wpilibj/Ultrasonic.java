@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -221,7 +221,7 @@ public class Ultrasonic extends SensorBase implements PIDSource, ISensor {
      * If the system was in automatic mode (round robin), then it is stopped, then started again
      * after this sensor is removed (provided this wasn't the last sensor).
      */
-    protected synchronized void free() {
+    public synchronized void free() {
         boolean wasAutomaticMode = m_automaticEnabled;
         setAutomaticMode(false);
         if (m_allocatedChannels) {

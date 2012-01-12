@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -44,14 +44,14 @@ public class AnalogTrigger implements IInputOutput{
     private int m_channel;
 
     /**
-     * Initialize an analog trigger from a slot and channel.
-     * This is the common code for the two constructors that use a slot and channel.
-     * @param slot the slot that the analog module is in
+     * Initialize an analog trigger from a module number and channel.
+     * This is the common code for the two constructors that use a module number and channel.
+     * @param moduleNumber The number of the analog module to create this trigger on.
      * @param channel the port to use for the analog trigger
      */
-    protected void initTrigger(final int slot, final int channel) {
+    protected void initTrigger(final int moduleNumber, final int channel) {
         m_channel = channel;
-        m_analogModule = AnalogModule.getInstance(slot);
+        m_analogModule = AnalogModule.getInstance(moduleNumber);
         try {
             m_index = triggers.allocate();
         } catch (CheckedAllocationException e) {
@@ -59,7 +59,7 @@ public class AnalogTrigger implements IInputOutput{
         }
         m_trigger = new tAnalogTrigger((byte) m_index);
         m_trigger.writeSourceSelect_Channel((byte) (m_channel - 1));
-        m_trigger.writeSourceSelect_Module((byte) AnalogModule.slotToIndex((byte) slot));
+        m_trigger.writeSourceSelect_Module((byte) moduleNumber - 1);
     }
 
     /**
@@ -72,12 +72,12 @@ public class AnalogTrigger implements IInputOutput{
     }
 
     /**
-     * Constructor for an analog trigger given both the slot and channel.
-     * @param slot the slot that the analog module is in
+     * Constructor for an analog trigger given both the module number and channel.
+     * @param moduleNumber The number of the analog module to create this trigger on.
      * @param channel the port to use for the analog trigger
      */
-    public AnalogTrigger(final int slot, final int channel) {
-        initTrigger(slot, channel);
+    public AnalogTrigger(final int moduleNumber, final int channel) {
+        initTrigger(moduleNumber, channel);
     }
 
     /**
@@ -87,13 +87,13 @@ public class AnalogTrigger implements IInputOutput{
      * @param channel the AnalogChannel to use for the analog trigger
      */
     public AnalogTrigger(AnalogChannel channel) {
-        initTrigger(channel.getSlot(), channel.getChannel());
+        initTrigger(channel.getModuleNumber(), channel.getChannel());
     }
 
     /**
      * Release the resources used by this object
      */
-    protected void free() {
+    public void free() {
         triggers.free(m_index);
         m_trigger.Release();
         m_trigger = null;

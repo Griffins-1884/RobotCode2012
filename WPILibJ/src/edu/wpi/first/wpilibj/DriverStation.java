@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -22,7 +22,6 @@ public class DriverStation implements IInputOutput {
      * The size of the user status data
      */
     public static final int USER_STATUS_DATA_SIZE = FRCControl.USER_STATUS_DATA_SIZE;
-    
     /**
      * Slot for the analog module to read the battery
      */
@@ -44,7 +43,6 @@ public class DriverStation implements IInputOutput {
      */
     public static final double kDSAnalogInScaling = 5.0 / 1023.0;
 
-
     /**
      * The robot alliance that the robot is a part of
      */
@@ -54,11 +52,9 @@ public class DriverStation implements IInputOutput {
         public final int value;
         /** The Alliance name. */
         public final String name;
-
         public static final int kRed_val = 0;
         public static final int kBlue_val = 1;
         public static final int kInvalid_val = 2;
-
         /** alliance: Red */
         public static final Alliance kRed = new Alliance(kRed_val, "Red");
         /** alliance: Blue */
@@ -71,6 +67,7 @@ public class DriverStation implements IInputOutput {
             this.name = name;
         }
     } /* Alliance */
+
 
     private static class DriverStationTask implements Runnable {
 
@@ -86,7 +83,6 @@ public class DriverStation implements IInputOutput {
     } /* DriverStationTask */
 
     private static DriverStation instance = new DriverStation();
-    
     private FRCCommonControlData m_controlData;
     private AnalogChannel m_batteryChannel;
     private Thread m_thread;
@@ -99,6 +95,10 @@ public class DriverStation implements IInputOutput {
     private IDashboard m_dashboardInUseHigh;
     private IDashboard m_dashboardInUseLow;
     private int m_updateNumber = 0;
+    private double m_approxMatchTimeOffset = -1.0;
+    private boolean m_userInDisabled = false;
+    private boolean m_userInAutonomous = false;
+    private boolean m_userInTeleop = false;
     private boolean m_newControlData;
     private final Semaphore m_packetDataAvailableSem;
     private DriverStationEnhancedIO m_enhancedIO = new DriverStationEnhancedIO();
@@ -169,6 +169,15 @@ public class DriverStation implements IInputOutput {
                     MotorSafetyHelper.checkMotors();
                     safetyCounter = 0;
                 }
+                if (m_userInDisabled) {
+                    FRCControl.observeUserProgramDisabled();
+                }
+                if (m_userInAutonomous) {
+                    FRCControl.observeUserProgramAutonomous();
+                }
+                if (m_userInTeleop) {
+                    FRCControl.observeUserProgramTeleop();
+                }
             } catch (SemaphoreException ex) {
                 //
             }
@@ -196,6 +205,7 @@ public class DriverStation implements IInputOutput {
             }
         }
     }
+    private static boolean lastEnabled = false;
 
     /**
      * Copy data from the DS task for the user.
@@ -204,6 +214,19 @@ public class DriverStation implements IInputOutput {
      */
     protected synchronized void getData() {
         FRCControl.getCommonControlData(m_controlData, Semaphore.WAIT_FOREVER);
+
+        if (!lastEnabled && isEnabled()) {
+            // If starting teleop, assume that autonomous just took up 15 seconds
+            if (isAutonomous()) {
+                m_approxMatchTimeOffset = Timer.getFPGATimestamp();
+            } else {
+                m_approxMatchTimeOffset = Timer.getFPGATimestamp() - 15.0;
+            }
+        } else if (lastEnabled && !isEnabled()) {
+            m_approxMatchTimeOffset = -1.0;
+        }
+        lastEnabled = isEnabled();
+
         m_newControlData = true;
     }
 
@@ -453,6 +476,14 @@ public class DriverStation implements IInputOutput {
     }
 
     /**
+     * Return the team number that the Driver Station is configured for
+     * @return The team number
+     */
+    public int getTeamNumber() {
+        return m_controlData.teamID;
+    }
+
+    /**
      * Sets the dashboard packer to use for sending high priority user data to a
      * dashboard receiver. This can idle or restore the default packer.
      * (Initializing SmartDashboard sets the high priority packer in use, so
@@ -534,7 +565,7 @@ public class DriverStation implements IInputOutput {
      * status data.
      */
     void incrementUpdateNumber() {
-        synchronized(m_semaphore) {
+        synchronized (m_semaphore) {
             m_updateNumber++;
         }
     }
@@ -553,7 +584,24 @@ public class DriverStation implements IInputOutput {
      * @return An enhanced IO object for the advanced features of the driver
      * station.
      */
-    public DriverStationEnhancedIO getEnhancedIO () {
+    public DriverStationEnhancedIO getEnhancedIO() {
         return m_enhancedIO;
+    }
+
+    /**
+     * Return the approximate match time
+     * The FMS does not currently send the official match time to the robots
+     * This returns the time since the enable signal sent from the Driver Station
+     * At the beginning of autonomous, the time is reset to 0.0 seconds
+     * At the beginning of teleop, the time is reset to +15.0 seconds
+     * If the robot is disabled, this returns 0.0 seconds
+     * Warning: This is not an official time (so it cannot be used to argue with referees)
+     * @return Match time in seconds since the beginning of autonomous
+     */
+    public double getMatchTime() {
+        if (m_approxMatchTimeOffset < 0.0) {
+            return 0.0;
+        }
+        return Timer.getFPGATimestamp() - m_approxMatchTimeOffset;
     }
 }

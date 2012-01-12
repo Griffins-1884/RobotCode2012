@@ -11,6 +11,7 @@ public class tAlarm extends tSystem
    public tAlarm()
    {
       super();
+
    }
 
    protected void finalize()
@@ -23,32 +24,38 @@ public class tAlarm extends tSystem
 
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
-// Accessors for TriggerTime
-//////////////////////////////////////////////////////////////////////////////////////////////////
-   private static final int kAlarm_TriggerTime_Address = 0x8128;
 
-   public static void writeTriggerTime(final long value)
-   {
-      NiRioSrv.poke32(m_DeviceHandle, kAlarm_TriggerTime_Address, (int)(value), status);
-   }
-   public static long readTriggerTime()
-   {
-      return (long)((NiRioSrv.peek32(m_DeviceHandle, kAlarm_TriggerTime_Address, status)) & 0xFFFFFFFFl);
-   }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Accessors for Enable
 //////////////////////////////////////////////////////////////////////////////////////////////////
-   private static final int kAlarm_Enable_Address = 0x8124;
+   private static final int kAlarm_Enable_Address = 0x8448;
 
    public static void writeEnable(final boolean value)
    {
-      NiRioSrv.poke32(m_DeviceHandle, kAlarm_Enable_Address, (value ? 1 : 0), status);
+
+      NiFpga.writeU32(m_DeviceHandle, kAlarm_Enable_Address, (value ? 1 : 0), status);
    }
    public static boolean readEnable()
    {
-      return ((NiRioSrv.peek32(m_DeviceHandle, kAlarm_Enable_Address, status)) != 0 ? true : false);
+
+      return ((NiFpga.readU32(m_DeviceHandle, kAlarm_Enable_Address, status)) != 0 ? true : false);
+   }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// Accessors for TriggerTime
+//////////////////////////////////////////////////////////////////////////////////////////////////
+   private static final int kAlarm_TriggerTime_Address = 0x8444;
+
+   public static void writeTriggerTime(final long value)
+   {
+
+      NiFpga.writeU32(m_DeviceHandle, kAlarm_TriggerTime_Address, (int)(value), status);
+   }
+   public static long readTriggerTime()
+   {
+
+      return (long)((NiFpga.readU32(m_DeviceHandle, kAlarm_TriggerTime_Address, status)) & 0xFFFFFFFFl);
    }
 
 

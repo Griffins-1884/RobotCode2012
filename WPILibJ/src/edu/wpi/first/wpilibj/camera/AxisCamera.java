@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -9,8 +9,10 @@ package edu.wpi.first.wpilibj.camera;
 import com.sun.cldc.jna.BlockingFunction;
 import com.sun.cldc.jna.Function;
 import com.sun.cldc.jna.NativeLibrary;
+import com.sun.cldc.jna.Pointer;
 import com.sun.cldc.jna.TaskExecutor;
 import com.sun.squawk.VM;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.image.ColorImage;
 import edu.wpi.first.wpilibj.image.HSLImage;
 import edu.wpi.first.wpilibj.image.NIVisionException;
@@ -27,7 +29,7 @@ import edu.wpi.first.wpilibj.util.BoundaryException;
  * This class is a singleton used to configure and get images from the axis camera.
  * @author dtjones
  */
-public class AxisCamera implements ISensor{
+public class AxisCamera implements ISensor {
 
     private static AxisCamera m_instance = null;
 
@@ -139,19 +141,19 @@ public class AxisCamera implements ISensor{
         /**
          * Image is 640 pixels wide by 480 tall
          */
-        public static final ResolutionT k640x480 = new ResolutionT(0,640,480);
+        public static final ResolutionT k640x480 = new ResolutionT(0, 640, 480);
         /**
          * Image is 640 pixels wide by 360 tall
          */
-        public static final ResolutionT k640x360 = new ResolutionT(1,640,360);
+        public static final ResolutionT k640x360 = new ResolutionT(1, 640, 360);
         /**
          * Image is 320 pixels wide by 240 tall
          */
-        public static final ResolutionT k320x240 = new ResolutionT(2,320,240);
+        public static final ResolutionT k320x240 = new ResolutionT(2, 320, 240);
         /**
          * Image is 160 pixels wide by 120 tall
          */
-        public static final ResolutionT k160x120 = new ResolutionT(3,160,120);
+        public static final ResolutionT k160x120 = new ResolutionT(3, 160, 120);
 
         private ResolutionT(int value, int horizontal, int vertical) {
             this.value = value;
@@ -229,24 +231,56 @@ public class AxisCamera implements ISensor{
 
     /**
      * Get a reference to the AxisCamera, or initialize the AxisCamera if it
-     * has not yet been initialized.
+     * has not yet been initialized. If the camera is connected to the
+     * Ethernet switch on the robot, then this address should be 10.x.y.11
+     * where x.y are your team number subnet address (same as the other IP
+     * addresses on the robot network).
+     * @param address A string containing the IP address for the camera in the
+     * form "10.x.y.2" for cameras on the Ethernet switch or "192.168.0.90"
+     * for cameras connected to the 2nd Ethernet port on an 8-slot cRIO.
+     * @return A reference to the AxisCamera.
+     */
+    public static synchronized AxisCamera getInstance(String address) {
+        if (m_instance == null) {
+            m_instance = new AxisCamera(address);
+        }
+        return m_instance;
+    }
+
+    /**
+     * Get a reference to the AxisCamera, or initialize the AxisCamera if it
+     * has not yet been initialized. By default this will connect to a camera
+     * with an IP address of 10.x.y.11 with the preference that the camera be
+     * connected to the Ethernet switch on the robot rather than port 2 of the
+     * 8-slot cRIO.
      * @return A reference to the AxisCamera.
      */
     public static synchronized AxisCamera getInstance() {
         if (m_instance == null) {
-            m_instance = new AxisCamera();
+            DriverStation.getInstance().waitForData();
+            int teamNumber = DriverStation.getInstance().getTeamNumber();
+            String address = "10."+(teamNumber/100)+"."+(teamNumber%100)+".11";
+            m_instance = new AxisCamera(address);
         }
         return m_instance;
     }
     private static final Function cameraStartFn = NativeLibrary.getDefaultInstance().getFunction("AxisCameraStart");
 
-    AxisCamera() {
-        cameraStartFn.call0();
+    /**
+     * Axis camera constructor that calls the C++ library to actually create the instance.
+     * @param IPAddress 
+     */
+    AxisCamera(String IPAddress) {
+        Pointer ptr = Pointer.createStringBuffer(IPAddress);
+        cameraStartFn.call1(ptr);
     }
-
     private static final TaskExecutor cameraTaskExecutor = new TaskExecutor("camera task executor");
     private static final BlockingFunction getImageFn = NativeLibrary.getDefaultInstance().getBlockingFunction("AxisCameraGetImage");
-    static { getImageFn.setTaskExecutor(cameraTaskExecutor); }
+
+    static {
+        getImageFn.setTaskExecutor(cameraTaskExecutor);
+    }
+
     /**
      * Get an image from the camera. Be sure to free the image when you are done with it.
      * @return A new image from the camera.
@@ -259,7 +293,6 @@ public class AxisCamera implements ISensor{
         }
         return image;
     }
-
     // Mid-stream gets & writes
     private static final Function writeBrightnessFn = NativeLibrary.getDefaultInstance().getFunction("AxisCameraWriteBrightness");
 
@@ -271,7 +304,6 @@ public class AxisCamera implements ISensor{
         BoundaryException.assertWithinBounds(brightness, 0, 100);
         writeBrightnessFn.call1(brightness);
     }
-
     private static final Function getBrightnessFn = NativeLibrary.getDefaultInstance().getFunction("AxisCameraGetBrightness");
 
     /**
@@ -282,7 +314,6 @@ public class AxisCamera implements ISensor{
     public int getBrightness() {
         return getBrightnessFn.call0();
     }
-
     private static final Function writeWhiteBalenceFn = NativeLibrary.getDefaultInstance().getFunction("AxisCameraWriteWhiteBalance");
 
     /**
@@ -301,7 +332,6 @@ public class AxisCamera implements ISensor{
     public WhiteBalanceT getWhiteBalance() {
         return WhiteBalanceT.get(getWhiteBalanceFn.call0());
     }
-
     private static final Function writeColorLevelFn = NativeLibrary.getDefaultInstance().getFunction("AxisCameraWriteColorLevel");
 
     /**
@@ -312,7 +342,6 @@ public class AxisCamera implements ISensor{
         BoundaryException.assertWithinBounds(value, 0, 100);
         writeColorLevelFn.call1(value);
     }
-    
     private static final Function getColorLevelFn = NativeLibrary.getDefaultInstance().getFunction("AxisCameraGetColorLevel");
 
     /**
@@ -322,7 +351,6 @@ public class AxisCamera implements ISensor{
     public int getColorLevel() {
         return getColorLevelFn.call0();
     }
-    
     private static final Function writeExposureControlFn = NativeLibrary.getDefaultInstance().getFunction("AxisCameraWriteExposureControl");
 
     /**
@@ -332,7 +360,6 @@ public class AxisCamera implements ISensor{
     public void writeExposureControl(ExposureT value) {
         writeExposureControlFn.call1(value.value);
     }
-    
     private static final Function getExposureControlFn = NativeLibrary.getDefaultInstance().getFunction("AxisCameraGetExposureControl");
 
     /**
@@ -342,7 +369,6 @@ public class AxisCamera implements ISensor{
     public ExposureT getExposureControl() {
         return ExposureT.get(getExposureControlFn.call0());
     }
-    
     private static final Function writeExposurePriorityFn = NativeLibrary.getDefaultInstance().getFunction("AxisCameraWriteExposurePriority");
 
     /**
@@ -352,7 +378,6 @@ public class AxisCamera implements ISensor{
     public void writeExposurePriority(ExposurePriorityT value) {
         writeExposurePriorityFn.call1(value.value);
     }
-
     private static final Function getExposurePriorityFn = NativeLibrary.getDefaultInstance().getFunction("AxisCameraGetExposurePriority");
 
     /**
@@ -362,7 +387,6 @@ public class AxisCamera implements ISensor{
     public ExposurePriorityT getExposurePriority() {
         return ExposurePriorityT.get(getExposurePriorityFn.call0());
     }
-
     // New-Stream gets & writes
     private static final Function writeResolutionFn = NativeLibrary.getDefaultInstance().getFunction("AxisCameraWriteResolution");
 
@@ -382,7 +406,6 @@ public class AxisCamera implements ISensor{
     public ResolutionT getResolution() {
         return ResolutionT.get(getResolutionFn.call0());
     }
-
     private static final Function writeCompressionFn = NativeLibrary.getDefaultInstance().getFunction("AxisCameraWriteCompression");
 
     /**
@@ -393,7 +416,6 @@ public class AxisCamera implements ISensor{
         BoundaryException.assertWithinBounds(value, 0, 100);
         writeCompressionFn.call1(value);
     }
-    
     private static final Function getCompressionFn = NativeLibrary.getDefaultInstance().getFunction("AxisCameraGetCompression");
 
     /**
@@ -404,7 +426,6 @@ public class AxisCamera implements ISensor{
     public int getCompression() {
         return getCompressionFn.call0();
     }
-
     private static final Function writeRotationFn = NativeLibrary.getDefaultInstance().getFunction("AxisCameraWriteRotation");
 
     /**
@@ -414,7 +435,6 @@ public class AxisCamera implements ISensor{
     public void writeRotation(RotationT value) {
         writeRotationFn.call1(value.value);
     }
-
     private static final Function getRotationFn = NativeLibrary.getDefaultInstance().getFunction("AxisCameraGetRotation");
 
     /**
@@ -424,14 +444,14 @@ public class AxisCamera implements ISensor{
     public RotationT getRotation() {
         return RotationT.get(getRotationFn.call0());
     }
-
     private static final Function freshImageFn = NativeLibrary.getDefaultInstance().getFunction("AxisCameraFreshImage");
+
     /**
      * Has the current image from the camera been retrieved yet.
      * @return true if the latest image from the camera has not been retrieved yet.
      */
     public boolean freshImage() {
-        return freshImageFn.call0()==0?false:true;
+        return freshImageFn.call0() == 0 ? false : true;
     }
     private static final Function getMaxFPSFn = NativeLibrary.getDefaultInstance().getFunction("AxisCameraGetMaxFPS");
 
@@ -452,12 +472,13 @@ public class AxisCamera implements ISensor{
         writeMaxFPSFn.call1(value);
     }
     private static final Function deleteInstanceFn = NativeLibrary.getDefaultInstance().getFunction("AxisCameraDeleteInstance");
+
     static {
         VM.addShutdownHook(new Thread() {
+
             public void run() {
                 deleteInstanceFn.call0();
             }
         });
     }
-
 }

@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -142,6 +142,8 @@ public class RobotDrive implements MotorSafety, IUtility {
             m_invertedMotors[i] = 1;
         }
         m_allocatedSpeedControllers = false;
+		setupMotorSafety();
+		drive(0, 0);
     }
 
     /**
@@ -168,6 +170,8 @@ public class RobotDrive implements MotorSafety, IUtility {
             m_invertedMotors[i] = 1;
         }
         m_allocatedSpeedControllers = false;
+		setupMotorSafety();
+		drive(0, 0);
     }
 
     /**
@@ -611,7 +615,7 @@ public class RobotDrive implements MotorSafety, IUtility {
     /**
      * Free the speed controllers if they were allocated locally
      */
-    protected void free() {
+    public void free() {
         if (m_allocatedSpeedControllers) {
             if (m_frontLeftMotor != null) {
                 ((PWM) m_frontLeftMotor).free();
@@ -647,6 +651,10 @@ public class RobotDrive implements MotorSafety, IUtility {
     public void setSafetyEnabled(boolean enabled) {
         m_safetyHelper.setSafetyEnabled(enabled);
     }
+    
+    public String getDescription() {
+        return "Robot Drive";
+    }
 
     public void stopMotor() {
         if (m_frontLeftMotor != null) {
@@ -664,8 +672,6 @@ public class RobotDrive implements MotorSafety, IUtility {
     }
 
     private void setupMotorSafety() {
-        // TODO: why claim to have allocated speed controllers?
-        m_allocatedSpeedControllers = true;
         m_safetyHelper = new MotorSafetyHelper(this);
         m_safetyHelper.setExpiration(kDefaultExpirationTime);
         m_safetyHelper.setSafetyEnabled(true);

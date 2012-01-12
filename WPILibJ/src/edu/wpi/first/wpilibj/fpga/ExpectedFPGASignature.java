@@ -5,15 +5,16 @@ package edu.wpi.first.wpilibj.fpga;
 
 public interface ExpectedFPGASignature
 {
-
-   public static final int kExpectedFPGAVersion = 2011;
-   public static final int kExpectedFPGARevision = 0x00105003;
+   public static final String kBitfileName = "/c/ni-rt/system/FRC_FPGA_2012_1.6.4.lvbitx";
+   public static final int kExpectedFPGAVersion = 8210;
+   public static final int kExpectedFPGARevision = 0x00106004;
+   public static final String kExpectedFPGASignatureStr = "A14C11BDE4BB64AEF6A86FC52A294CD9";
    public static final int kExpectedFPGASignature[] =
    {
-      0x2EAA5E59,
-      0xCAF1A8A9,
-      0x66853A01,
-      0x1B61CC91,
+      0xA14C11BD,
+      0xE4BB64AE,
+      0xF6A86FC5,
+      0x2A294CD9,
    };
 
 }

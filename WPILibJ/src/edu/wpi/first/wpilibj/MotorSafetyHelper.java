@@ -1,7 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
 
 package edu.wpi.first.wpilibj;
 
@@ -83,8 +85,11 @@ public class MotorSafetyHelper {
         if (!m_enabled) {
             return;
         }
+        if (DriverStation.getInstance().isDisabled())
+            return;
         if (m_stopTime < Timer.getFPGATimestamp()) {
-            // TODO: Produce an error for the driver station in the case of a timeout.
+            System.err.println(m_safeObject.getDescription() + "... Output not updated often enough.");
+            
             m_safeObject.stopMotor();
         }
     }
@@ -119,4 +124,3 @@ public class MotorSafetyHelper {
         }
     }
 }
-

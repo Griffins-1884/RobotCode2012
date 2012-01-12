@@ -1,11 +1,13 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
 package edu.wpi.first.wpilibj;
+
+import edu.wpi.first.wpilibj.communication.ModulePresence;
 
 /**
  * Base class for all sensors.
@@ -14,7 +16,6 @@ package edu.wpi.first.wpilibj;
  */
 public class SensorBase {
 
-    private static final int[] modulePopulation = new int[]{0, 9201, 9201, 0, 9403, 0, 9403, 9472, 9472};
     /**
      * Ticks per microsecond
      */
@@ -32,7 +33,7 @@ public class SensorBase {
      */
     public static final int kAnalogModules = 2;
     /**
-     * Number of solenoid channels per moduel
+     * Number of solenoid channels per module
      */
     public static final int kSolenoidChannels = 8;
     /**
@@ -47,13 +48,10 @@ public class SensorBase {
      * Number of relay channels per sidecar
      */
     public static final int kRelayChannels = 8;
-    /**
-     * Number of slots in the chassis
-     */
-    public static final int kChassisSlots = 8;
+    
     private static int m_defaultAnalogModule = 1;
-    private static int m_defaultDigitalModule = 4;
-    private static int m_defaultSolenoidModule = 8;
+    private static int m_defaultDigitalModule = 1;
+    private static int m_defaultSolenoidModule = 1;
 
     /**
      * Creates an instance of the sensor base and gets an FPGA handle
@@ -67,11 +65,11 @@ public class SensorBase {
      * specifying the digital module in the constructor. The default module is initialized
      * to the first module in the chassis.
      *
-     * @param slot The cRIO slot containing the digital module.
+     * @param moduleNumber The number of the digital module to use.
      */
-    public static void setDefaultDigitalModule(final int slot) {
-        checkDigitalModule(slot);
-        SensorBase.m_defaultDigitalModule = slot;
+    public static void setDefaultDigitalModule(final int moduleNumber) {
+        checkDigitalModule(moduleNumber);
+        SensorBase.m_defaultDigitalModule = moduleNumber;
     }
 
     /**
@@ -80,84 +78,75 @@ public class SensorBase {
      * specifying the analog module in the constructor. The default module is initialized
      * to the first module in the chassis.
      *
-     * @param slot The cRIO slot containing the analog module.
+     * @param moduleNumber The number of the analog module to use.
      */
-    public static void setDefaultAnalogModule(final int slot) {
-        checkAnalogModule(slot);
-        SensorBase.m_defaultAnalogModule = slot;
+    public static void setDefaultAnalogModule(final int moduleNumber) {
+        checkAnalogModule(moduleNumber);
+        SensorBase.m_defaultAnalogModule = moduleNumber;
     }
 
     /**
      * Set the default location for the Solenoid (9472) module.
-     * Currently the module must be in slot 8, but it might change in the future.
      *
-     * @param slot The cRIO slot containing the analog module.
+     * @param moduleNumber The number of the solenoid module to use.
      */
-    public static void setDefaultSolenoidModule(final int slot) {
-        checkSolenoidModule(slot);
-        SensorBase.m_defaultSolenoidModule = slot;
+    public static void setDefaultSolenoidModule(final int moduleNumber) {
+        checkSolenoidModule(moduleNumber);
+        SensorBase.m_defaultSolenoidModule = moduleNumber;
     }
 
     /**
      * Check that the digital module number is valid.
-     * Module numbers are the slot number that they are inserted in.
+     * Module numbers are 1 or 2 (they are no longer real cRIO slots).
      *
-     * @param slot The cRIO slot to check.
+     * @param moduleNumber The digital module module number to check.
      */
-    protected static void checkDigitalModule(final int slot) {
-        if (slot > kChassisSlots || modulePopulation[slot] != 9403) {
-            System.err.print("Module attached to slot ");
-            System.err.print(slot);
-            System.err.println(" is not a digital module.");
-            throw new IndexOutOfBoundsException("Module attached to slot " + slot + " is not a digital module");
-        }
+    protected static void checkDigitalModule(final int moduleNumber) {
+        if(!ModulePresence.getModulePresence(ModulePresence.ModuleType.kDigital, moduleNumber - 1))
+            System.err.println("Digital module " + moduleNumber + " is not present.");
     }
 
     /**
      * Check that the digital module number is valid.
-     * Module numbers are the slot number that they are inserted in.
+     * Module numbers are 1 or 2 (they are no longer real cRIO slots).
      *
-     * @param slot The cRIO slot to check.
+     * @param moduleNumber The digital module module number to check.
      */
-    protected static void checkRelayModule(final int slot) {
-        checkDigitalModule(slot);
+    protected static void checkRelayModule(final int moduleNumber) {
+        checkDigitalModule(moduleNumber);
     }
 
     /**
      * Check that the digital module number is valid.
-     * Module numbers are the slot number that they are inserted in.
+     * Module numbers are 1 or 2 (they are no longer real cRIO slots).
      *
-     * @param slot The cRIO slot to check.
+     * @param moduleNumber The digital module module number to check.
      */
-    protected static void checkPWMModule(final int slot) {
-        SensorBase.checkDigitalModule(slot);
+    protected static void checkPWMModule(final int moduleNumber) {
+        checkDigitalModule(moduleNumber);
     }
 
     /**
      * Check that the analog module number is valid.
-     * Module numbers are the slot numbers that they are inserted in.
+     * Module numbers are 1 or 2 (they are no longer real cRIO slots).
      *
-     * @param slot The cRIO slot to check.
+     * @param moduleNumber The analog module module number to check.
      */
-    protected static void checkAnalogModule(final int slot) {
-        if (slot > kChassisSlots || modulePopulation[slot] != 9201) {
-            System.err.print("Module attached to slot ");
-            System.err.print(slot);
-            System.err.println(" is not an analog module.");
+    protected static void checkAnalogModule(final int moduleNumber) {
+        if(!ModulePresence.getModulePresence(ModulePresence.ModuleType.kAnalog, moduleNumber - 1)) {
+            System.err.println("Analog module " + moduleNumber + " is not present.");
         }
     }
 
     /**
      * Verify that the solenoid module is correct.
-     * Verify that the solenoid module is slot 8 or 7.
+     * Module numbers are 1 or 2 (they are no longer real cRIO slots).
      *
-     * @param slot The cRIO slot to check.
+     * @param moduleNumber The solenoid module module number to check.
      */
-    protected static void checkSolenoidModule(final int slot) {
-        if (slot > kChassisSlots || modulePopulation[slot] != 9472) {
-            System.err.print("Module attached to slot ");
-            System.err.print(slot);
-            System.err.println(" is not a solenoid module.");
+    protected static void checkSolenoidModule(final int moduleNumber) {
+        if(!ModulePresence.getModulePresence(ModulePresence.ModuleType.kSolenoid, moduleNumber - 1)) {
+            System.err.println("Solenoid module " + moduleNumber + " is not present.");
         }
     }
 
@@ -228,27 +217,27 @@ public class SensorBase {
     }
 
     /**
-     * Get the slot that contains the default analog module.
+     * Get the number of the default analog module.
      *
-     * @return The slot containing the default analog module.
+     * @return The number of the default analog module.
      */
     public static int getDefaultAnalogModule() {
         return SensorBase.m_defaultAnalogModule;
     }
 
     /**
-     * Get the slot that contains the default analog module.
+     * Get the number of the default analog module.
      *
-     * @return The slot containing the default analog module.
+     * @return The number of the default analog module.
      */
     public static int getDefaultDigitalModule() {
         return SensorBase.m_defaultDigitalModule;
     }
 
     /**
-     * Get the slot that contains the default analog module.
+     * Get the number of the default analog module.
      *
-     * @return The slot containing the default analog module.
+     * @return The number of the default analog module.
      */
     public static int getDefaultSolenoidModule() {
         return SensorBase.m_defaultSolenoidModule;
@@ -257,6 +246,6 @@ public class SensorBase {
     /**
      * Free the resources used by this object
      */
-    protected void free() {
+    public void free() {
     }
 }

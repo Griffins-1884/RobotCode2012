@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -9,6 +9,7 @@ package edu.wpi.first.wpilibj;
 
 import edu.wpi.first.wpilibj.fpga.tAI;
 import edu.wpi.first.wpilibj.communication.AICalibration;
+import edu.wpi.first.wpilibj.communication.ModulePresence;
 
 /**
  * Analog Module class.
@@ -47,27 +48,12 @@ public class AnalogModule extends Module {
      * Singleton analog module creation where a module is allocated on the first use
      * and the same module is returned on subsequent uses.
      *
-     * @param slot The physical slot in the cRIO chassis where this analog module is installed.
+     * @param moduleNumber The index of the analog module to get (1 or 2).
      * @return The AnalogModule.
      */
-    public static synchronized AnalogModule getInstance(final int slot) {
-        checkAnalogModule(slot);
-
-        if (Module.m_modules[slot] == null) {
-            Module.m_modules[slot] = new AnalogModule(slot);
-        }
-
-        return (AnalogModule) Module.m_modules[slot];
-    }
-
-    /**
-     * Convert slot number to index.
-     *
-     * @param slot The slot in the chassis where the module is plugged in.
-     * @return An index to represent the module internally.
-     */
-    public static int slotToIndex(final int slot) {
-        return slot - 1;
+    public static synchronized AnalogModule getInstance(final int moduleNumber) {
+        checkAnalogModule(moduleNumber);
+        return (AnalogModule) getModule(ModulePresence.ModuleType.kAnalog, moduleNumber);
     }
 
     /**
@@ -79,12 +65,12 @@ public class AnalogModule extends Module {
      * values are set the previously set value.
      * Analog modules are a singleton, so the constructor is never called outside of this class.
      *
-     * @param slot The slot in the chassis that the module is plugged into.
+     * @param moduleNumber The index of the analog module to create (1 or 2).
      */
-    protected AnalogModule(final int slot) {
-        super(slot);
+    protected AnalogModule(final int moduleNumber) {
+        super(ModulePresence.ModuleType.kAnalog, moduleNumber);
 
-        m_module = new tAI(slotToIndex(slot));
+        m_module = new tAI(moduleNumber - 1);
         setNumChannelsToActivate(SensorBase.kAnalogChannels);
         setSampleRate(AnalogModule.kDefaultSampleRate);
 
@@ -253,7 +239,7 @@ public class AnalogModule extends Module {
 
         synchronized (syncRoot) {
             tAI.writeReadSelect_Channel(channel - 1);
-            tAI.writeReadSelect_Module(slotToIndex(m_slot));
+            tAI.writeReadSelect_Module(m_moduleNumber - 1);
             tAI.writeReadSelect_Averaged(false);
 
             tAI.strobeLatchOutput();
@@ -275,7 +261,7 @@ public class AnalogModule extends Module {
 
         synchronized (syncRoot) {
             tAI.writeReadSelect_Channel(channel - 1);
-            tAI.writeReadSelect_Module(slotToIndex(m_slot));
+            tAI.writeReadSelect_Module(m_moduleNumber - 1);
             tAI.writeReadSelect_Averaged(true);
 
             tAI.strobeLatchOutput();

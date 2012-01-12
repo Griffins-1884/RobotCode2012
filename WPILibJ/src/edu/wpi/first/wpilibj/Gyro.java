@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -120,7 +120,7 @@ public class Gyro extends SensorBase implements PIDSource, ISensor {
     /**
      * Delete (free) the accumulator and the analog components used for the gyro.
      */
-    protected void free() {
+    public void free() {
         if (m_analog != null && m_channelAllocated) {
             m_analog.free();
         }

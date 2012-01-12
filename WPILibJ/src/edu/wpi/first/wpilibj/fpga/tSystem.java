@@ -3,7 +3,7 @@ package edu.wpi.first.wpilibj.fpga;
 import com.ni.rio.*;
 import edu.wpi.first.wpilibj.communication.BumARioHandle;
 
-public abstract class tSystem implements ExpectedFPGASignature, DMAChannelDescriptors
+public abstract class tSystem implements ExpectedFPGASignature//, DMAChannelDescriptors
 {
    protected static int m_DeviceHandle=0;
    private static int m_ReferenceCount=0;
@@ -32,13 +32,15 @@ public abstract class tSystem implements ExpectedFPGASignature, DMAChannelDescri
          for(int i=0; i<4; i++)
          {
             NiRioStatus cleanStatus = new NiRioStatus();
-            hwGUID[i] = NiRioSrv.peek32(m_DeviceHandle, kFPGA_SIGNATURE_REGISTER, cleanStatus);
+            
+            hwGUID[i] = NiFpga.readU32(m_DeviceHandle, kFPGA_SIGNATURE_REGISTER, cleanStatus);
             status.setStatus(cleanStatus);
             if (hwGUID[i] != kExpectedFPGASignature[i])
             {
-               versionStatus.setStatus(NiRioStatus.kRIOStatusVersionMismatch);
+//               versionStatus.setStatus(NiRioStatus.kRIOStatusVersionMismatch);
             }
          }
+
          System.out.print("FPGA Hardware GUID: ");
          printGUID(hwGUID);
          System.out.println("");
@@ -79,40 +81,10 @@ public abstract class tSystem implements ExpectedFPGASignature, DMAChannelDescri
 
       for(int i=0; i<4; i++)
       {
-         guid[i] = NiRioSrv.peek32(m_DeviceHandle, kFPGA_SIGNATURE_REGISTER, status);
+         guid[i] = NiFpga.readU32(m_DeviceHandle, kFPGA_SIGNATURE_REGISTER, status);
       }
       return guid;
    }
-
-//   private void configDMA(NiRioStatus status)
-//   {
-//      for(int i=0; i<kNUM_DMA_CHANNELS; i++)
-//      {
-//         if (kDMAChannelDescriptors[i].write == 1)
-//         {
-//            // The FPGA is writing
-//            NiRioSrv.configAddFifoInputEx(
-//               m_DeviceHandle,
-//               kDMAChannelDescriptors[i].channel,
-//               kDMAChannelDescriptors[i].baseAddress,
-//               kDMAChannelDescriptors[i].depth,
-//               kDMA_VERSION,
-//               status);
-//         }
-//         else
-//         {
-//            // The FPGA is reading
-//            NiRioSrv.configAddFifoOutputEx(
-//               m_DeviceHandle,
-//               kDMAChannelDescriptors[i].channel,
-//               kDMAChannelDescriptors[i].baseAddress,
-//               kDMAChannelDescriptors[i].depth,
-//               kDMA_VERSION,
-//               status);
-//         }
-//      }
-//      NiRioSrv.configSet(m_DeviceHandle, 0, status);
-//   }
 
 	/**
 	 * Releases the native C++ resources held by the tSystem instance.
@@ -120,5 +92,4 @@ public abstract class tSystem implements ExpectedFPGASignature, DMAChannelDescri
 	public void Release()
    {
 	}
-
 }

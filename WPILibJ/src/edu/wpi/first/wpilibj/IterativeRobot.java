@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -7,6 +7,7 @@
 package edu.wpi.first.wpilibj;
 
 import com.sun.squawk.*;
+import edu.wpi.first.wpilibj.communication.FRCControl;
 
 /**
  * IterativeRobot implements a specific type of Robot Program framework, extending the RobotBase class.
@@ -105,6 +106,7 @@ public class IterativeRobot extends RobotBase {
                     m_teleopInitialized = false;
                 }
                 if (nextPeriodReady()) {
+                    FRCControl.observeUserProgramDisabled();
                     disabledPeriodic();
                     didDisabledPeriodic = true;
                 }
@@ -123,6 +125,7 @@ public class IterativeRobot extends RobotBase {
                 }
                 if (nextPeriodReady()) {
                     getWatchdog().feed();
+                    FRCControl.observeUserProgramAutonomous();
                     autonomousPeriodic();
                     didAutonomousPeriodic = true;
                 }
@@ -138,6 +141,7 @@ public class IterativeRobot extends RobotBase {
                 }
                 if (nextPeriodReady()) {
                     getWatchdog().feed();
+                    FRCControl.observeUserProgramTeleop();
                     teleopPeriodic();
                     didTeleopPeriodic = true;
                 }
@@ -268,7 +272,7 @@ public class IterativeRobot extends RobotBase {
             System.out.println("Default IterativeRobot.disabledContinuous() method... Overload me!");
             dcFirstRun = false;
         }
-        Timer.delay(0.001);
+        m_ds.waitForData();
     }
 
     private boolean acFirstRun = true;
@@ -284,7 +288,7 @@ public class IterativeRobot extends RobotBase {
             System.out.println("Default IterativeRobot.autonomousContinuous() method... Overload me!");
             acFirstRun = false;
         }
-        Timer.delay(0.001);
+        m_ds.waitForData();
     }
 
     private boolean tcFirstRun = true;
@@ -300,7 +304,7 @@ public class IterativeRobot extends RobotBase {
             System.out.println("Default IterativeRobot.teleopContinuous() method... Overload me!");
             tcFirstRun = false;
         }
-        Timer.delay(0.001);
+        m_ds.waitForData();
     }
 
 }

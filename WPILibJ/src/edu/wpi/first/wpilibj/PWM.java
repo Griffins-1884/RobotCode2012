@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -103,17 +103,17 @@ public class PWM extends SensorBase {
      * instances. Checks module and channel value ranges and allocates the appropriate channel.
      * The allocation is only done to help users ensure that they don't double assign channels.
      */
-    private void initPWM(final int slot, final int channel) {
-        checkPWMModule(slot);
+    private void initPWM(final int moduleNumber, final int channel) {
+        checkPWMModule(moduleNumber);
         checkPWMChannel(channel);
         try {
-            allocated.allocate(DigitalModule.slotToIndex(slot) * kPwmChannels + channel - 1);
+            allocated.allocate((moduleNumber - 1) * kPwmChannels + channel - 1);
         } catch (CheckedAllocationException e) {
             throw new AllocationException(
-                    "PWM channel " + channel + " on module " + slot + " is already allocated");
+                    "PWM channel " + channel + " on module " + moduleNumber + " is already allocated");
         }
         m_channel = channel;
-        m_module = DigitalModule.getInstance(slot);
+        m_module = DigitalModule.getInstance(moduleNumber);
         m_module.setPWM(m_channel, kPwmDisabled);
         m_eliminateDeadband = false;
     }
@@ -122,18 +122,17 @@ public class PWM extends SensorBase {
      * Allocate a PWM given a module and channel.
      * Allocate a PWM using a module and channel number.
      *
-     * @param slot The slot the digital module is plugged into.
+     * @param moduleNumber The module number of the digital module to use.
      * @param channel The PWM channel on the digital module.
      */
-    public PWM(final int slot, final int channel) {
-        initPWM(slot, channel);
+    public PWM(final int moduleNumber, final int channel) {
+        initPWM(moduleNumber, channel);
     }
 
     /**
      * Allocate a PWM in the default module given a channel.
      *
-     * Using a default module allocate a PWM given the channel number.  The default module is the first
-     * slot numerically in the cRIO chassis.
+     * Using a default module allocate a PWM given the channel number.
      *
      * @param channel The PWM channel on the digital module.
      */
@@ -146,9 +145,9 @@ public class PWM extends SensorBase {
      *
      * Free the resource associated with the PWM channel and set the value to 0.
      */
-    protected void free() {
+    public void free() {
         m_module.setPWM(m_channel, kPwmDisabled);
-        allocated.free(DigitalModule.slotToIndex(m_module.getSlot()) * kPwmChannels + m_channel - 1);
+        allocated.free((m_module.getModuleNumber() - 1) * kPwmChannels + m_channel - 1);
     }
 
     /**
@@ -177,6 +176,25 @@ public class PWM extends SensorBase {
         m_centerPwm = center;
         m_deadbandMinPwm = deadbandMin;
         m_minPwm = min;
+    }
+    
+    
+    /**
+     * Gets the module number associated with the PWM Object.
+     *
+     * @return The module's number.
+     */
+    public int getModuleNumber(){
+        return m_module.getModuleNumber();
+    }
+    
+    /**
+     * Gets the channel number associated with the PWM Object.
+     *
+     * @return The channel number.
+     */
+    public int getChannel(){
+        return m_channel;
     }
 
     /**

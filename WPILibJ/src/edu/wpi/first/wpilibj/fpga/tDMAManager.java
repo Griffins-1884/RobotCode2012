@@ -13,13 +13,14 @@ public class tDMAManager extends tSystem
    boolean m_started;
    int m_dmaChannel;
    int m_hostBufferSize;
-   DMAChannelDescriptors.tDMAChannelDescriptor m_dmaChannelDescriptor;
+   //DMAChannelDescriptors.tDMAChannelDescriptor m_dmaChannelDescriptor;
 
    public tDMAManager(int dmaChannel, int hostBufferSize)
    {
       super();
       if (status.isFatal()) return;
 
+      /*
       m_started = false;
       m_dmaChannel = dmaChannel;
       m_hostBufferSize = hostBufferSize;
@@ -43,31 +44,39 @@ public class tDMAManager extends tSystem
       }
 
       // Allocate the appropriate resources in the RIO driver.
-      NiRioSrv.fifoConfig(m_DeviceHandle, m_dmaChannel, m_hostBufferSize, status);
+      NiFpga.configureFifo(m_DeviceHandle, m_dmaChannel, m_hostBufferSize, status);
+      */
    }
 
    protected void finalize()
    {
+	  /*
       stop();
       super.finalize();
+      */
    }
 
    public void start()
    {
-      NiRioSrv.fifoStart(m_DeviceHandle, m_dmaChannel, status);
+	  /*
+      NiFpga.startFifo(m_DeviceHandle, m_dmaChannel, status);
       m_started = true;
+      */
    }
 
    public void stop()
    {
-      NiRioSrv.fifoStop(m_DeviceHandle, m_dmaChannel, status);
+	  /*
+      NiFpga.stopFifo(m_DeviceHandle, m_dmaChannel, status);
       m_started = false;
+      */
    }
 
    public int[] read(
       int       num,
       int       timeout)
    {
+	  /*  
       // Ensure that the FPGA is writing so that the host can read
       if(m_dmaChannelDescriptor.write != 1)
       {
@@ -76,10 +85,9 @@ public class tDMAManager extends tSystem
       }
 
 		Pointer pBuffer = new Pointer(num * 4);
-      IntByReference read = new IntByReference(0);
       IntByReference remaining = new IntByReference(0);
 
-      NiRioSrv.fifoRead(m_DeviceHandle, m_dmaChannel, pBuffer, num, timeout, read, remaining, status);
+      NiFpga.readFifoU32(m_DeviceHandle, m_dmaChannel, pBuffer, num, timeout, remaining, status);
 
       int[] data = new int[num];
 		pBuffer.getInts(0, data, 0, num);
@@ -88,22 +96,7 @@ public class tDMAManager extends tSystem
       m_started = true;
 
       return data;
+      */
+      return new int[0];
    }
-
-//   public void write(
-//      tNIRIO_u32*      buf,
-//      int       num,
-//      int       timeout,
-//      tNIRIO_u32*      remaining)
-//   {
-//      // Ensure that the FPGA is reading so that the host can write
-//      if(m_dmaChannelDescriptor.write != 0)
-//      {
-//         status.setStatus(NiRioStatus.kRIOStatusInvalidFunction);
-//         return;
-//      }
-//
-//      NiRioSrv.fifoWrite(m_DeviceHandle, m_dmaChannel, buf, num, timeout, remaining, status);
-//      m_started = true;
-//   }
 }

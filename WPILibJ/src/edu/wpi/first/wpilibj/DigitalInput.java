@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -25,14 +25,14 @@ public class DigitalInput extends DigitalSource implements IInputOutput{
 
     /**
      * Create an instance of a DigitalInput.
-     * Creates a digital input given a slot and channel. Common creation routine
+     * Creates a digital input given a digital module number and channel. Common creation routine
      * for all constructors.
      */
-    private void initDigitalInput(int slot, int channel) {
+    private void initDigitalInput(int moduleNumber, int channel) {
         checkDigitalChannel(channel);
-        checkDigitalModule(slot);
+        checkDigitalModule(moduleNumber);
         m_channel = channel;
-        m_module = DigitalModule.getInstance(slot);
+        m_module = DigitalModule.getInstance(moduleNumber);
         m_module.allocateDIO(channel, true);
     }
 
@@ -48,14 +48,14 @@ public class DigitalInput extends DigitalSource implements IInputOutput{
     /**
      * Create an instance of a Digital Input class.
      * Creates a digital input given an channel and module.
-     * @param slot the slot where the digital module is located
+     * @param moduleNumber The number of the digital module to use for this input 
      * @param channel the port for the digital input
      */
-    public DigitalInput(int slot, int channel) {
-        initDigitalInput(slot, channel);
+    public DigitalInput(int moduleNumber, int channel) {
+        initDigitalInput(moduleNumber, channel);
     }
 
-    protected void free() {
+    public void free() {
         m_module.freeDIO(m_channel);
     }
 
@@ -86,7 +86,7 @@ public class DigitalInput extends DigitalSource implements IInputOutput{
     }
 
     public int getModuleForRouting() {
-        return DigitalModule.slotToIndex(m_module.getSlot());
+        return m_module.getModuleNumber() - 1;
     }
 
     public boolean getAnalogTriggerForRouting() {

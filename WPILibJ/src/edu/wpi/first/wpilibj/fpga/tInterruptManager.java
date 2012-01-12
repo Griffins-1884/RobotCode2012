@@ -38,12 +38,11 @@ public class tInterruptManager extends tSystem
       //m_userParam = NULL;
 
       // Allocate the appropriate resources in the RIO driver.
-      NiRioSrv.irqReserve(m_DeviceHandle, m_rioContext, status);
+      NiFpga.reserveIrqContext(m_DeviceHandle, m_rioContext, status);
    }
 
    protected void finalize()
    {
-      NiRioStatus tempStatus = new NiRioStatus();
 
 //      if (!m_watcher && isEnabled())
 //      {
@@ -52,29 +51,9 @@ public class tInterruptManager extends tSystem
 //      }
 
       // Free the resources in the RIO driver
-      NiRioSrv.irqUnreserve(m_DeviceHandle, m_rioContext, tempStatus);
+      NiFpga.unreserveIrqContext(m_DeviceHandle, m_rioContext, status);
       super.finalize();
    }
-
-//   void registerHandler(tInterruptHandler handler, void *param)
-//   {
-//      if (m_watcher)
-//      {
-//         status.setStatus(NiRioStatus.kRIOStatusIrrelevantAttribute);
-//         return;
-//      }
-//      if (status.isFatal()) return;
-//
-//      if (isEnabled())
-//      {
-//         // Don't change the handler if the thread is already started.
-//         status.setStatus(NiRioStatus.kRIOStatusEventEnabled);
-//         return;
-//      }
-//
-//      m_handler = handler;
-//      m_userParam = param;
-//   }
 
    public int watch(int timeoutInMs)
    {
@@ -90,99 +69,17 @@ public class tInterruptManager extends tSystem
       // Acknowldge any pending interrupts.
       acknowledge();
 
-      int intsAsserted = NiRioSrv.irqWait(m_DeviceHandle, m_rioContext, m_interruptMask, timeoutInMs, status);
+      int intsAsserted = NiFpga.waitOnIrqs(m_DeviceHandle, m_rioContext, m_interruptMask, timeoutInMs, status);
       acknowledge();
       unreserve();
 
       return intsAsserted;
    }
 
-//   int handlerWrapper(tInterruptManager *pInterrupt)
-//   {
-//      pInterrupt->handler();
-//      return 0;
-//   }
-
-//   void handler()
-//   {
-//      while (1)
-//      {
-//         NiRioStatus status = new NiRioStatus();
-//         // TODO: verify the wait-forever constant
-//         int intsAsserted = NiRioSrv.irqWait(m_DeviceHandle, m_rioContext, m_interruptMask, -1, status);
-//         taskSafe();
-//         acknowledge();
-//         m_handler(intsAsserted, m_userParam);
-//         taskUnsafe();
-//         if(m_enabled == kFalse)
-//         {
-//            m_taskId = INVALID_TASK_ID;
-//            exit(0);
-//         }
-//      }
-//   }
-
-//   void enable()
-//   {
-//      if (status.isFatal()) return;
-//      if (m_watcher)
-//      {
-//         status.setStatus(NiRioStatus.kRIOStatusIrrelevantAttribute);
-//         return;
-//      }
-//      if (m_handler == NULL)
-//      {
-//         status.setStatus(NiRioStatus.kRIOStatusResourceNotInitialized);
-//         return;
-//      }
-//
-//      reserve();
-//      if (status.isFatal()) return;
-//
-//      // Acknowldge any pending interrupts.
-//      acknowledge();
-//
-//      // Start a thread to watch the interrupt.
-//      _taskId = sp((FUNCPTR)tInterruptManager::handlerWrapper, (int)this,0,0,0,0,0,0,0,0);
-//   }
-
-//   void disable()
-//   {
-//      if (m_watcher)
-//      {
-//         status.setStatus(NiRioStatus.kRIOStatusIrrelevantAttribute);
-//         return;
-//      }
-//
-//      unreserve();
-//
-//      if (m_taskId != taskIdSelf())
-//      {
-//         // Find thread and destroy it!!!
-//         taskDelete(m_taskId);
-//
-//         m_taskId = INVALID_TASK_ID;
-//      }
-//   }
-
    protected void acknowledge()
    {
-      NiRioSrv.poke32(m_DeviceHandle, kFPGA_INTERRUPT_ACKNOWLEDGE_ADDRESS, m_interruptMask, status);
+      NiFpga.writeU32(m_DeviceHandle, kFPGA_INTERRUPT_ACKNOWLEDGE_ADDRESS, m_interruptMask, status);
    }
-
-//   boolean isEnabled()
-//   {
-//      if (m_watcher)
-//      {
-//         status.setStatus(NiRioStatus.kRIOStatusIrrelevantAttribute);
-//         return false;
-//      }
-//
-//      // Make sure the task is still there...
-//      STATUS taskMissing = taskIdVerify(m_taskId);
-//
-//      return (m_taskId != INVALID_TASK_ID && m_enabled && !taskMissing);
-//   }
 
    protected void reserve()
    {

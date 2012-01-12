@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -227,7 +227,7 @@ public class SerialPort {
     /**
      * Destructor.
      */
-    protected void free() {
+    public void free() {
         //viUninstallHandler(m_portHandle, VI_EVENT_IO_COMPLETION, ioCompleteHandler, this);
         Visa.viClose(m_portHandle);
         Visa.viClose(m_resourceManagerHandle);

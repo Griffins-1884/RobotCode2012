@@ -11,6 +11,7 @@ public class tSolenoid extends tSystem
    public tSolenoid()
    {
       super();
+
    }
 
    protected void finalize()
@@ -23,13 +24,14 @@ public class tSolenoid extends tSystem
 
 
 
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Accessors for DO7_0
 //////////////////////////////////////////////////////////////////////////////////////////////////
    public static final int kDO7_0_NumElements = 2;
    public static final int kDO7_0_ElementSize = 8;
    public static final int kDO7_0_ElementMask = 0xFF;
-   private static final int kSolenoid_DO7_0_Address = 0x8424;
+   private static final int kSolenoid_DO7_0_Address = 0x8144;
 
    public static void writeDO7_0(final int bitfield_index, final int value)
    {
@@ -37,10 +39,11 @@ public class tSolenoid extends tSystem
       {
          status.setStatus(NiRioStatus.kRIOStatusBadSelector);
       }
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kSolenoid_DO7_0_Address, status);
+
+      int regValue = NiFpga.readU32(m_DeviceHandle, kSolenoid_DO7_0_Address, status);
       regValue &= ~(kDO7_0_ElementMask << ((kDO7_0_NumElements - 1 - bitfield_index) * kDO7_0_ElementSize));
       regValue |= ((value & kDO7_0_ElementMask) << ((kDO7_0_NumElements - 1 - bitfield_index) * kDO7_0_ElementSize));
-      NiRioSrv.poke32(m_DeviceHandle, kSolenoid_DO7_0_Address, regValue, status);
+      NiFpga.writeU32(m_DeviceHandle, kSolenoid_DO7_0_Address, regValue, status);
    }
    public static short readDO7_0(final int bitfield_index)
    {
@@ -48,7 +51,9 @@ public class tSolenoid extends tSystem
       {
          status.setStatus(NiRioStatus.kRIOStatusBadSelector);
       }
-      int arrayElementValue = ((NiRioSrv.peek32(m_DeviceHandle, kSolenoid_DO7_0_Address, status))
+
+      int result = NiFpga.readU32(m_DeviceHandle, kSolenoid_DO7_0_Address, status);
+      int arrayElementValue = ((result)
           >>> ((kDO7_0_NumElements - 1 - bitfield_index) * kDO7_0_ElementSize)) & kDO7_0_ElementMask;
       return (short)((arrayElementValue) & 0x000000FF);
    }

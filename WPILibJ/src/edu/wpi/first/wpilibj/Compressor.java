@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -67,10 +67,6 @@ public class Compressor extends SensorBase implements IDevice{
             final int pressureSwitchChannel,
             final int compresssorRelaySlot,
             final int compressorRelayChannel) {
-        checkDigitalModule(pressureSwitchSlot);
-        checkRelayModule(compresssorRelaySlot);
-        checkDigitalChannel(pressureSwitchChannel);
-        checkRelayChannel(compressorRelayChannel);
 
         m_enabled = false;
         m_pressureSwitch = new DigitalInput(pressureSwitchSlot, pressureSwitchChannel);
@@ -123,7 +119,7 @@ public class Compressor extends SensorBase implements IDevice{
      * Delete the allocated resources for the compressor and kill the compressor task that is polling
      * the pressure switch.
      */
-    protected void free() {
+    public void free() {
         m_run = false;
         try { m_task.join(); }
         catch (InterruptedException e) {}

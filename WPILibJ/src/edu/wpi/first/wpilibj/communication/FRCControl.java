@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -46,6 +46,16 @@ public final class FRCControl {
     // void FRC_NetworkCommunication_observeUserProgramStarting(void);
     private static final Function observeUserProgramStartingFn = NativeLibrary.getDefaultInstance().getFunction("FRC_NetworkCommunication_observeUserProgramStarting");
 
+    // void FRC_NetworkCommunication_observeUserProgramDisabled(void);
+    private static final Function observeUserProgramDisabledFn = NativeLibrary.getDefaultInstance().getFunction("FRC_NetworkCommunication_observeUserProgramDisabled");
+
+    // void FRC_NetworkCommunication_observeUserProgramAutonomous(void);
+    private static final Function observeUserProgramAutonomousFn = NativeLibrary.getDefaultInstance().getFunction("FRC_NetworkCommunication_observeUserProgramAutonomous");
+
+    // void FRC_NetworkCommunication_observeUserProgramTeleop(void);
+    private static final Function observeUserProgramTeleopFn = NativeLibrary.getDefaultInstance().getFunction("FRC_NetworkCommunication_observeUserProgramTeleop");
+
+    
     static {
         getCommonControlDataFn.setTaskExecutor(taskExecutor);
         getDynamicControlDataFn.setTaskExecutor(taskExecutor);
@@ -263,5 +273,17 @@ public final class FRCControl {
      */
     public static void observeUserProgramStarting() {
         observeUserProgramStartingFn.call0();
+    }
+    
+    public static void observeUserProgramDisabled() {
+        observeUserProgramDisabledFn.call0();
+    }
+    
+    public static void observeUserProgramAutonomous() {
+        observeUserProgramAutonomousFn.call0();
+    }
+    
+    public static void observeUserProgramTeleop() {
+        observeUserProgramTeleopFn.call0();
     }
 }

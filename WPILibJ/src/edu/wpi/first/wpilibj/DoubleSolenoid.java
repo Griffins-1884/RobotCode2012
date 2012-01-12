@@ -1,10 +1,9 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
 package edu.wpi.first.wpilibj;
 
 import edu.wpi.first.wpilibj.util.AllocationException;
@@ -18,6 +17,7 @@ import edu.wpi.first.wpilibj.util.CheckedAllocationException;
  * have two positions controlled by two separate channels.
  */
 public class DoubleSolenoid extends SolenoidBase {
+
     /**
      * Possible values for a DoubleSolenoid
      */
@@ -35,7 +35,6 @@ public class DoubleSolenoid extends SolenoidBase {
             this.value = value;
         }
     }
-
     private int m_forwardChannel; ///< The forward channel on the module to control.
     private int m_reverseChannel; ///< The reverse channel on the module to control.
     private byte m_forwardMask; ///< The mask for the forward channel.
@@ -45,31 +44,31 @@ public class DoubleSolenoid extends SolenoidBase {
      * Common function to implement constructor behavior.
      */
     private synchronized void initSolenoid() {
-        checkSolenoidModule(m_chassisSlot);
+        checkSolenoidModule(m_moduleNumber);
         checkSolenoidChannel(m_forwardChannel);
         checkSolenoidChannel(m_reverseChannel);
 
         try {
-            m_allocated.allocate(slotToIndex(m_chassisSlot) * kSolenoidChannels + m_forwardChannel - 1);
+            m_allocated.allocate((m_moduleNumber - 1) * kSolenoidChannels + m_forwardChannel - 1);
         } catch (CheckedAllocationException e) {
             throw new AllocationException(
-                    "Solenoid channel " + m_forwardChannel + " on module " + m_chassisSlot + " is already allocated");
+                    "Solenoid channel " + m_forwardChannel + " on module " + m_moduleNumber + " is already allocated");
         }
         try {
-            m_allocated.allocate(slotToIndex(m_chassisSlot) * kSolenoidChannels + m_reverseChannel - 1);
+            m_allocated.allocate((m_moduleNumber - 1) * kSolenoidChannels + m_reverseChannel - 1);
         } catch (CheckedAllocationException e) {
             throw new AllocationException(
-                    "Solenoid channel " + m_reverseChannel + " on module " + m_chassisSlot + " is already allocated");
+                    "Solenoid channel " + m_reverseChannel + " on module " + m_moduleNumber + " is already allocated");
         }
-        m_forwardMask = (byte)(1 << (m_forwardChannel - 1));
-        m_reverseMask = (byte)(1 << (m_reverseChannel - 1));
+        m_forwardMask = (byte) (1 << (m_forwardChannel - 1));
+        m_reverseMask = (byte) (1 << (m_reverseChannel - 1));
     }
 
     /**
      * Constructor.
      *
- * @param forwardChannel The forward channel on the module to control.
- * @param reverseChannel The reverse channel on the module to control.
+     * @param forwardChannel The forward channel on the module to control.
+     * @param reverseChannel The reverse channel on the module to control.
      */
     public DoubleSolenoid(final int forwardChannel, final int reverseChannel) {
         super(getDefaultSolenoidModule());
@@ -81,12 +80,12 @@ public class DoubleSolenoid extends SolenoidBase {
     /**
      * Constructor.
      *
-     * @param slot The slot that the 9472 module is plugged into.
- * @param forwardChannel The forward channel on the module to control.
- * @param reverseChannel The reverse channel on the module to control.
+     * @param moduleNumber The module number of the solenoid module to use.
+     * @param forwardChannel The forward channel on the module to control.
+     * @param reverseChannel The reverse channel on the module to control.
      */
-    public DoubleSolenoid(final int slot, final int forwardChannel, final int reverseChannel) {
-        super(slot);
+    public DoubleSolenoid(final int moduleNumber, final int forwardChannel, final int reverseChannel) {
+        super(moduleNumber);
         m_forwardChannel = forwardChannel;
         m_reverseChannel = reverseChannel;
         initSolenoid();
@@ -95,9 +94,9 @@ public class DoubleSolenoid extends SolenoidBase {
     /**
      * Destructor.
      */
-    protected synchronized void free() {
-        m_allocated.free(slotToIndex(m_chassisSlot) * kSolenoidChannels + m_forwardChannel - 1);
-        m_allocated.free(slotToIndex(m_chassisSlot) * kSolenoidChannels + m_reverseChannel - 1);
+    public synchronized void free() {
+        m_allocated.free((m_moduleNumber - 1) * kSolenoidChannels + m_forwardChannel - 1);
+        m_allocated.free((m_moduleNumber - 1) * kSolenoidChannels + m_reverseChannel - 1);
     }
 
     /**
@@ -108,17 +107,16 @@ public class DoubleSolenoid extends SolenoidBase {
     public void set(final Value value) {
         byte rawValue = 0;
 
-        switch(value.value)
-        {
-        case Value.kOff_val:
-            rawValue = 0x00;
-            break;
-        case Value.kForward_val:
-            rawValue = m_forwardMask;
-            break;
-        case Value.kReverse_val:
-            rawValue = m_reverseMask;
-            break;
+        switch (value.value) {
+            case Value.kOff_val:
+                rawValue = 0x00;
+                break;
+            case Value.kForward_val:
+                rawValue = m_forwardMask;
+                break;
+            case Value.kReverse_val:
+                rawValue = m_reverseMask;
+                break;
         }
 
         set(rawValue, m_forwardMask | m_reverseMask);

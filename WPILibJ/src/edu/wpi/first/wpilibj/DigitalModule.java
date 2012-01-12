@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2008. All Rights Reserved.                             */
+/* Copyright (c) FIRST 2008-2012. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -7,6 +7,7 @@
 package edu.wpi.first.wpilibj;
 
 import com.sun.squawk.util.MathUtils;
+import edu.wpi.first.wpilibj.communication.ModulePresence;
 import edu.wpi.first.wpilibj.fpga.tDIO;
 import edu.wpi.first.wpilibj.util.AllocationException;
 import edu.wpi.first.wpilibj.util.CheckedAllocationException;
@@ -21,7 +22,6 @@ public class DigitalModule extends Module {
      * Expected loop timing
      */
     public static final int kExpectedLoopTiming = 261;
-    private static final int mapping[] = {0, 0, 0, 0, 0, 1, 0, 0};
     private static final Resource DIOChannels = new Resource(tDIO.kNumSystems * SensorBase.kDigitalChannels);
     private static final Resource DO_PWMGenerators[] = new Resource[tDIO.kNumSystems];
     tDIO m_fpgaDIO;
@@ -32,24 +32,12 @@ public class DigitalModule extends Module {
      * Singleton digital module creation where a module is allocated on the first use
      * and the same module is returned on subsequent uses.
      *
-     * @param slot The cRIO slot to access.
-     * @return The digital module attached to the slot specified.
+     * @param moduleNumber The number of the digital module to access.
+     * @return The digital module of the specified number.
      */
-    public static synchronized DigitalModule getInstance(final int slot) {
-        SensorBase.checkDigitalModule(slot);
-        if (Module.m_modules[slot] == null) {
-            Module.m_modules[slot] = new DigitalModule(slot);
-        }
-        return (DigitalModule) Module.m_modules[slot];
-    }
-
-    /**
-     * Convert a slot to a module index
-     * @param slot
-     * @return the index
-     */
-    public static int slotToIndex(final int slot) {
-        return DigitalModule.mapping[slot - 1];
+    public static synchronized DigitalModule getInstance(final int moduleNumber) {
+        SensorBase.checkDigitalModule(moduleNumber);
+        return (DigitalModule) getModule(ModulePresence.ModuleType.kDigital, moduleNumber);
     }
 
     /**
@@ -71,14 +59,14 @@ public class DigitalModule extends Module {
     }
 
     /**
-     * Create a neew digital module
-     * @param slot the slot where the module is located
+     * Create a new digital module
+     * @param moduleNumber The number of the digital module to use (1 or 2)
      */
-    protected DigitalModule(final int slot) {
-        super(slot);
-
-        DO_PWMGenerators[slotToIndex(m_slot)] = new Resource(tDIO.kDO_PWMDutyCycle_NumElements);
-        m_fpgaDIO = new tDIO(slotToIndex(m_slot));
+    protected DigitalModule(final int moduleNumber) {
+        super(ModulePresence.ModuleType.kDigital, moduleNumber);
+        
+        DO_PWMGenerators[m_moduleNumber - 1] = new Resource(tDIO.kDO_PWMDutyCycle_NumElements);
+        m_fpgaDIO = new tDIO(m_moduleNumber - 1);
 
         while (tDIO.readLoopTiming() == 0) {
             Timer.delay(.001);
@@ -230,10 +218,10 @@ public class DigitalModule extends Module {
      */
     public boolean allocateDIO(final int channel, final boolean input) {
         try {
-            DIOChannels.allocate((kDigitalChannels * slotToIndex(m_slot) + channel - 1));
+            DIOChannels.allocate((kDigitalChannels * (m_moduleNumber - 1) + channel - 1));
         } catch (CheckedAllocationException e) {
             throw new AllocationException(
-                    "Digital channel " + channel + " on module " + m_slot + " is already allocated");
+                    "Digital channel " + channel + " on module " + m_moduleNumber + " is already allocated");
         }
         final int outputEnable = m_fpgaDIO.readOutputEnable();
         final int bitToSet = 1 << (DigitalModule.remapDigitalChannel((channel - 1)));
@@ -255,7 +243,7 @@ public class DigitalModule extends Module {
      * @param channel The channel whose resources should be freed.
      */
     public void freeDIO(final int channel) {
-        DIOChannels.free((kDigitalChannels * slotToIndex(m_slot) + channel - 1));
+        DIOChannels.free((kDigitalChannels * (m_moduleNumber - 1) + channel - 1));
     }
 
     /**
@@ -267,7 +255,7 @@ public class DigitalModule extends Module {
      */
     public void setDIO(final int channel, final boolean value) {
         int currentDIO = m_fpgaDIO.readDO();
-        if (value) {
+        if (!value) {
             currentDIO = (currentDIO & ~(1 << DigitalModule.remapDigitalChannel(channel - 1)));
         } else {
             currentDIO = (currentDIO | (1 << DigitalModule.remapDigitalChannel(channel - 1)));
@@ -367,10 +355,10 @@ public class DigitalModule extends Module {
      */
     public int allocateDO_PWM() {
         try {
-            return DO_PWMGenerators[slotToIndex(m_slot)].allocate();
+            return DO_PWMGenerators[m_moduleNumber - 1].allocate();
         } catch (CheckedAllocationException e) {
             throw new AllocationException(
-                "No Digital Output PWM Generators on module " + m_slot + " remaining");
+                "No Digital Output PWM Generators on module " + m_moduleNumber + " remaining");
         }
     }
 
@@ -379,7 +367,7 @@ public class DigitalModule extends Module {
      */
     public void freeDO_PWM(int pwmGenerator) {
 	if (pwmGenerator == ~0) return;
-        DO_PWMGenerators[slotToIndex(m_slot)].free(pwmGenerator);
+        DO_PWMGenerators[m_moduleNumber - 1].free(pwmGenerator);
     }
 
     /**

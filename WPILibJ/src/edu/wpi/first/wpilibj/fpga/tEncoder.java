@@ -16,6 +16,7 @@ public class tEncoder extends tSystem
       {
          status.setStatus(NiRioStatus.kRIOStatusBadSelector);
       }
+
    }
 
    protected void finalize()
@@ -33,6 +34,11 @@ public class tEncoder extends tSystem
 
 
 
+
+
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Accessors for Output
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,10 +46,10 @@ public class tEncoder extends tSystem
    private static final int kOutput_Direction_BitfieldOffset = 31;
    private static final int kOutput_Value_BitfieldMask = 0x7FFFFFFF;
    private static final int kOutput_Value_BitfieldOffset = 0;
-   private static final int kEncoder0_Output_Address = 0x81E0;
-   private static final int kEncoder1_Output_Address = 0x81CC;
-   private static final int kEncoder2_Output_Address = 0x81B8;
-   private static final int kEncoder3_Output_Address = 0x81A4;
+   private static final int kEncoder0_Output_Address = 0x8388;
+   private static final int kEncoder1_Output_Address = 0x839C;
+   private static final int kEncoder2_Output_Address = 0x83B0;
+   private static final int kEncoder3_Output_Address = 0x83C4;
    private static final int kOutput_Addresses [] =
    {
       kEncoder0_Output_Address,
@@ -54,18 +60,24 @@ public class tEncoder extends tSystem
 
    public int readOutput()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kOutput_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kOutput_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       return (int)(regValue);
    }
    public boolean readOutput_Direction()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kOutput_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kOutput_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       int bitfieldValue = ((regValue & kOutput_Direction_BitfieldMask) >>> kOutput_Direction_BitfieldOffset);
       return ((bitfieldValue) != 0 ? true : false);
    }
    public int readOutput_Value()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kOutput_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kOutput_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       int bitfieldValue = ((regValue & kOutput_Value_BitfieldMask) >>> kOutput_Value_BitfieldOffset);
       // Sign extension
       bitfieldValue <<= 1;
@@ -100,10 +112,10 @@ public class tEncoder extends tSystem
    private static final int kConfig_Reverse_BitfieldOffset = 1;
    private static final int kConfig_Enable_BitfieldMask = 0x00000001;
    private static final int kConfig_Enable_BitfieldOffset = 0;
-   private static final int kEncoder0_Config_Address = 0x81E8;
-   private static final int kEncoder1_Config_Address = 0x81D4;
-   private static final int kEncoder2_Config_Address = 0x81C0;
-   private static final int kEncoder3_Config_Address = 0x81AC;
+   private static final int kEncoder0_Config_Address = 0x8380;
+   private static final int kEncoder1_Config_Address = 0x8394;
+   private static final int kEncoder2_Config_Address = 0x83A8;
+   private static final int kEncoder3_Config_Address = 0x83BC;
    private static final int kConfig_Addresses [] =
    {
       kEncoder0_Config_Address,
@@ -114,188 +126,207 @@ public class tEncoder extends tSystem
 
    public void writeConfig(final int value)
    {
-      NiRioSrv.poke32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], value, status);
+
+      NiFpga.writeU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], value, status);
    }
    public void writeConfig_ASource_Channel(final int value)
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int regValue = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
       regValue &= ~kConfig_ASource_Channel_BitfieldMask;
       regValue |= ((value) << kConfig_ASource_Channel_BitfieldOffset) & kConfig_ASource_Channel_BitfieldMask;
-      NiRioSrv.poke32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
+      NiFpga.writeU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
    }
    public void writeConfig_ASource_Module(final int value)
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int regValue = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
       regValue &= ~kConfig_ASource_Module_BitfieldMask;
       regValue |= ((value) << kConfig_ASource_Module_BitfieldOffset) & kConfig_ASource_Module_BitfieldMask;
-      NiRioSrv.poke32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
+      NiFpga.writeU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
    }
    public void writeConfig_ASource_AnalogTrigger(final boolean value)
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int regValue = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
       regValue &= ~kConfig_ASource_AnalogTrigger_BitfieldMask;
       regValue |= (((value ? 1 : 0)) << kConfig_ASource_AnalogTrigger_BitfieldOffset) & kConfig_ASource_AnalogTrigger_BitfieldMask;
-      NiRioSrv.poke32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
+      NiFpga.writeU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
    }
    public void writeConfig_BSource_Channel(final int value)
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int regValue = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
       regValue &= ~kConfig_BSource_Channel_BitfieldMask;
       regValue |= ((value) << kConfig_BSource_Channel_BitfieldOffset) & kConfig_BSource_Channel_BitfieldMask;
-      NiRioSrv.poke32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
+      NiFpga.writeU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
    }
    public void writeConfig_BSource_Module(final int value)
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int regValue = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
       regValue &= ~kConfig_BSource_Module_BitfieldMask;
       regValue |= ((value) << kConfig_BSource_Module_BitfieldOffset) & kConfig_BSource_Module_BitfieldMask;
-      NiRioSrv.poke32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
+      NiFpga.writeU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
    }
    public void writeConfig_BSource_AnalogTrigger(final boolean value)
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int regValue = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
       regValue &= ~kConfig_BSource_AnalogTrigger_BitfieldMask;
       regValue |= (((value ? 1 : 0)) << kConfig_BSource_AnalogTrigger_BitfieldOffset) & kConfig_BSource_AnalogTrigger_BitfieldMask;
-      NiRioSrv.poke32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
+      NiFpga.writeU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
    }
    public void writeConfig_IndexSource_Channel(final int value)
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int regValue = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
       regValue &= ~kConfig_IndexSource_Channel_BitfieldMask;
       regValue |= ((value) << kConfig_IndexSource_Channel_BitfieldOffset) & kConfig_IndexSource_Channel_BitfieldMask;
-      NiRioSrv.poke32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
+      NiFpga.writeU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
    }
    public void writeConfig_IndexSource_Module(final int value)
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int regValue = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
       regValue &= ~kConfig_IndexSource_Module_BitfieldMask;
       regValue |= ((value) << kConfig_IndexSource_Module_BitfieldOffset) & kConfig_IndexSource_Module_BitfieldMask;
-      NiRioSrv.poke32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
+      NiFpga.writeU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
    }
    public void writeConfig_IndexSource_AnalogTrigger(final boolean value)
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int regValue = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
       regValue &= ~kConfig_IndexSource_AnalogTrigger_BitfieldMask;
       regValue |= (((value ? 1 : 0)) << kConfig_IndexSource_AnalogTrigger_BitfieldOffset) & kConfig_IndexSource_AnalogTrigger_BitfieldMask;
-      NiRioSrv.poke32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
+      NiFpga.writeU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
    }
    public void writeConfig_IndexActiveHigh(final boolean value)
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int regValue = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
       regValue &= ~kConfig_IndexActiveHigh_BitfieldMask;
       regValue |= (((value ? 1 : 0)) << kConfig_IndexActiveHigh_BitfieldOffset) & kConfig_IndexActiveHigh_BitfieldMask;
-      NiRioSrv.poke32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
+      NiFpga.writeU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
    }
    public void writeConfig_Reverse(final boolean value)
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int regValue = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
       regValue &= ~kConfig_Reverse_BitfieldMask;
       regValue |= (((value ? 1 : 0)) << kConfig_Reverse_BitfieldOffset) & kConfig_Reverse_BitfieldMask;
-      NiRioSrv.poke32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
+      NiFpga.writeU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
    }
    public void writeConfig_Enable(final boolean value)
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int regValue = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
       regValue &= ~kConfig_Enable_BitfieldMask;
       regValue |= (((value ? 1 : 0)) << kConfig_Enable_BitfieldOffset) & kConfig_Enable_BitfieldMask;
-      NiRioSrv.poke32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
+      NiFpga.writeU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], regValue, status);
    }
    public int readConfig()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       return (int)(regValue);
    }
    public byte readConfig_ASource_Channel()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       int bitfieldValue = ((regValue & kConfig_ASource_Channel_BitfieldMask) >>> kConfig_ASource_Channel_BitfieldOffset);
       return (byte)((bitfieldValue) & 0x0000000F);
    }
    public byte readConfig_ASource_Module()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       int bitfieldValue = ((regValue & kConfig_ASource_Module_BitfieldMask) >>> kConfig_ASource_Module_BitfieldOffset);
       return (byte)((bitfieldValue) & 0x00000001);
    }
    public boolean readConfig_ASource_AnalogTrigger()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       int bitfieldValue = ((regValue & kConfig_ASource_AnalogTrigger_BitfieldMask) >>> kConfig_ASource_AnalogTrigger_BitfieldOffset);
       return ((bitfieldValue) != 0 ? true : false);
    }
    public byte readConfig_BSource_Channel()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       int bitfieldValue = ((regValue & kConfig_BSource_Channel_BitfieldMask) >>> kConfig_BSource_Channel_BitfieldOffset);
       return (byte)((bitfieldValue) & 0x0000000F);
    }
    public byte readConfig_BSource_Module()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       int bitfieldValue = ((regValue & kConfig_BSource_Module_BitfieldMask) >>> kConfig_BSource_Module_BitfieldOffset);
       return (byte)((bitfieldValue) & 0x00000001);
    }
    public boolean readConfig_BSource_AnalogTrigger()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       int bitfieldValue = ((regValue & kConfig_BSource_AnalogTrigger_BitfieldMask) >>> kConfig_BSource_AnalogTrigger_BitfieldOffset);
       return ((bitfieldValue) != 0 ? true : false);
    }
    public byte readConfig_IndexSource_Channel()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       int bitfieldValue = ((regValue & kConfig_IndexSource_Channel_BitfieldMask) >>> kConfig_IndexSource_Channel_BitfieldOffset);
       return (byte)((bitfieldValue) & 0x0000000F);
    }
    public byte readConfig_IndexSource_Module()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       int bitfieldValue = ((regValue & kConfig_IndexSource_Module_BitfieldMask) >>> kConfig_IndexSource_Module_BitfieldOffset);
       return (byte)((bitfieldValue) & 0x00000001);
    }
    public boolean readConfig_IndexSource_AnalogTrigger()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       int bitfieldValue = ((regValue & kConfig_IndexSource_AnalogTrigger_BitfieldMask) >>> kConfig_IndexSource_AnalogTrigger_BitfieldOffset);
       return ((bitfieldValue) != 0 ? true : false);
    }
    public boolean readConfig_IndexActiveHigh()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       int bitfieldValue = ((regValue & kConfig_IndexActiveHigh_BitfieldMask) >>> kConfig_IndexActiveHigh_BitfieldOffset);
       return ((bitfieldValue) != 0 ? true : false);
    }
    public boolean readConfig_Reverse()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       int bitfieldValue = ((regValue & kConfig_Reverse_BitfieldMask) >>> kConfig_Reverse_BitfieldOffset);
       return ((bitfieldValue) != 0 ? true : false);
    }
    public boolean readConfig_Enable()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kConfig_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       int bitfieldValue = ((regValue & kConfig_Enable_BitfieldMask) >>> kConfig_Enable_BitfieldOffset);
       return ((bitfieldValue) != 0 ? true : false);
-   }
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-// Accessors for Reset
-//////////////////////////////////////////////////////////////////////////////////////////////////
-   private static final int kEncoder0_Reset_Address = 0x81E4;
-   private static final int kEncoder1_Reset_Address = 0x81D0;
-   private static final int kEncoder2_Reset_Address = 0x81BC;
-   private static final int kEncoder3_Reset_Address = 0x81A8;
-   private static final int kReset_Addresses [] =
-   {
-      kEncoder0_Reset_Address,
-      kEncoder1_Reset_Address,
-      kEncoder2_Reset_Address,
-      kEncoder3_Reset_Address,
-   };
-
-   public void strobeReset()
-   {
-      NiRioSrv.poke32(m_DeviceHandle, kReset_Addresses[m_SystemIndex], 1, status);
    }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -308,10 +339,10 @@ public class tEncoder extends tSystem
    private static final int kTimerOutput_Count_BitfieldOffset = 1;
    private static final int kTimerOutput_Stalled_BitfieldMask = 0x00000001;
    private static final int kTimerOutput_Stalled_BitfieldOffset = 0;
-   private static final int kEncoder0_TimerOutput_Address = 0x81D8;
-   private static final int kEncoder1_TimerOutput_Address = 0x81C4;
-   private static final int kEncoder2_TimerOutput_Address = 0x81B0;
-   private static final int kEncoder3_TimerOutput_Address = 0x819C;
+   private static final int kEncoder0_TimerOutput_Address = 0x8390;
+   private static final int kEncoder1_TimerOutput_Address = 0x83A4;
+   private static final int kEncoder2_TimerOutput_Address = 0x83B8;
+   private static final int kEncoder3_TimerOutput_Address = 0x83CC;
    private static final int kTimerOutput_Addresses [] =
    {
       kEncoder0_TimerOutput_Address,
@@ -322,18 +353,24 @@ public class tEncoder extends tSystem
 
    public int readTimerOutput()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kTimerOutput_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kTimerOutput_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       return (int)(regValue);
    }
    public int readTimerOutput_Period()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kTimerOutput_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kTimerOutput_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       int bitfieldValue = ((regValue & kTimerOutput_Period_BitfieldMask) >>> kTimerOutput_Period_BitfieldOffset) << kTimerOutput_Period_FixedPointIntegerShift;
       return (int)((bitfieldValue) & 0x00FFFFFF);
    }
    public byte readTimerOutput_Count()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kTimerOutput_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kTimerOutput_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       int bitfieldValue = ((regValue & kTimerOutput_Count_BitfieldMask) >>> kTimerOutput_Count_BitfieldOffset);
       // Sign extension
       bitfieldValue <<= 24;
@@ -342,9 +379,32 @@ public class tEncoder extends tSystem
    }
    public boolean readTimerOutput_Stalled()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kTimerOutput_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kTimerOutput_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       int bitfieldValue = ((regValue & kTimerOutput_Stalled_BitfieldMask) >>> kTimerOutput_Stalled_BitfieldOffset);
       return ((bitfieldValue) != 0 ? true : false);
+   }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// Accessors for Reset
+//////////////////////////////////////////////////////////////////////////////////////////////////
+   private static final int kEncoder0_Reset_Address = 0x8384;
+   private static final int kEncoder1_Reset_Address = 0x8398;
+   private static final int kEncoder2_Reset_Address = 0x83AC;
+   private static final int kEncoder3_Reset_Address = 0x83C0;
+   private static final int kReset_Addresses [] =
+   {
+      kEncoder0_Reset_Address,
+      kEncoder1_Reset_Address,
+      kEncoder2_Reset_Address,
+      kEncoder3_Reset_Address,
+   };
+
+   public void strobeReset()
+   {
+
+       NiFpga.writeU32(m_DeviceHandle, kReset_Addresses[m_SystemIndex], 1, status);
    }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -357,10 +417,10 @@ public class tEncoder extends tSystem
    private static final int kTimerConfig_AverageSize_BitfieldOffset = 1;
    private static final int kTimerConfig_UpdateWhenEmpty_BitfieldMask = 0x00000001;
    private static final int kTimerConfig_UpdateWhenEmpty_BitfieldOffset = 0;
-   private static final int kEncoder0_TimerConfig_Address = 0x81DC;
-   private static final int kEncoder1_TimerConfig_Address = 0x81C8;
-   private static final int kEncoder2_TimerConfig_Address = 0x81B4;
-   private static final int kEncoder3_TimerConfig_Address = 0x81A0;
+   private static final int kEncoder0_TimerConfig_Address = 0x838C;
+   private static final int kEncoder1_TimerConfig_Address = 0x83A0;
+   private static final int kEncoder2_TimerConfig_Address = 0x83B4;
+   private static final int kEncoder3_TimerConfig_Address = 0x83C8;
    private static final int kTimerConfig_Addresses [] =
    {
       kEncoder0_TimerConfig_Address,
@@ -371,49 +431,61 @@ public class tEncoder extends tSystem
 
    public void writeTimerConfig(final int value)
    {
-      NiRioSrv.poke32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], value, status);
+
+      NiFpga.writeU32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], value, status);
    }
    public void writeTimerConfig_StallPeriod(final int value)
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], status);
+
+      int regValue = NiFpga.readU32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], status);
       regValue &= ~kTimerConfig_StallPeriod_BitfieldMask;
       regValue |= ((value >>> kTimerConfig_StallPeriod_FixedPointIntegerShift) << kTimerConfig_StallPeriod_BitfieldOffset) & kTimerConfig_StallPeriod_BitfieldMask;
-      NiRioSrv.poke32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], regValue, status);
+      NiFpga.writeU32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], regValue, status);
    }
    public void writeTimerConfig_AverageSize(final int value)
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], status);
+
+      int regValue = NiFpga.readU32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], status);
       regValue &= ~kTimerConfig_AverageSize_BitfieldMask;
       regValue |= ((value) << kTimerConfig_AverageSize_BitfieldOffset) & kTimerConfig_AverageSize_BitfieldMask;
-      NiRioSrv.poke32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], regValue, status);
+      NiFpga.writeU32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], regValue, status);
    }
    public void writeTimerConfig_UpdateWhenEmpty(final boolean value)
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], status);
+
+      int regValue = NiFpga.readU32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], status);
       regValue &= ~kTimerConfig_UpdateWhenEmpty_BitfieldMask;
       regValue |= (((value ? 1 : 0)) << kTimerConfig_UpdateWhenEmpty_BitfieldOffset) & kTimerConfig_UpdateWhenEmpty_BitfieldMask;
-      NiRioSrv.poke32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], regValue, status);
+      NiFpga.writeU32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], regValue, status);
    }
    public int readTimerConfig()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       return (int)(regValue);
    }
    public int readTimerConfig_StallPeriod()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       int bitfieldValue = ((regValue & kTimerConfig_StallPeriod_BitfieldMask) >>> kTimerConfig_StallPeriod_BitfieldOffset) << kTimerConfig_StallPeriod_FixedPointIntegerShift;
       return (int)((bitfieldValue) & 0x01FFFFFF);
    }
    public byte readTimerConfig_AverageSize()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       int bitfieldValue = ((regValue & kTimerConfig_AverageSize_BitfieldMask) >>> kTimerConfig_AverageSize_BitfieldOffset);
       return (byte)((bitfieldValue) & 0x0000007F);
    }
    public boolean readTimerConfig_UpdateWhenEmpty()
    {
-      int regValue = NiRioSrv.peek32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], status);
+
+      int result = NiFpga.readU32(m_DeviceHandle, kTimerConfig_Addresses[m_SystemIndex], status);
+      int regValue = result ;
       int bitfieldValue = ((regValue & kTimerConfig_UpdateWhenEmpty_BitfieldMask) >>> kTimerConfig_UpdateWhenEmpty_BitfieldOffset);
       return ((bitfieldValue) != 0 ? true : false);
    }
