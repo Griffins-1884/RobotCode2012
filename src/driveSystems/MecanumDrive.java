@@ -16,7 +16,7 @@ public class MecanumDrive extends DriveSystem {
 	 * @param motors The motors the MecanumDrive uses.
 	 * @param motorCoefficients The motor coefficients the MecanumDrive uses.
 	 */
-	protected MecanumDrive(SpeedController[] motors, double[] motorCoefficients) {
+	public MecanumDrive(SpeedController[] motors, double[] motorCoefficients) {
 		super(motors, motorCoefficients);
 	}
 	

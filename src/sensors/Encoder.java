@@ -19,7 +19,7 @@ public class Encoder extends AnalogSensor {
 	 * The hardware sensor behind this object.
 	 */
 	public final edu.wpi.first.wpilibj.Encoder sensor;
-	
+	public final int clicksPerRevolution;
 	/**
 	 * Constructs an Encoder with the specified ID, A-channel and B-channel.
 	 * 
@@ -27,10 +27,11 @@ public class Encoder extends AnalogSensor {
 	 * @param aChannel The A-channel of the sensor.
 	 * @param bChannel The B-channel of the sensor.
 	 */
-	public Encoder(long sensorId, int aChannel, int bChannel) {
+	public Encoder(long sensorId, int aChannel, int bChannel, int clicksPerRevolution) {
 		super(sensorId);
 		sensor = new edu.wpi.first.wpilibj.Encoder(aChannel, bChannel);
 		setThreshold(Math.PI / 100);
+		this.clicksPerRevolution = clicksPerRevolution;
 	}
 	
 	/**
@@ -49,7 +50,7 @@ public class Encoder extends AnalogSensor {
 	 */
 	public double value() {
 		// TODO convert to radians
-		return sensor.get();
+		return sensor.getRaw() * 2 * Math.PI / clicksPerRevolution;
 	}
 	
 	/**

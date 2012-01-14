@@ -5,6 +5,7 @@ import com.sun.squawk.util.MathUtils;
 import edu.wpi.first.wpilibj.SpeedController;
 
 import exceptions.InvalidArrayException;
+import exceptions.UnsupportedMovementException;
 import sensors.AnalogSensor.AnalogSensorEvent;
 import sensors.Encoder;
 import sensors.Encoder.EncoderListener;
@@ -14,7 +15,7 @@ import sensors.Encoder.EncoderListener;
  * 
  * @author Colin Poler
  */
-public class SwerveDrive extends DriveSystem implements EncoderListener {
+public class LimitedAngleSwerveDrive extends DriveSystem implements EncoderListener {
 	/**
 	 * This constant describes how sharp the curve should be when correcting rotations of the wheels. Higher numbers mean sharper curves. To visualize, graph log((R-1)x+1)/log(R)
 	 */
@@ -67,7 +68,7 @@ public class SwerveDrive extends DriveSystem implements EncoderListener {
 	 * @param motorCoefficients The motor coefficients to be used by the swerve drive.
 	 * @param encoders The encoders to be used by the swerve drive.
 	 */
-	public SwerveDrive(SpeedController[] motors, double[] motorCoefficients, Encoder[] encoders) {
+	public LimitedAngleSwerveDrive(SpeedController[] motors, double[] motorCoefficients, Encoder[] encoders) {
 		super(motors, motorCoefficients);
 		if(encoders.length != 2 || encoders[0] == null || encoders[1] == null) {
 			throw new InvalidArrayException("Two encoders must be supplied for a swerve drive");
@@ -132,7 +133,12 @@ public class SwerveDrive extends DriveSystem implements EncoderListener {
 	public synchronized void encoder(AnalogSensorEvent ev) {
 		currentLeftRotation = encoders[LEFT].value();
 		currentRightRotation = encoders[RIGHT].value();
-
+		
+		// Safety for when rotation might be too much
+		if(Math.abs(currentLeftRotation) > Math.PI / 2 || Math.abs(currentRightRotation) > Math.PI / 2) {
+			throw new UnsupportedMovementException("Wheels turned too far.");
+		}
+		
 		double leftError = targetLeftRotation - currentLeftRotation,
 				   rightError = targetRightRotation - currentRightRotation;
 		if(isConcurrentTurning || Math.abs(leftError) <= Math.PI / 100 && Math.abs(rightError) <= Math.PI / 100) {
@@ -146,7 +152,7 @@ public class SwerveDrive extends DriveSystem implements EncoderListener {
 			motors[RIGHT + FRONT].set(0);
 			motors[RIGHT + BACK].set(0);
 		}
-	
+		
 		// Divide by pi sets left error between -1 and 1 (it has to be between -pi and pi in the first place). Using ln((R-1)x+1)/ln(R) creates a curve.
 		// Use absolute value of errors to get a valid number from the log function.
 		double leftRotationalValue = MathUtils.log1p((ROTATIONAL_CONSTANT - 1) * (Math.abs(leftError) / Math.PI)) / MathUtils.log(ROTATIONAL_CONSTANT) * motorCoefficients[LEFT + CONTROL];

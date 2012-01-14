@@ -1,4 +1,4 @@
-package preY2011.California;
+package preY2011.Mecanum;
 
 import sensors.Sensor;
 import edu.wpi.first.wpilibj.Jaguar;
