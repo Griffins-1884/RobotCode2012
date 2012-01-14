@@ -20,17 +20,8 @@ public class AdjustableJoystick extends Joystick {
 	 * 
 	 * @return The forward position of the joystick.
 	 */
-	public double getForward() {
-		return joystick.getY() * (((-(super.getThrottle())+1)/2)+0.4);
-	}
-	
-	/**
-	 * Gets the backward position of the joystick.
-	 * 
-	 * @return The backward position of the joystick.
-	 */
-	public double getBackward() {
-		return -getForward();
+	public double forward() {
+		return super.forward() * (((-(throttle())+1)/2)+0.4);
 	}
 	
 	/**
@@ -38,17 +29,8 @@ public class AdjustableJoystick extends Joystick {
 	 * 
 	 * @return The right position of the joystick.
 	 */
-	public double getRight() {
-		return joystick.getX() * (((-(super.getThrottle())+1)/2)+0.4);
-	}
-	
-	/**
-	 * Gets the left position of the joystick.
-	 * 
-	 * @return The left position of the joystick.
-	 */
-	public double getLeft() {
-		return -getRight();
+	public double right() {
+		return super.right() * (((-(throttle())+1)/2)+0.4);
 	}
 	
 	/**
@@ -56,16 +38,7 @@ public class AdjustableJoystick extends Joystick {
 	 * 
 	 * @return The counter-clockwise twist of the joystick.
 	 */
-	public double getCounterClockwise() {
-		return joystick.getTwist() * (((-(super.getThrottle())+1)/2)+0.4);
-	}
-	
-	/**
-	 * Gets the clockwise twist of the joystick.
-	 * 
-	 * @return The clockwise twist of the joystick.
-	 */
-	public double getClockwise() {
-		return -getCounterClockwise();
+	public double counterClockwise() {
+		return super.clockwise() * (((-(throttle())+1)/2)+0.4);
 	}
 }

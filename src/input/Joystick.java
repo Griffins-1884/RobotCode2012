@@ -27,7 +27,7 @@ public class Joystick {
 	 * 
 	 * @return The forward position of the joystick.
 	 */
-	public double getForward() {
+	public double forward() {
 		return joystick.getY();
 	}
 	
@@ -36,8 +36,8 @@ public class Joystick {
 	 * 
 	 * @return The backward position of the joystick.
 	 */
-	public double getBackward() {
-		return -getForward();
+	public double backward() {
+		return -forward();
 	}
 	
 	/**
@@ -45,7 +45,7 @@ public class Joystick {
 	 * 
 	 * @return The right position of the joystick.
 	 */
-	public double getRight() {
+	public double right() {
 		return joystick.getX();
 	}
 	
@@ -54,8 +54,8 @@ public class Joystick {
 	 * 
 	 * @return The left position of the joystick.
 	 */
-	public double getLeft() {
-		return -getRight();
+	public double left() {
+		return -right();
 	}
 	
 	/**
@@ -63,7 +63,7 @@ public class Joystick {
 	 * 
 	 * @return The counter-clockwise twist of the joystick.
 	 */
-	public double getCounterClockwise() {
+	public double counterClockwise() {
 		return joystick.getTwist();
 	}
 	
@@ -72,8 +72,8 @@ public class Joystick {
 	 * 
 	 * @return The clockwise twist of the joystick.
 	 */
-	public double getClockwise() {
-		return -getCounterClockwise();
+	public double clockwise() {
+		return -counterClockwise();
 	}
 	
 	/**
@@ -81,7 +81,7 @@ public class Joystick {
 	 * 
 	 * @return The forward position of the throttle.
 	 */
-	public double getThrottle() {
+	public double throttle() {
 		return joystick.getZ();
 	}
 	
@@ -90,7 +90,7 @@ public class Joystick {
 	 * 
 	 * @return The state of a button on the joystick.
 	 */
-	public boolean getButton(int number) {
+	public boolean button(int number) {
 		return joystick.getRawButton(number);
 	}
 }

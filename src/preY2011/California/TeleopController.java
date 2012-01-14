@@ -3,9 +3,9 @@ package preY2011.California;
 import edu.wpi.first.wpilibj.Watchdog;
 
 import driveSystems.*;
-import input.*;
 
 import _static.*;
+import input.*;
 
 public class TeleopController extends Controller {
 	private final Joystick leftJoystick, rightJoystick;
@@ -18,21 +18,21 @@ public class TeleopController extends Controller {
 	public void initialize() {}
 	private boolean previousButton2State = false;
 	public void periodic() {
-		if((leftJoystick.getButton(2) || rightJoystick.getButton(2)) && !previousButton2State) {
+		if((leftJoystick.button(2) || rightJoystick.button(2)) && !previousButton2State) {
 			oneJoystick = !oneJoystick;
 			previousButton2State = true;
-		} else if(!leftJoystick.getButton(2) && !rightJoystick.getButton(2) && previousButton2State) {
+		} else if(!leftJoystick.button(2) && !rightJoystick.button(2) && previousButton2State) {
 			previousButton2State = false;
 		}
 		if(oneJoystick) {
-			double rotation = rightJoystick.getRight() / 2;
-			if(rightJoystick.getButton(4)) {
+			double rotation = rightJoystick.right() / 2;
+			if(rightJoystick.button(4)) {
 				rotation *= 2;
 			}
-			robot.driveSystem.move(new Movement(new Vector(rightJoystick.getForward(), 0), rotation));
+			robot.driveSystem.move(new Movement(new Vector(rightJoystick.forward(), 0), rotation));
 		} else {
 			// Divide both by 2 so that sensitivity doesn't max out when both joysticks are at halfway
-			robot.driveSystem.move(new Movement(new Vector((rightJoystick.getForward() + leftJoystick.getForward()) / 2.0, 0), (rightJoystick.getForward() - leftJoystick.getForward()) / 2.0));
+			robot.driveSystem.move(new Movement(new Vector((rightJoystick.forward() + leftJoystick.forward()) / 2.0, 0), (rightJoystick.forward() - leftJoystick.forward()) / 2.0));
 		}
 		Watchdog.getInstance().feed();
 	}
