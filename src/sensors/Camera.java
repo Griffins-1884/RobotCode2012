@@ -1,8 +1,8 @@
 package sensors;
 
+import image.Image;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
-import edu.wpi.first.wpilibj.image.ColorImage;
 import edu.wpi.first.wpilibj.image.NIVisionException;
 
 /**
@@ -29,7 +29,7 @@ public class Camera extends Sensor {
 		/**
 		 * The image of the camera.
 		 */
-		public final ColorImage image;
+		public final Image image;
 		
 		/**
 		 * The sensor firing this event.
@@ -42,7 +42,7 @@ public class Camera extends Sensor {
 		 * @param source The source of the event.
 		 * @param image The most recent image taken by the camera.
 		 */
-		public CameraEvent(Camera source, ColorImage image) {
+		public CameraEvent(Camera source, Image image) {
 			this.source = source;
 			this.image = image;
 		}
@@ -83,9 +83,9 @@ public class Camera extends Sensor {
 	 * 
 	 * @return The value of the sensor.
 	 */
-	public ColorImage image() {
+	public Image image() {
 		try {
-			return camera.getImage();
+			return new Image(camera.getImage().getValuePlane());
 		} catch(AxisCameraException e) {
 			e.printStackTrace();
 		} catch(NIVisionException e) {
