@@ -3,6 +3,7 @@ package image;
 import com.sun.cldc.jna.*;
 
 import edu.wpi.first.wpilibj.image.*;
+import edu.wpi.first.wpilibj.image.NIVision.ColorMode;
 
 /**
  * All of the below code was borrowed from WPILibJ/src/edu/wpi/first/wpilibj/image/NIVision.java. As per the license, the FIRST BSD license is in this package folder.
@@ -17,12 +18,25 @@ public class NationalInstrumentsVision {
         }
     }
 	
+	/*
+	private static final BlockingFunction imaqColorThresholdFn = NativeLibrary.getDefaultInstance().getBlockingFunction("imaqColorThreshold");
+    static { imaqColorThresholdFn.setTaskExecutor(taskExecutor); }
+    public static void colorThreshold(Pointer dest, Pointer source, ColorMode mode,
+            Pointer plane1Range, Pointer plane2Range, Pointer plane3Range)  throws NIVisionException{
+        int replaceValue = 1;
+        assertCleanStatus(imaqColorThresholdFn.call7(dest.address().toUWord().toPrimitive(),
+                source.address().toUWord().toPrimitive(),
+                replaceValue, mode.value,
+                plane1Range.address().toUWord().toPrimitive(),
+                plane2Range.address().toUWord().toPrimitive(),
+                plane3Range.address().toUWord().toPrimitive()));
+    }
+    */
+    
     private static final BlockingFunction imaqDetectRectanglesFn =
             NativeLibrary.getDefaultInstance().getBlockingFunction("imaqDetectRectangles");
     static { imaqDetectRectanglesFn.setTaskExecutor(NationalInstrumentsVision.taskExecutor); }
     private static Pointer numberOfRectanglesDetected = new Pointer(4);
-
-
     public static RectangleMatch[] detectRectangles(MonoImage image, RectangleDescriptor rectangleDescriptor,
             CurveOptions curveOptions, ShapeDetectionOptions shapeDetectionOptions,
             RegionOfInterest roi) throws NIVisionException {
