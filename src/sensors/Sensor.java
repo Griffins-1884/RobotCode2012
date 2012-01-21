@@ -40,8 +40,7 @@ public abstract class Sensor {
 								  ABSTRACT_DIGITAL_SENSOR = 16384,
 								  	  LIGHT_SENSOR = 16385,
 								  OTHER_SENSOR = 24576,
-									  CAMERA = 24577,
-									  SHAPE_TRACKING_CAMERA = 24578;
+									  CAMERA = 24577;
 	}
 	
 	/**

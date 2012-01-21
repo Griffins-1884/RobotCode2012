@@ -1,6 +1,7 @@
 package sensors;
 
 import edu.wpi.first.wpilibj.camera.AxisCamera;
+import edu.wpi.first.wpilibj.camera.AxisCamera.ResolutionT;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
 import edu.wpi.first.wpilibj.image.ColorImage;
 import edu.wpi.first.wpilibj.image.NIVisionException;
@@ -62,6 +63,7 @@ public class Camera extends Sensor {
 		} else {
 			camera = AxisCamera.getInstance();
 		}
+		camera.writeResolution(ResolutionT.k320x240);
 	}
 	
 	/**

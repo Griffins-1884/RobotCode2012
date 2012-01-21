@@ -3,7 +3,6 @@ package image;
 import com.sun.cldc.jna.*;
 
 import edu.wpi.first.wpilibj.image.*;
-import edu.wpi.first.wpilibj.image.NIVision.ColorMode;
 
 /**
  * All of the below code was borrowed from WPILibJ/src/edu/wpi/first/wpilibj/image/NIVision.java. As per the license, the FIRST BSD license is in this package folder.
@@ -18,20 +17,22 @@ public class NationalInstrumentsVision {
         }
     }
 	
-	/*
-	private static final BlockingFunction imaqColorThresholdFn = NativeLibrary.getDefaultInstance().getBlockingFunction("imaqColorThreshold");
-    static { imaqColorThresholdFn.setTaskExecutor(taskExecutor); }
-    public static void colorThreshold(Pointer dest, Pointer source, ColorMode mode,
-            Pointer plane1Range, Pointer plane2Range, Pointer plane3Range)  throws NIVisionException{
-        int replaceValue = 1;
-        assertCleanStatus(imaqColorThresholdFn.call7(dest.address().toUWord().toPrimitive(),
+	private static final BlockingFunction imaqThresholdFn = NativeLibrary.getDefaultInstance().getBlockingFunction("imaqThreshold");
+    static { imaqThresholdFn.setTaskExecutor(taskExecutor); }
+    public static void threshold(Pointer dest, Pointer source, float rangeMin, float rangeMax, int useNewValue, float newValue)  throws NIVisionException{
+        assertCleanStatus(imaqThresholdFn.call6(dest.address().toUWord().toPrimitive(),
                 source.address().toUWord().toPrimitive(),
-                replaceValue, mode.value,
-                plane1Range.address().toUWord().toPrimitive(),
-                plane2Range.address().toUWord().toPrimitive(),
-                plane3Range.address().toUWord().toPrimitive()));
+                Float.floatToIntBits(rangeMin), Float.floatToIntBits(rangeMax),
+                useNewValue, Float.floatToIntBits(newValue)));
     }
-    */
+	
+	private static final BlockingFunction imaqConvexHullFn = NativeLibrary.getDefaultInstance().getBlockingFunction("imaqConvexHull");
+    static { imaqConvexHullFn.setTaskExecutor(taskExecutor); }
+    public static void convexHull(Pointer dest, Pointer source, int connectivity)  throws NIVisionException{
+        assertCleanStatus(imaqConvexHullFn.call3(dest.address().toUWord().toPrimitive(),
+                source.address().toUWord().toPrimitive(),
+                connectivity));
+    }
     
     private static final BlockingFunction imaqDetectRectanglesFn =
             NativeLibrary.getDefaultInstance().getBlockingFunction("imaqDetectRectangles");

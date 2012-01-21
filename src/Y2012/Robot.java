@@ -9,7 +9,7 @@ import _static.AbstractRobot;
 public class Robot extends AbstractRobot {
 	public static final int SHOOTER = 0;
 	public static Robot robot() {
-		[getting your attention via an error] // Our Drive system?
+		DriveSystem driveSystem = new CaliforniaDrive(Wiring.motors, Wiring.motorCoefficients);
 		Apparatus[] apparatuses = new Apparatus[1];
 		apparatuses[SHOOTER] = new ShootingApparatus();
 		return new Robot(driveSystem, apparatuses);
