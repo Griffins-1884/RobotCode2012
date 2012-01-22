@@ -1,10 +1,13 @@
 package preY2011.California;
 
 import edu.wpi.first.wpilibj.Watchdog;
+import edu.wpi.first.wpilibj.image.NIVisionException;
 
 import driveSystems.*;
 
 import _static.*;
+import image.RectangleMatch;
+import image.RectangleTrackingImage;
 import input.*;
 
 public class TeleopController extends Controller {
@@ -18,6 +21,19 @@ public class TeleopController extends Controller {
 	public void initialize() {}
 	private boolean previousButton2State = false;
 	public void periodic() {
+		if(rightJoystick.trigger()) {
+			try {
+				RectangleMatch[] targets = RectangleTrackingImage.track(((Robot) robot).camera.image());
+				// If the target is on the right, turn right, else, turn left
+				if(targets[0].m_corner[0].m_xPos > 160) {
+					robot.driveSystem.move(new Movement(new Vector(0, 0), -0.5));
+				} else {
+					robot.driveSystem.move(new Movement(new Vector(0, 0), 0.5));
+				}
+				Watchdog.getInstance().feed();
+				return;
+			} catch(NIVisionException e) {}
+		}
 		if((leftJoystick.button(2) || rightJoystick.button(2)) && !previousButton2State) {
 			oneJoystick = !oneJoystick;
 			previousButton2State = true;

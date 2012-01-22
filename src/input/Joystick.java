@@ -93,4 +93,13 @@ public class Joystick {
 	public boolean button(int number) {
 		return joystick.getRawButton(number);
 	}
+	
+	/**
+	 * Gets the state of the trigger on the joystick.
+	 * 
+	 * @return The state of the trigger on the joystick.
+	 */
+	public boolean trigger() {
+		return joystick.getTrigger();
+	}
 }
