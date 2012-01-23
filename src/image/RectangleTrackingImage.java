@@ -7,7 +7,7 @@ public class RectangleTrackingImage {
 		return track(image.getLuminancePlane());
 	}
 	public static RectangleMatch[] track(MonoImage image) throws NIVisionException {
-		return (new RectangleTrackingImage(image)).detectRectangles(new RectangleDescriptor(0, 320, 0, 240), new CurveOptions(0,40,1,25,15,15,10,1,0), new ShapeDetectionOptions(ShapeDetectionOptions.IMAQ_GEOMETRIC_MATCH_SHIFT_INVARIANT,0,0,75,125,500), null);
+		return (new RectangleTrackingImage(image)).detectRectangles(new RectangleDescriptor(15, 320, 15, 240), new CurveOptions(0,40,1,25,15,15,10,1,0), new ShapeDetectionOptions(ShapeDetectionOptions.IMAQ_GEOMETRIC_MATCH_SHIFT_INVARIANT,0,0,75,125,500), null);
 	}
 	private MonoImage image;
 	private RectangleTrackingImage derivative;

@@ -30,9 +30,9 @@ public class RectangleMatch {
 
         public void read() {
             m_corner[0] = new Position(backingNativeMemory.getFloat(0), backingNativeMemory.getFloat(4));
-            m_corner[0] = new Position(backingNativeMemory.getFloat(8), backingNativeMemory.getFloat(12));
-            m_corner[0] = new Position(backingNativeMemory.getFloat(16), backingNativeMemory.getFloat(20));
-            m_corner[0] = new Position(backingNativeMemory.getFloat(24), backingNativeMemory.getFloat(28));
+            m_corner[1] = new Position(backingNativeMemory.getFloat(8), backingNativeMemory.getFloat(12));
+            m_corner[2] = new Position(backingNativeMemory.getFloat(16), backingNativeMemory.getFloat(20));
+            m_corner[3] = new Position(backingNativeMemory.getFloat(24), backingNativeMemory.getFloat(28));
             m_rotation = backingNativeMemory.getDouble(32);
             m_width = backingNativeMemory.getDouble(40);
             m_height = backingNativeMemory.getDouble(48);

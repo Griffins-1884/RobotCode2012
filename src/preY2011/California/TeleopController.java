@@ -25,9 +25,10 @@ public class TeleopController extends Controller {
 			try {
 				RectangleMatch[] targets = RectangleTrackingImage.track(((Robot) robot).camera.image());
 				// If the target is on the right, turn right, else, turn left
-				if(targets[0].m_corner[0].m_xPos > 160) {
+				int tolerance = 5;
+				if(targets[0].m_corner[0].m_xPos > 160 + tolerance) {
 					robot.driveSystem.move(new Movement(new Vector(0, 0), -0.5));
-				} else {
+				} else if(targets[0].m_corner[0].m_xPos < 160 - tolerance) {
 					robot.driveSystem.move(new Movement(new Vector(0, 0), 0.5));
 				}
 				Watchdog.getInstance().feed();
