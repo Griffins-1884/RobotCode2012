@@ -50,6 +50,7 @@ public class Camera extends Sensor {
 	}
 	
 	private final AxisCamera camera;
+	private CriteriaCollection cc;      // the criteria for doing the particle filter operation
 	
 	/**
 	 * Constructs a Camera with the specified ID and address.
@@ -64,6 +65,11 @@ public class Camera extends Sensor {
 			camera = AxisCamera.getInstance();
 		}
 		camera.writeResolution(ResolutionT.k320x240);
+		camera.writeCompression(30);
+		
+	        cc = new CriteriaCollection();      // create the criteria for the particle filter
+        	cc.addCriteria(NIVision.MeasurementType.IMAQ_MT_BOUNDING_RECT_WIDTH, 30, 400, false);
+	        cc.addCriteria(NIVision.MeasurementType.IMAQ_MT_BOUNDING_RECT_HEIGHT, 40, 400, false);
 	}
 	
 	/**
@@ -98,6 +104,15 @@ public class Camera extends Sensor {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	/**
+	 * Gets the CriteriaCollection for vision tracking.
+	 * 
+	 * @return The CriteriaCollection object.
+	 */
+	public CriteriaCollection cc() {
+		return cc;
 	}
 	
 	/**
