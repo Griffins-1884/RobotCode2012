@@ -3,8 +3,12 @@ package sensors;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.camera.AxisCamera.ResolutionT;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
+import edu.wpi.first.wpilibj.image.BinaryImage;
 import edu.wpi.first.wpilibj.image.ColorImage;
+import edu.wpi.first.wpilibj.image.CriteriaCollection;
+import edu.wpi.first.wpilibj.image.NIVision;
 import edu.wpi.first.wpilibj.image.NIVisionException;
+import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
 
 /**
  * A camera (no shape tracking).
@@ -67,9 +71,9 @@ public class Camera extends Sensor {
 		camera.writeResolution(ResolutionT.k320x240);
 		camera.writeCompression(30);
 		
-	        cc = new CriteriaCollection();      // create the criteria for the particle filter
-        	cc.addCriteria(NIVision.MeasurementType.IMAQ_MT_BOUNDING_RECT_WIDTH, 30, 400, false);
-	        cc.addCriteria(NIVision.MeasurementType.IMAQ_MT_BOUNDING_RECT_HEIGHT, 40, 400, false);
+		cc = new CriteriaCollection();      // create the criteria for the particle filter
+		cc.addCriteria(NIVision.MeasurementType.IMAQ_MT_BOUNDING_RECT_WIDTH, 30, 400, false);
+		cc.addCriteria(NIVision.MeasurementType.IMAQ_MT_BOUNDING_RECT_HEIGHT, 40, 400, false);
 	}
 	
 	/**
@@ -77,7 +81,9 @@ public class Camera extends Sensor {
 	 */
 	protected void checkForEvents() {
 		if(camera.freshImage()) {
-			fireEvent(new CameraEvent(this, image()));
+			try {
+				fireEvent(new CameraEvent(this, image()));
+			} catch(AxisCameraException e) {} catch(NIVisionException e) {}
 		}
 	}
 	
@@ -95,15 +101,8 @@ public class Camera extends Sensor {
 	 * 
 	 * @return The value of the sensor.
 	 */
-	public ColorImage image() {
-		try {
-			return camera.getImage();
-		} catch(AxisCameraException e) {
-			e.printStackTrace();
-		} catch(NIVisionException e) {
-			e.printStackTrace();
-		}
-		return null;
+	public ColorImage image() throws AxisCameraException, NIVisionException {
+		return camera.getImage();
 	}
 	
 	/**
@@ -113,6 +112,26 @@ public class Camera extends Sensor {
 	 */
 	public CriteriaCollection cc() {
 		return cc;
+	}
+	
+	public ParticleAnalysisReport[] trackRectangles() throws AxisCameraException, NIVisionException {
+		ColorImage colorImage = image();
+		BinaryImage thresholdImage = colorImage.thresholdHSL(0, 255, 100, 255, 168, 255);	// Get only areas of a certain brightness
+		BinaryImage bigObjectsImage = thresholdImage.removeSmallObjects(false, 2);			// Remove smaller objects
+		BinaryImage convexHullImage = bigObjectsImage.convexHull(false);					// Fill in damaged rectangles
+		BinaryImage filteredImage = convexHullImage.particleFilter(cc());					// Find rectangles
+		
+		System.out.println(filteredImage.getNumberParticles() + "  " + System.currentTimeMillis()); // TODO remove
+		
+		ParticleAnalysisReport[] result = filteredImage.getOrderedParticleAnalysisReports();// Find rectangles
+		
+		colorImage.free();
+		thresholdImage.free();
+		bigObjectsImage.free();
+		convexHullImage.free();
+		filteredImage.free();
+		
+		return result;
 	}
 	
 	/**
