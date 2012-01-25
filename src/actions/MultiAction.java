@@ -12,6 +12,5 @@ public interface MultiAction {
 	 * @param action The action to find.
 	 * @return The time between this MultiAction beginning and the specified action beginning.
 	 */
-	// TODO should this include what time has already elapsed?
 	public Interval ETD(Action action);
 }

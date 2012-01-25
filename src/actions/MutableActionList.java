@@ -84,6 +84,12 @@ public class MutableActionList extends SequentialActions {
 		for(int i = 0; !((Action) actionList.elementAt(i)).equals(action); i++) {
 			etd = etd.add(((Action) actionList.elementAt(i)).duration());
 		}
+		if(parent != null) {
+			etd = etd.add(parent.ETD(this));
+		}
+		if(start != null) {
+			return new Interval(etd.milliseconds + start.longValue() - System.currentTimeMillis());
+		}
 		return etd;
 	}
 }

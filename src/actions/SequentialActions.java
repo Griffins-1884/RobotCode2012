@@ -59,7 +59,7 @@ public class SequentialActions extends Action implements ActionListener, MultiAc
 	 */
 	public void actionCompleted(Action source) {
 		actionsCompleted++;
-		act();
+		start();
 	}
 	
 	/**
@@ -69,6 +69,12 @@ public class SequentialActions extends Action implements ActionListener, MultiAc
 		Interval etd = new Interval(0);
 		for(int i = 0; !actions[i].equals(action); i++) {
 			etd = etd.add(actions[i].duration());
+		}
+		if(parent != null) {
+			etd = etd.add(parent.ETD(this));
+		}
+		if(start != null) {
+			return new Interval(etd.milliseconds + start.longValue() - System.currentTimeMillis());
 		}
 		return etd;
 	}
@@ -97,7 +103,7 @@ public class SequentialActions extends Action implements ActionListener, MultiAc
 		 * Goes through actions and calls them.
 		 */
 		public void run() {
-			action.act();
+			action.start();
 		}
 	}
 }

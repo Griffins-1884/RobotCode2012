@@ -88,7 +88,7 @@ public class ConcurrentActions extends Action implements ActionListener, MultiAc
 		 * Calls the action.
 		 */
 		public void run() {
-			action.act();
+			action.start();
 		}
 	}
 }
