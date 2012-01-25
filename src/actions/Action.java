@@ -12,6 +12,7 @@ public abstract class Action {
 	 * The parent of the action.
 	 */
 	public final MultiAction parent;
+	protected Long start = null;
 	private final Vector listeners;
 	
 	public Action(MultiAction parent) {
@@ -32,6 +33,7 @@ public abstract class Action {
 	 * Called by actions to indicate that they are finished.
 	 */
 	public void finished() {
+		this.start = null;
 		for(int i = 0; i < listeners.size(); i++) {
 			((ActionListener) listeners.elementAt(i)).actionCompleted(this);
 		}
@@ -43,16 +45,27 @@ public abstract class Action {
 	 * @return An interval containing the estimated time until this action completes.
 	 */
 	public Interval ETA() {
-		if(parent == null) {
+		if(start != null) {
+			return new Interval(duration().milliseconds + start.longValue() - System.currentTimeMillis());
+		} else if(parent == null) {
 			return duration();
 		}
 		return parent.ETD(this).add(duration());
 	}
 	
 	/**
+	 * Starts the action
+	 */
+	public void start() {
+		this.start = new Long(System.currentTimeMillis());
+		act();
+		finished();
+	}
+	
+	/**
 	 * The act method. This method should run all the code to complete the action.
 	 */
-	public abstract void act();
+	protected abstract void act();
 	
 	/**
 	 * Estimates the duration of the action (given distance to travel, time piston takes to fire, etc.)
