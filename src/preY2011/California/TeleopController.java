@@ -1,6 +1,7 @@
 package preY2011.California;
 
 import edu.wpi.first.wpilibj.Watchdog;
+import edu.wpi.first.wpilibj.ModdedSmartDashboard;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
 import edu.wpi.first.wpilibj.image.NIVisionException;
 import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
@@ -30,14 +31,14 @@ public class TeleopController extends Controller {
 		if(rightJoystick.trigger()) {
 			try {
 				ParticleAnalysisReport[] reports = ((Robot) robot).camera.trackRectangles();
-				for (int i = 0; i < reports.length; i++) {                                // print results
+				/*for (int i = 0; i < reports.length; i++) {                                // print results
 					ParticleAnalysisReport r = reports[i];
 					System.out.println("\n\nParticle: " + i
 							+ "\nCenter of mass x normalized: " + r.center_mass_x_normalized
 							+ "\nCenter of mass y normalized: " + r.center_mass_y_normalized
 							+ "\nWidth: " + r.boundingRectWidth
 							+ "\nHeight: " + r.boundingRectHeight);
-				}
+				}*/
 				
 				// Turn towards the first rectangle
 				double tolerance = 0.05;
@@ -60,7 +61,21 @@ public class TeleopController extends Controller {
 						robot.driveSystem.move(new Movement(new Vector(rightJoystick.forward(), 0), multiplier * -0.5));
 						movementMade = true;
 					}	
-				}
+                                        ModdedSmartDashboard.overlayStart();
+                                        ModdedSmartDashboard.overlay(reports[bestReport].center_mass_x, reports[bestReport].center_mass_y, reports[bestReport].boundingRectWidth, reports[bestReport].boundingRectHeight);
+                                        ModdedSmartDashboard.overlayEnd();
+                                        
+                                        
+                                        System.out.println("\n\nBest Particle: "
+							+ "\nCenter of mass x normalized: " + reports[bestReport].center_mass_x_normalized
+							+ "\nCenter of mass y normalized: " + reports[bestReport].center_mass_y_normalized
+							+ "\nWidth: " + reports[bestReport].boundingRectWidth
+							+ "\nHeight: " + reports[bestReport].boundingRectHeight);
+                                
+                                        // We are assuming a constant elevation difference between the camera and the target's CENTER!
+                                        // This is defined in the Location class
+                                        System.out.println(Location.getLocationOfRectangle(reports[bestReport].center_mass_x_normalized, reports[bestReport].center_mass_y_normalized, reports[bestReport].boundingRectHeight, reports[bestReport].boundingRectWidth));
+                                }
 				
 				Watchdog.getInstance().feed();
 				return;
@@ -90,6 +105,8 @@ public class TeleopController extends Controller {
 			robot.driveSystem.move(new Movement(new Vector((rightJoystick.forward() + leftJoystick.forward()) / 2.0, 0), (rightJoystick.forward() - leftJoystick.forward()) / 2.0));
 		}
 		
+                
+                
 		Watchdog.getInstance().feed();
 	}
 	public void continuous() {}
