@@ -46,13 +46,13 @@ public class TeleopController extends Controller {
 				// TODO: Maybe use PID to set angle instead of rotating at a constant angular velocity
 				if(reports.length > 0)
 				{
-                                        int bestReport = 0;
-                                        for(int i = 1; i < reports.length; i++) {
-                                            if(reports[bestReport].particleQuality < reports[i].particleQuality) {
-                                                bestReport = i;
-                                            }
-                                        }
-                                        double multiplier = Math.abs(reports[bestReport].center_mass_x_normalized);
+					int bestReport = 0;
+					for(int i = 1; i < reports.length; i++) {
+						if(reports[bestReport].particleQuality < reports[i].particleQuality) {
+							bestReport = i;
+						}
+					}
+					double multiplier = Math.abs(reports[bestReport].center_mass_x_normalized);
 					if(reports[bestReport].center_mass_x_normalized > tolerance) {
 						robot.driveSystem.move(new Movement(new Vector(rightJoystick.forward(), 0), multiplier * 0.5));
 						movementMade = true;
@@ -63,7 +63,7 @@ public class TeleopController extends Controller {
 				}
 				
 				Watchdog.getInstance().feed();
-                        	return;
+				return;
 				
 			} catch (AxisCameraException ex) {
 				ex.printStackTrace();
