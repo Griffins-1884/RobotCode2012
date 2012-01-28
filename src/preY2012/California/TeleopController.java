@@ -1,4 +1,4 @@
-package preY2011.California;
+package preY2012.California;
 
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.ModdedSmartDashboard;
@@ -45,8 +45,7 @@ public class TeleopController extends Controller {
 				boolean movementMade = false;
 				
 				// TODO: Maybe use PID to set angle instead of rotating at a constant angular velocity
-				if(reports.length > 0)
-				{
+				if(reports.length > 0) {
 					int bestReport = 0;
 					for(int i = 1; i < reports.length; i++) {
 						if(reports[bestReport].particleQuality < reports[i].particleQuality) {
@@ -54,31 +53,32 @@ public class TeleopController extends Controller {
 						}
 					}
 					double multiplier = Math.abs(reports[bestReport].center_mass_x_normalized);
-                                        
+					
 					if(reports[bestReport].center_mass_x_normalized > tolerance) {
 						robot.driveSystem.move(new Movement(new Vector(rightJoystick.forward(), 0), multiplier * 0.45));
 						movementMade = true;
 					} else if(reports[bestReport].center_mass_x_normalized < -tolerance) {
 						robot.driveSystem.move(new Movement(new Vector(rightJoystick.forward(), 0), multiplier * -0.45));
 						movementMade = true;
-					}	
-                                        ModdedSmartDashboard.overlayStart();
-                                        ModdedSmartDashboard.overlay(reports[bestReport].center_mass_x, reports[bestReport].center_mass_y, reports[bestReport].boundingRectWidth, reports[bestReport].boundingRectHeight);
-                                        //ModdedSmartDashboard.overlayEnd();
-                                        
-                                        
-                                        System.out.println("\n\nBest Particle: "
+					}
+					
+					ModdedSmartDashboard.overlayStart();
+					ModdedSmartDashboard.overlay(reports[bestReport].center_mass_x, reports[bestReport].center_mass_y, reports[bestReport].boundingRectWidth, reports[bestReport].boundingRectHeight);
+					//ModdedSmartDashboard.overlayEnd();
+					
+					
+					System.out.println("\n\nBest Particle: "
 							+ "\nCenter of mass x normalized: " + reports[bestReport].center_mass_x_normalized
 							+ "\nCenter of mass y normalized: " + reports[bestReport].center_mass_y_normalized
 							+ "\nWidth: " + reports[bestReport].boundingRectWidth
 							+ "\nHeight: " + reports[bestReport].boundingRectHeight);
-                                
-                                        // We are assuming a constant elevation difference between the camera and the target's CENTER!
-                                        // This is defined in the Location class
-                                        System.out.println(Location.getLocationOfRectangle(reports[bestReport].center_mass_x_normalized, reports[bestReport].center_mass_y_normalized, reports[bestReport].boundingRectHeight, reports[bestReport].boundingRectWidth));
-                                }
+					
+					// We are assuming a constant elevation difference between the camera and the target's CENTER!
+					// This is defined in the Location class
+					System.out.println(Location.getLocationOfRectangle(reports[bestReport].center_mass_x_normalized, reports[bestReport].center_mass_y_normalized, reports[bestReport].boundingRectHeight, reports[bestReport].boundingRectWidth));
+				}
 				
-                                    Watchdog.getInstance().feed();
+				Watchdog.getInstance().feed();
 				return;
 				
 			} catch (AxisCameraException ex) {
@@ -106,8 +106,8 @@ public class TeleopController extends Controller {
 			robot.driveSystem.move(new Movement(new Vector((rightJoystick.forward() + leftJoystick.forward()) / 2.0, 0), (rightJoystick.forward() - leftJoystick.forward()) / 2.0));
 		}
 		
-                
-                
+		
+		
 		Watchdog.getInstance().feed();
 	}
 	public void continuous() {}
