@@ -41,7 +41,7 @@ public class TeleopController extends Controller {
 				}*/
 				
 				// Turn towards the first rectangle
-				double tolerance = 0.05;
+				double tolerance = 0.025;
 				boolean movementMade = false;
 				
 				// TODO: Maybe use PID to set angle instead of rotating at a constant angular velocity
@@ -54,16 +54,17 @@ public class TeleopController extends Controller {
 						}
 					}
 					double multiplier = Math.abs(reports[bestReport].center_mass_x_normalized);
+                                        
 					if(reports[bestReport].center_mass_x_normalized > tolerance) {
-						robot.driveSystem.move(new Movement(new Vector(rightJoystick.forward(), 0), multiplier * 0.5));
+						robot.driveSystem.move(new Movement(new Vector(rightJoystick.forward(), 0), multiplier * 0.45));
 						movementMade = true;
 					} else if(reports[bestReport].center_mass_x_normalized < -tolerance) {
-						robot.driveSystem.move(new Movement(new Vector(rightJoystick.forward(), 0), multiplier * -0.5));
+						robot.driveSystem.move(new Movement(new Vector(rightJoystick.forward(), 0), multiplier * -0.45));
 						movementMade = true;
 					}	
                                         ModdedSmartDashboard.overlayStart();
                                         ModdedSmartDashboard.overlay(reports[bestReport].center_mass_x, reports[bestReport].center_mass_y, reports[bestReport].boundingRectWidth, reports[bestReport].boundingRectHeight);
-                                        ModdedSmartDashboard.overlayEnd();
+                                        //ModdedSmartDashboard.overlayEnd();
                                         
                                         
                                         System.out.println("\n\nBest Particle: "
@@ -77,7 +78,7 @@ public class TeleopController extends Controller {
                                         System.out.println(Location.getLocationOfRectangle(reports[bestReport].center_mass_x_normalized, reports[bestReport].center_mass_y_normalized, reports[bestReport].boundingRectHeight, reports[bestReport].boundingRectWidth));
                                 }
 				
-				Watchdog.getInstance().feed();
+                                    Watchdog.getInstance().feed();
 				return;
 				
 			} catch (AxisCameraException ex) {

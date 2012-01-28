@@ -1,5 +1,6 @@
 package sensors;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.camera.AxisCamera.ResolutionT;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
@@ -71,6 +72,8 @@ public class Camera extends Sensor {
 		camera.writeResolution(ResolutionT.k320x240);
 		camera.writeCompression(30);
 		
+                Timer.delay(3); // Sometimes, the cRIO starts before the camera so we have to put in a wait
+                
 		cc = new CriteriaCollection();      // create the criteria for the particle filter
 		cc.addCriteria(NIVision.MeasurementType.IMAQ_MT_BOUNDING_RECT_WIDTH, 30, 400, false);
 		cc.addCriteria(NIVision.MeasurementType.IMAQ_MT_BOUNDING_RECT_HEIGHT, 40, 400, false);
@@ -116,12 +119,10 @@ public class Camera extends Sensor {
 	
 	public ParticleAnalysisReport[] trackRectangles() throws AxisCameraException, NIVisionException {
 		ColorImage colorImage = image();
-		BinaryImage thresholdImage = colorImage.thresholdHSL(0, 255, 100, 255, 168, 255);	// Get only areas of a certain brightness
+		BinaryImage thresholdImage = colorImage.thresholdHSL(0, 255, 0, 63, 175, 255);	// Get only areas of a certain brightness
 		BinaryImage bigObjectsImage = thresholdImage.removeSmallObjects(false, 2);			// Remove smaller objects
 		BinaryImage convexHullImage = bigObjectsImage.convexHull(false);					// Fill in damaged rectangles
 		BinaryImage filteredImage = convexHullImage.particleFilter(cc());					// Find rectangles
-		
-		System.out.println(filteredImage.getNumberParticles() + "  " + System.currentTimeMillis()); // TODO remove
 		
 		ParticleAnalysisReport[] result = filteredImage.getOrderedParticleAnalysisReports();// Find rectangles
 		
