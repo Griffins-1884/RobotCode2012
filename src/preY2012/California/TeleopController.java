@@ -4,12 +4,12 @@ import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.ModdedSmartDashboard;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
 import edu.wpi.first.wpilibj.image.NIVisionException;
-import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
 
 import driveSystems.*;
 
 import _static.*;
 import input.*;
+import image.RectangleMatch;
 
 public class TeleopController extends Controller {
 	
@@ -30,7 +30,7 @@ public class TeleopController extends Controller {
 		
 		if(rightJoystick.trigger()) {
 			try {
-				ParticleAnalysisReport[] reports = ((Robot) robot).camera.trackRectangles();
+				RectangleMatch[] reports = ((Robot) robot).camera.trackRectangles();
 				/*for (int i = 0; i < reports.length; i++) {                                // print results
 					ParticleAnalysisReport r = reports[i];
 					System.out.println("\n\nParticle: " + i
@@ -75,7 +75,7 @@ public class TeleopController extends Controller {
 					
 					// We are assuming a constant elevation difference between the camera and the target's CENTER!
 					// This is defined in the Location class
-					System.out.println(Location.getLocationOfRectangle(reports[bestReport].center_mass_x_normalized, reports[bestReport].center_mass_y_normalized, reports[bestReport].boundingRectHeight, reports[bestReport].boundingRectWidth));
+					System.out.println(Location.getLocationOfRectangle(reports[bestReport]));
 				}
 				
 				Watchdog.getInstance().feed();

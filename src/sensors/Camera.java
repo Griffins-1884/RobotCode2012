@@ -9,7 +9,8 @@ import edu.wpi.first.wpilibj.image.ColorImage;
 import edu.wpi.first.wpilibj.image.CriteriaCollection;
 import edu.wpi.first.wpilibj.image.NIVision;
 import edu.wpi.first.wpilibj.image.NIVisionException;
-import edu.wpi.first.wpilibj.image.ParticleAnalysisReport;
+
+import image.RectangleMatch;
 
 /**
  * A camera (no shape tracking).
@@ -72,8 +73,8 @@ public class Camera extends Sensor {
 		camera.writeResolution(ResolutionT.k320x240);
 		camera.writeCompression(30);
 		
-                Timer.delay(3); // Sometimes, the cRIO starts before the camera so we have to put in a wait
-                
+		Timer.delay(3); // Sometimes, the cRIO starts before the camera so we have to put in a wait
+		
 		cc = new CriteriaCollection();      // create the criteria for the particle filter
 		cc.addCriteria(NIVision.MeasurementType.IMAQ_MT_BOUNDING_RECT_WIDTH, 30, 400, false);
 		cc.addCriteria(NIVision.MeasurementType.IMAQ_MT_BOUNDING_RECT_HEIGHT, 40, 400, false);
@@ -117,14 +118,17 @@ public class Camera extends Sensor {
 		return cc;
 	}
 	
-	public ParticleAnalysisReport[] trackRectangles() throws AxisCameraException, NIVisionException {
+	public RectangleMatch[] trackRectangles() throws AxisCameraException, NIVisionException {
 		ColorImage colorImage = image();
 		BinaryImage thresholdImage = colorImage.thresholdHSL(0, 255, 0, 63, 175, 255);	// Get only areas of a certain brightness
 		BinaryImage bigObjectsImage = thresholdImage.removeSmallObjects(false, 2);			// Remove smaller objects
 		BinaryImage convexHullImage = bigObjectsImage.convexHull(false);					// Fill in damaged rectangles
 		BinaryImage filteredImage = convexHullImage.particleFilter(cc());					// Find rectangles
 		
-		ParticleAnalysisReport[] result = filteredImage.getOrderedParticleAnalysisReports();// Find rectangles
+		RectangleMatch[] result = new RectangleMatch[NIVision.countParticles(filteredImage.image)];
+		for(int i = 0; i < result.length; i++) {
+			result[i] = new RectangleMatch(filteredImage, i);
+		}
 		
 		colorImage.free();
 		thresholdImage.free();
