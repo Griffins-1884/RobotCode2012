@@ -25,9 +25,9 @@ public class Location {
 	public static final double realTargetHeight = 0.4572; // target height in meters
 	public static final double realTargetWidth = 0.6096; // target width in meters
 	public static final double focalLength = 0.0004; // Axis 206 camera focal length in meters
-	public static final double elevationDifference = 1.0; // TODO: CHANGE; is elevation difference between camera's lens and 
+	public static final double elevationDifference = 0.1235; // TODO: CHANGE; is elevation difference between camera's lens and 
 	// center of rectangle
-	public static final double axis206FOV = 0.9424777961; // 54 degrees in radians. A doc suggested 48 degrees is better
+	public static final double axis206FOV = 48.0*Math.PI/180.0; // 54 degrees in radians. A doc suggested 48 degrees is better
 	public static final double FOVHeightPixels = 240.0;
 	public static final double FOVWidthPixels = 320.0;
 	
@@ -63,8 +63,17 @@ public class Location {
 		
 		double distance = elevationDifference/Math.sin(alpha);
 		
-		double beta = MathUtils.acos((distance*wImage)/(focalLength*realTargetWidth));
-		
+                double beta;
+                
+                if((distance*wImage)/(focalLength*realTargetWidth) > 1)
+                {
+                    beta = MathUtils.acos(1);
+                }
+                else
+                {
+                    beta = MathUtils.acos((distance*wImage)/(focalLength*realTargetWidth));
+                }
+                		
 		if(rect.center_mass_x_normalized < 0)
 		{
 			beta *= -1; // resolve sign ambiguity due to arccos

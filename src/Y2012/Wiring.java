@@ -9,6 +9,6 @@ public class Wiring {
 	public static final double[] motorCoefficients = new double[4];
 	public static final int[] sensors = new int[0];
 	static {
-		[getting your attention via an error] // Initialize wiring
+		//[getting your attention via an error] // Initialize wiring
 	}
 }
