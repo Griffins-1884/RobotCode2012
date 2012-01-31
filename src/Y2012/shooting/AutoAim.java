@@ -6,7 +6,8 @@ import actions.Interval;
 public class AutoAim extends Action {
 	private Aim aimAction;
 	public AutoAim() {
-		[getting your attention via an error] // Create an Aim action after processing where to shoot
+		super(null);
+		// TODO [getting your attention via an error] // Create an Aim action after processing where to shoot
 	}
 	public void act() {
 		aimAction.act();
