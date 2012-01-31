@@ -9,9 +9,9 @@ import com.sun.squawk.util.MathUtils;
  */
 public class Vector {
 	/**
-	 * The x and y components of the vector
+	 * The x, y and z components of the vector
 	 */
-	public final double x, y;
+	public final double x, y, z;
 	
 	/**
 	 * Constructs a vector from the given x and y components
@@ -19,9 +19,10 @@ public class Vector {
 	 * @param x The x-component of the vector.
 	 * @param y The y-component of the vector.
 	 */
-	public Vector(double x, double y) {
+	public Vector(double x, double y, double z) {
 		this.x = x;
 		this.y = y;
+		this.z = z;
 	}
 	
 	/**
@@ -31,7 +32,7 @@ public class Vector {
 	 * @return The vector sum
 	 */
 	public Vector add(Vector v) {
-		return new Vector(x + v.x, y + v.y);
+		return new Vector(x + v.x, y + v.y, z + v.z);
 	}
 	
 	/**
@@ -41,7 +42,7 @@ public class Vector {
 	 * @return The dot product of this and v.
 	 */
 	public double dotProduct(Vector v) {
-		return x * v.x + y * v.y;
+		return x * v.x + y * v.y + z * v.z;
 	}
 	
 	/**
@@ -51,7 +52,7 @@ public class Vector {
 	 */
 	public Vector normalize() {
 		double magnitude = magnitude();
-		return new Vector(x / magnitude, y / magnitude);
+		return new Vector(x / magnitude, y / magnitude, z / magnitude);
 	}
 	
 	/**
@@ -60,9 +61,9 @@ public class Vector {
 	 * @param theta The radians to rotate the vector by.
 	 * @return The rotated vectors.
 	 */
-	public Vector rotate(double theta) {
+	public Vector rotateHorizontal(double theta) {
 		double sin = Math.sin(theta), cos = Math.cos(theta);
-		return new Vector(x * cos  - y * sin, x * sin + y * cos);
+		return new Vector(x * cos  - y * sin, x * sin + y * cos, z);
 	}
 	
 	/**
@@ -71,7 +72,16 @@ public class Vector {
 	 * @return The magnitude of the vector.
 	 */
 	public double magnitude() {
-		return Math.sqrt(x * x + y * y);
+		return Math.sqrt(x * x + y * y + z * z);
+	}
+	
+	/**
+	 * Gets the horizontal vector, removing the vertical component.
+	 * 
+	 * @return A horizontal vector.
+	 */
+	public Vector horizontalProjection() {
+		return new Vector(x, y, 0);
 	}
 	
 	/**
@@ -79,7 +89,7 @@ public class Vector {
 	 * 
 	 * @return The direction of the vector.
 	 */
-	public double direction() {
+	public double horizontalDirection() {
 		return MathUtils.atan2(y, x);
 	}
 }

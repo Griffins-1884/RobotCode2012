@@ -93,17 +93,17 @@ public class LimitedAngleSwerveDrive extends DriveSystem implements EncoderListe
 	 */
 	// TODO add support for absolute movement
 	protected void updateMovement() {
-		Vector leftVector = movement.translation.add(new Vector(-movement.rotation, 0)),
-			   rightVector = movement.translation.add(new Vector(movement.rotation, 0));
+		Vector leftVector = movement.translation.add(new Vector(-movement.rotation, 0, 0)),
+			   rightVector = movement.translation.add(new Vector(movement.rotation, 0, 0));
 		
 		if(leftVector.magnitude() > 1 || rightVector.magnitude() > 1) {
 			double maxMagnitude = Math.max(leftVector.magnitude(), rightVector.magnitude());
-			leftVector = new Vector(leftVector.x / maxMagnitude, leftVector.y / maxMagnitude);
-			rightVector = new Vector(rightVector.x / maxMagnitude, rightVector.y / maxMagnitude);
+			leftVector = new Vector(leftVector.x / maxMagnitude, leftVector.y / maxMagnitude, 0);
+			rightVector = new Vector(rightVector.x / maxMagnitude, rightVector.y / maxMagnitude, 0);
 		}
 		
-		targetLeftRotation = leftVector.direction();
-		targetRightRotation = rightVector.direction();
+		targetLeftRotation = leftVector.horizontalDirection();
+		targetRightRotation = rightVector.horizontalDirection();
 		leftPower = leftVector.magnitude();
 		rightPower = rightVector.magnitude();
 		while(targetLeftRotation > Math.PI / 2) {

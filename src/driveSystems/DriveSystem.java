@@ -48,7 +48,7 @@ public abstract class DriveSystem {
 		}
 		this.motors = motors;
 		this.motorCoefficients = motorCoefficients;
-		this.movement = new Movement(new Vector(0, 0), 0);
+		this.movement = new Movement(new Vector(0, 0, 0), 0);
 		updateMovement();
 	}
 	
@@ -67,6 +67,7 @@ public abstract class DriveSystem {
 	 * @param movement The movement the robot should move with.
 	 */
 	public void move(Movement movement) {
+		movement = new Movement(movement.translation.horizontalProjection(), movement.rotation, movement.isAbsolute);
 		checkMovement(movement);
 		this.movement = movement;
 		updateMovement();
