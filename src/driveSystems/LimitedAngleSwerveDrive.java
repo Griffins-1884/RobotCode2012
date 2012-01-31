@@ -1,5 +1,7 @@
 package driveSystems;
 
+import _static.Vector;
+
 import com.sun.squawk.util.MathUtils;
 
 import edu.wpi.first.wpilibj.SpeedController;

@@ -1,4 +1,4 @@
-package driveSystems;
+package _static;
 
 import com.sun.squawk.util.MathUtils;
 
@@ -91,5 +91,14 @@ public class Vector {
 	 */
 	public double horizontalDirection() {
 		return MathUtils.atan2(y, x);
+	}
+	
+	/**
+	 * Represents this vector in a string.
+	 * 
+	 * @return A string representing this vector.
+	 */
+	public String toString() {
+		return "X: " + x + "\nY:" + y + "\nZ:" + z;
 	}
 }

@@ -9,7 +9,7 @@ import driveSystems.*;
 
 import _static.*;
 import input.*;
-import image.RectangleMatch;
+import image.*;
 
 public class TeleopController extends Controller {
 	
@@ -75,7 +75,7 @@ public class TeleopController extends Controller {
 					
 					// We are assuming a constant elevation difference between the camera and the target's CENTER!
 					// This is defined in the Location class
-					System.out.println(Location.Tracking.getLocationOfRectangle(reports[bestReport]));
+					System.out.println(Tracking.findRectangle(reports[bestReport]));
 				}
 				
 				Watchdog.getInstance().feed();
