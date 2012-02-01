@@ -5,15 +5,14 @@ import actions.Interval;
 
 public class Aim extends Action {
 	public Aim(double verticalAngle, double horizontalAngle) {
-            super(null);
-            
-		//[getting your attention via an error] // Implement
+		super(null);
+		// TODO [getting your attention via an error] // Implement
 	}
 	public void act() {
-		//[getting your attention via an error] // Move the shooting apparatus
+		// TODO [getting your attention via an error] // Move the shooting apparatus
 	}
 	public Interval duration() {
-            return null;
-		//[getting your attention via an error] // How long will it take to get into position
+		return null;
+		// TODO [getting your attention via an error] // How long will it take to get into position
 	}
 }

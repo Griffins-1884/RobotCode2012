@@ -21,7 +21,7 @@ public class TeleopController extends Controller {
 		} else if(joystick.button(5)) {
 			rotation = 1;
 		}
-		robot.driveSystem.move(new Movement(new Vector(joystick.forward(), joystick.right()), rotation));
+		robot.driveSystem.move(new Movement(new Vector(joystick.forward(), joystick.right(), 0), rotation));
 		Watchdog.getInstance().feed();
 	}
 	public void continuous() {}

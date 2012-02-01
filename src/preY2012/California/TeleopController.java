@@ -9,7 +9,7 @@ import driveSystems.*;
 
 import _static.*;
 import input.*;
-import image.RectangleMatch;
+import image.*;
 
 public class TeleopController extends Controller {
 	
@@ -57,10 +57,10 @@ public class TeleopController extends Controller {
                                         
                                         
 					if(reports[bestReport].center_mass_x_normalized > tolerance) {
-						robot.driveSystem.move(new Movement(new Vector(rightJoystick.forward(), 0), multiplier * 0.45));
+						robot.driveSystem.move(new Movement(new Vector(rightJoystick.forward(), 0, 0), multiplier * 0.45));
 						movementMade = true;
 					} else if(reports[bestReport].center_mass_x_normalized < -tolerance) {
-						robot.driveSystem.move(new Movement(new Vector(rightJoystick.forward(), 0), multiplier * -0.45));
+						robot.driveSystem.move(new Movement(new Vector(rightJoystick.forward(), 0, 0), multiplier * -0.45));
 						movementMade = true;
 					}
 					
@@ -77,7 +77,7 @@ public class TeleopController extends Controller {
 					
 					// We are assuming a constant elevation difference between the camera and the target's CENTER!
 					// This is defined in the Location class
-					System.out.println(Location.getLocationOfRectangle(reports[bestReport]));
+					System.out.println(Tracking.findRectangle(reports[bestReport]));
 				}
 				
 				Watchdog.getInstance().feed();
@@ -107,10 +107,10 @@ public class TeleopController extends Controller {
 			if(rightJoystick.button(4)) {
 				rotation *= 2;
 			}
-			robot.driveSystem.move(new Movement(new Vector(rightJoystick.forward(), 0), rotation));
+			robot.driveSystem.move(new Movement(new Vector(rightJoystick.forward(), 0, 0), rotation));
 		} else {
 			// Divide both by 2 so that sensitivity doesn't max out when both joysticks are at halfway
-			robot.driveSystem.move(new Movement(new Vector((rightJoystick.forward() + leftJoystick.forward()) / 2.0, 0), (rightJoystick.forward() - leftJoystick.forward()) / 2.0));
+			robot.driveSystem.move(new Movement(new Vector((rightJoystick.forward() + leftJoystick.forward()) / 2.0, 0, 0), (rightJoystick.forward() - leftJoystick.forward()) / 2.0));
 		}
 		
 		

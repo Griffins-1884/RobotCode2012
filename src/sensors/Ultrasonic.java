@@ -117,7 +117,7 @@ public class Ultrasonic extends Sensor {
      * @return The type of the sensor.
      */
     public short type() {
-        return Sensor.Types.ULTRASONIC;
+        return Sensor.Types.ULTRASONIC_RANGEFINDER;
     }
 
     /**

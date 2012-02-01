@@ -1,5 +1,7 @@
 package driveSystems;
 
+import _static.Vector;
+
 /**
  * A movement that a DriveSystem can move in.
  * 
@@ -56,7 +58,7 @@ public class Movement {
 		if(!isAbsolute) {
 			return this;
 		}
-		return new Movement(translation.rotate(angle), rotation, false);
+		return new Movement(translation.rotateHorizontal(angle), rotation, false);
 	}
 	
 	/**
@@ -69,6 +71,6 @@ public class Movement {
 		if(isAbsolute) {
 			return this;
 		}
-		return new Movement(translation.rotate(-angle), rotation, true);
+		return new Movement(translation.rotateHorizontal(-angle), rotation, true);
 	}
 }
