@@ -25,6 +25,7 @@ public class TeleopController extends Controller {
 	public void initialize() {}
 	
 	private boolean previousButton2State = false;
+	private double rotation = 0;
 	
 	public void periodic() {
 		
@@ -54,8 +55,8 @@ public class TeleopController extends Controller {
 					}
 					double multiplier = Math.abs(reports[bestReport].center_mass_x_normalized);
 					multiplier = Math.max(multiplier, 0.1);
-                                        
-                                        
+					
+					
 					if(reports[bestReport].center_mass_x_normalized > tolerance) {
 						robot.driveSystem.move(new Movement(new Vector(rightJoystick.forward(), 0, 0), multiplier * 0.45));
 						movementMade = true;
@@ -89,12 +90,19 @@ public class TeleopController extends Controller {
 				ex.printStackTrace();
 			}
 		}
+		if(leftJoystick.button(4)) {
+			rotation = ((Robot) robot).gyro.value();
+			robot.driveSystem.move(new Movement(new Vector(-rotation/30, 0, 0), 0));
+		} else if(rotation != 0) {
+			rotation = 0;
+			((Robot) robot).gyro.reset();
+		}
 		
-                // Ultrasonic output
-                
-                System.out.println("Ultrasonic output: " + ((Robot) robot).ultrasonic.getDistance() + " meters");
-                
-                
+		// Ultrasonic output
+		
+		System.out.println("Ultrasonic output: " + ((Robot) robot).ultrasonic.getDistance() + " meters");
+		
+		
 		if((leftJoystick.button(2) || rightJoystick.button(2)) && !previousButton2State) {
 			oneJoystick = !oneJoystick;
 			previousButton2State = true;

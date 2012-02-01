@@ -50,6 +50,13 @@ public class Gyro extends AnalogSensor {
 		// TODO check this
 		return sensor.getAngle() * Math.PI / 180;
 	}
+
+	/**
+	 * Resets the value of the encoder to zero.
+	 */
+	public void reset() {
+		sensor.reset();
+	}
 	
 	/**
 	 * Fires an AnalogSensorEvent to all listeners.

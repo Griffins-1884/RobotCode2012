@@ -33,7 +33,7 @@ public class ConcurrentActions extends Action implements ActionListener, MultiAc
 			thread.start();
 		}
 	}
-
+	
 	/**
 	 * Determines the duration of the ConcurrentActions, by finding the maximum duration.
 	 * 
@@ -83,7 +83,7 @@ public class ConcurrentActions extends Action implements ActionListener, MultiAc
 		public ActionThread(Action action) {
 			this.action = action;
 		}
-
+		
 		/**
 		 * Calls the action.
 		 */

@@ -36,19 +36,19 @@ public class MecanumDrive extends DriveSystem {
 	protected void updateMovement() {
 		// TODO modify for absolute movements
 		double frontLeft = movement.translation.x - movement.translation.y - movement.rotation,
-				   backLeft = movement.translation.x + movement.translation.y - movement.rotation,
-				   frontRight = movement.translation.x + movement.translation.y + movement.rotation,
-				   backRight = movement.translation.x - movement.translation.y + movement.rotation;
-			double maxPowerValue = Math.max(Math.max(Math.abs(frontLeft), Math.abs(backLeft)), Math.max(Math.abs(frontRight), Math.abs(backRight)));
-			if(maxPowerValue > 1) {
-				frontLeft /= maxPowerValue;
-				backLeft /= maxPowerValue;
-				frontRight /= maxPowerValue;
-				backRight /= maxPowerValue;
-			}
-			motors[LEFT + FRONT].set(frontLeft * motorCoefficients[LEFT + FRONT]);
-			motors[LEFT + BACK].set(backLeft * motorCoefficients[LEFT + BACK]);
-			motors[RIGHT + FRONT].set(frontRight * motorCoefficients[RIGHT + FRONT]);
-			motors[RIGHT + BACK].set(backRight * motorCoefficients[RIGHT + BACK]);
+			   backLeft = movement.translation.x + movement.translation.y - movement.rotation,
+			   frontRight = movement.translation.x + movement.translation.y + movement.rotation,
+			   backRight = movement.translation.x - movement.translation.y + movement.rotation;
+		double maxPowerValue = Math.max(Math.max(Math.abs(frontLeft), Math.abs(backLeft)), Math.max(Math.abs(frontRight), Math.abs(backRight)));
+		if(maxPowerValue > 1) {
+			frontLeft /= maxPowerValue;
+			backLeft /= maxPowerValue;
+			frontRight /= maxPowerValue;
+			backRight /= maxPowerValue;
+		}
+		motors[LEFT + FRONT].set(frontLeft * motorCoefficients[LEFT + FRONT]);
+		motors[LEFT + BACK].set(backLeft * motorCoefficients[LEFT + BACK]);
+		motors[RIGHT + FRONT].set(frontRight * motorCoefficients[RIGHT + FRONT]);
+		motors[RIGHT + BACK].set(backRight * motorCoefficients[RIGHT + BACK]);
 	}
 }
