@@ -53,7 +53,9 @@ public class TeleopController extends Controller {
 						}
 					}
 					double multiplier = Math.abs(reports[bestReport].center_mass_x_normalized);
-					
+					multiplier = Math.max(multiplier, 0.1);
+                                        
+                                        
 					if(reports[bestReport].center_mass_x_normalized > tolerance) {
 						robot.driveSystem.move(new Movement(new Vector(rightJoystick.forward(), 0), multiplier * 0.45));
 						movementMade = true;
@@ -88,6 +90,11 @@ public class TeleopController extends Controller {
 			}
 		}
 		
+                // Ultrasonic output
+                
+                System.out.println("Ultrasonic output: " + ((Robot) robot).ultrasonic.getDistance() + " meters");
+                
+                
 		if((leftJoystick.button(2) || rightJoystick.button(2)) && !previousButton2State) {
 			oneJoystick = !oneJoystick;
 			previousButton2State = true;
