@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.AnalogChannel;
  */
 public class Ultrasonic extends Sensor {
 
-    public static final double INCHES_PER_VOLT = 512.0 / 5.07; // Vcc/512 volts per inch, so 512/Vcc inches per volt
+    public static final double INCHES_PER_VOLT = 512.0 / 5.0; // Vcc/512 volts per inch, so 512/Vcc inches per volt
     public static final double METERS_PER_INCH = 0.0254; // 0.0254 meters in an inch
     public static final double METERS_PER_VOLT = METERS_PER_INCH * INCHES_PER_VOLT;
 
@@ -117,7 +117,7 @@ public class Ultrasonic extends Sensor {
      * @return The type of the sensor.
      */
     public short type() {
-        return Sensor.Types.ULTRASONIC_RANGEFINDER;
+        return Sensor.Types.ULTRASONIC;
     }
 
     /**

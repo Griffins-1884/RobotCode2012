@@ -90,9 +90,10 @@ public class TeleopController extends Controller {
 				ex.printStackTrace();
 			}
 		}
-		if(leftJoystick.button(4)) {
+		if(leftJoystick.button(7)) {
 			rotation = ((Robot) robot).gyro.value();
-			robot.driveSystem.move(new Movement(new Vector(-rotation/30, 0, 0), 0));
+			System.out.println(rotation);
+			robot.driveSystem.move(new Movement(new Vector(rotation/30, 0, 0), 0));
 		} else if(rotation != 0) {
 			rotation = 0;
 			((Robot) robot).gyro.reset();

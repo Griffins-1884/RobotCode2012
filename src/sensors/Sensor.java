@@ -34,7 +34,7 @@ public abstract class Sensor {
 									  COMPASS = 2,
 									  GYRO = 3,
 									  ENCODER = 4,
-									  ULTRASONIC_RANGEFINDER = 5,
+									  ULTRASONIC = 5,
 								  ABSTRACT_BOOLEAN_SENSOR = 8192,
 									  PNEUMATIC_PRESSURE_SENSOR = 8193,
 								  ABSTRACT_DIGITAL_SENSOR = 16384,
