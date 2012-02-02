@@ -40,7 +40,7 @@ public class Gyro extends AnalogSensor {
 	public short type() {
 		return Types.GYRO;
 	}
-
+	
 	/**
 	 * Gets the value of the gyro in radians
 	 * 
@@ -50,7 +50,7 @@ public class Gyro extends AnalogSensor {
 		// TODO check this
 		return sensor.getAngle() * Math.PI / 180;
 	}
-
+	
 	/**
 	 * Resets the value of the encoder to zero.
 	 */
