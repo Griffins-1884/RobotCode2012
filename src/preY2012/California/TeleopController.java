@@ -94,6 +94,8 @@ public class TeleopController extends Controller {
 			rotation = ((Robot) robot).gyro.value();
 			System.out.println(rotation);
 			robot.driveSystem.move(new Movement(new Vector(rotation/30, 0, 0), 0));
+                        Watchdog.getInstance().feed();
+                        return;
 		} else if(rotation != 0) {
 			rotation = 0;
 			((Robot) robot).gyro.reset();
