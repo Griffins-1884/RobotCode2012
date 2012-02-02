@@ -75,9 +75,7 @@ public class Ultrasonic extends Sensor {
     /**
      * Gets distance reading from ultrasonic.
      */
-    public double getDistance()
-    {
-        checkForEvents();
+    public double getDistance() {
         return meterOutput;
     }
 
@@ -101,10 +99,6 @@ public class Ultrasonic extends Sensor {
      * @param ev The UltrasonicEvent to be fired.
      */
     protected void fireEvent(UltrasonicEvent ev) {
-        
-        if(listeners == null)
-            return;
-        
         for (int i = 0; i < listeners.size(); i++) {
             ((UltrasonicListener) listeners.elementAt(i)).ultrasonic(ev);
         }

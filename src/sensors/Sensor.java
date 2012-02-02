@@ -60,6 +60,7 @@ public abstract class Sensor {
 	 */
 	public Sensor(long sensorId) {
 		this.sensorId = sensorId;
+		listeners = new Vector();
 	}
 	
 	/**
