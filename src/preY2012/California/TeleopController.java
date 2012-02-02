@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.image.NIVisionException;
 import driveSystems.*;
 
 import _static.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import input.*;
 import image.*;
 
@@ -67,9 +68,8 @@ public class TeleopController extends Controller {
 					
 					ModdedSmartDashboard.overlayStart();
 					ModdedSmartDashboard.overlay(reports[bestReport].center_mass_x, reports[bestReport].center_mass_y, reports[bestReport].boundingRectWidth, reports[bestReport].boundingRectHeight);
-					//ModdedSmartDashboard.overlayEnd();
-					
-					
+					ModdedSmartDashboard.overlayEnd();
+										
 					System.out.println("\n\nBest Particle: "
 							+ "\nCenter of mass x normalized: " + reports[bestReport].center_mass_x_normalized
 							+ "\nCenter of mass y normalized: " + reports[bestReport].center_mass_y_normalized
@@ -92,8 +92,8 @@ public class TeleopController extends Controller {
 		}
 		if(leftJoystick.button(7)) {
 			rotation = ((Robot) robot).gyro.value();
-			System.out.println(rotation);
-			robot.driveSystem.move(new Movement(new Vector(rotation/30, 0, 0), 0));
+			System.out.println("Gyro: " + rotation*180./Math.PI + " degrees");
+			robot.driveSystem.move(new Movement(new Vector(rotation/(Math.PI/6), 0, 0), 0));
 			Watchdog.getInstance().feed();
 			return;
 		} else if(rotation != 0) {
@@ -103,7 +103,10 @@ public class TeleopController extends Controller {
 		
 		// Ultrasonic output
 		
-		System.out.println("Ultrasonic output: " + ((Robot) robot).ultrasonic.value() + " meters");
+		if(leftJoystick.button(6))
+		{
+			System.out.println("Ultrasonic output: " + ((Robot) robot).ultrasonic.value() + " meters");
+		}
 		
 		
 		if((leftJoystick.button(2) || rightJoystick.button(2)) && !previousButton2State) {

@@ -65,7 +65,7 @@ public abstract class AnalogSensor extends Sensor {
 	 */
 	public AnalogSensor(long sensorId) {
 		super(sensorId);
-		oldValue = value();
+		oldValue = 0.0;
 		threshold = 0.01;
 	}
 	

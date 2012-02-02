@@ -66,6 +66,9 @@ public class Ultrasonic extends AnalogSensor {
 	 * @return The distance in front of the ultrasonic rangefinder, in the current units.
 	 */
 	public double value() {
+		if(sensor == null)
+			return 0.0;
+		
 		return sensor.getVoltage() * INCHES_PER_VOLT * conversionFactor;
 	}
 	
