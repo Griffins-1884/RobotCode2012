@@ -29,6 +29,15 @@ public class MecanumDrive extends DriveSystem {
 		}
 		super.checkMotors(motors);
 	}
+
+	/**
+	 * Determines the motions this drive system is capable of.
+	 * 
+	 * @return The kinds of motions this drive system is capable of.
+	 */
+	public int capabilities() {
+		return FORWARD_BACKWARD_MOTION + LEFT_RIGHT_MOTION + ROTATIONAL_MOTION;
+	}
 	
 	/**
 	 * Updates the drive with the movement it has specified.

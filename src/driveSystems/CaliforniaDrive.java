@@ -42,6 +42,15 @@ public class CaliforniaDrive extends DriveSystem {
 			throw new UnsupportedMovementException("California drive cannot move sideways");
 		}
 	}
+
+	/**
+	 * Determines the motions this drive system is capable of.
+	 * 
+	 * @return The kinds of motions this drive system is capable of.
+	 */
+	public int capabilities() {
+		return FORWARD_BACKWARD_MOTION + ROTATIONAL_MOTION;
+	}
 	
 	/**
 	 * Updates the motors to the most recent movement.

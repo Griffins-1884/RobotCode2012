@@ -95,6 +95,20 @@ public abstract class DriveSystem {
 	protected void checkMovement(Movement movement) {}
 	
 	/**
+	 * Represents the kinds of motion possible for a drive system.
+	 */
+	public static final int FORWARD_BACKWARD_MOTION = 1,
+							LEFT_RIGHT_MOTION = 2,
+							ROTATIONAL_MOTION = 4;
+	
+	/**
+	 * Determines the motions this drive system is capable of.
+	 * 
+	 * @return The kinds of motions this drive system is capable of.
+	 */
+	public abstract int capabilities();
+	
+	/**
 	 * The method to update the drive's motors with the current movement. The movement can be assumed to be valid, because it has already been checked.
 	 */
 	protected abstract void updateMovement();

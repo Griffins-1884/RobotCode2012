@@ -89,6 +89,15 @@ public class LimitedAngleSwerveDrive extends DriveSystem implements EncoderListe
 		}
 		super.checkMotors(motors);
 	}
+
+	/**
+	 * Determines the motions this drive system is capable of.
+	 * 
+	 * @return The kinds of motions this drive system is capable of.
+	 */
+	public int capabilities() {
+		return FORWARD_BACKWARD_MOTION + LEFT_RIGHT_MOTION + ROTATIONAL_MOTION;
+	}
 	
 	/**
 	 * Updates the movement of the drive with the current movement.
