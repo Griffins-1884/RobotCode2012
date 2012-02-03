@@ -46,39 +46,42 @@ public class TeleopController extends Controller {
 				double tolerance = 0.025;
 				boolean movementMade = false;
 				
+				RectangleMatch[] bestReports = getBestReports(reports);
+				sortReportsByPosition(bestReports); // sorts reports so the highest report is first
+				
 				// TODO: Maybe use PID to set angle instead of rotating at a constant angular velocity
-				if(reports.length > 0) {
+				if(bestReports.length > 0) {
 					int bestReport = 0;
-					for(int i = 1; i < reports.length; i++) {
-						if(reports[bestReport].particleQuality < reports[i].particleQuality) {
+					for(int i = 1; i < bestReports.length; i++) {
+						if(bestReports[bestReport].particleQuality < bestReports[i].particleQuality) {
 							bestReport = i;
 						}
 					}
-					double multiplier = Math.abs(reports[bestReport].center_mass_x_normalized);
+					double multiplier = Math.abs(bestReports[bestReport].center_mass_x_normalized);
 					multiplier = Math.max(multiplier, 0.1);
 					
 					
-					if(reports[bestReport].center_mass_x_normalized > tolerance) {
+					if(bestReports[bestReport].center_mass_x_normalized > tolerance) {
 						robot.driveSystem.move(new Movement(new Vector(rightJoystick.forward(), 0, 0), multiplier * 0.45));
 						movementMade = true;
-					} else if(reports[bestReport].center_mass_x_normalized < -tolerance) {
+					} else if(bestReports[bestReport].center_mass_x_normalized < -tolerance) {
 						robot.driveSystem.move(new Movement(new Vector(rightJoystick.forward(), 0, 0), multiplier * -0.45));
 						movementMade = true;
 					}
 					
 					ModdedSmartDashboard.overlayStart();
-					ModdedSmartDashboard.overlay(reports[bestReport].center_mass_x, reports[bestReport].center_mass_y, reports[bestReport].boundingRectWidth, reports[bestReport].boundingRectHeight);
+					ModdedSmartDashboard.overlay(bestReports[bestReport].center_mass_x, bestReports[bestReport].center_mass_y, bestReports[bestReport].boundingRectWidth, bestReports[bestReport].boundingRectHeight);
 					ModdedSmartDashboard.overlayEnd();
 										
 					System.out.println("\n\nBest Particle: "
-							+ "\nCenter of mass x normalized: " + reports[bestReport].center_mass_x_normalized
-							+ "\nCenter of mass y normalized: " + reports[bestReport].center_mass_y_normalized
-							+ "\nWidth: " + reports[bestReport].boundingRectWidth
-							+ "\nHeight: " + reports[bestReport].boundingRectHeight);
+							+ "\nCenter of mass x normalized: " + bestReports[bestReport].center_mass_x_normalized
+							+ "\nCenter of mass y normalized: " + bestReports[bestReport].center_mass_y_normalized
+							+ "\nWidth: " + bestReports[bestReport].boundingRectWidth
+							+ "\nHeight: " + bestReports[bestReport].boundingRectHeight);
 					
 					// We are assuming a constant elevation difference between the camera and the target's CENTER!
 					// This is defined in the Location class
-					System.out.println(Tracking.findRectangle(reports[bestReport]));
+					System.out.println(Tracking.findRectangle(bestReports[bestReport]));
 				}
 				
 				Watchdog.getInstance().feed();
@@ -131,5 +134,40 @@ public class TeleopController extends Controller {
 		
 		Watchdog.getInstance().feed();
 	}
+	
+	
+	// Get the best reports, up to a maximum of four
+	public RectangleMatch[] getBestReports(RectangleMatch[] reports)
+	{
+		int bestIndex = 0;
+		RectangleMatch[] result = new RectangleMatch[4];
+		
+		// FINISH THIS
+		
+	}
+	
+	
+	public void sortReportsByPosition(RectangleMatch[] reports)
+	{
+		RectangleMatch temp;
+		int maxIndex;
+		
+		for(int startingIndex = 0; startingIndex < reports.length; startingIndex ++)
+		{
+			maxIndex = startingIndex;
+			
+			for(int i = startingIndex; i < reports.length; i ++) // find max value and its index
+			{
+				if(reports[i].center_mass_y_normalized > reports[maxIndex].center_mass_y_normalized) {
+					maxIndex = i;
+				}
+			}
+			
+			temp = reports[maxIndex]; // store temp as the max value
+			reports[maxIndex] = reports[startingIndex];
+			reports[startingIndex] = temp;
+		}	
+	}
+	
 	public void continuous() {}
 }
