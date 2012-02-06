@@ -1,10 +1,9 @@
 package Y2012;
 
-import _static.AbstractRobot;
 import _static.Controller;
 
 public class DisabledController extends Controller {
-	public DisabledController(AbstractRobot robot) {
+	public DisabledController(Robot robot) {
 		super(robot);
 	}
 	public void initialize() {}

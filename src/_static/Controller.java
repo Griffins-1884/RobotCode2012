@@ -1,5 +1,7 @@
 package _static;
 
+import Y2012.Robot;
+
 /**
  * This class should be extended by another class to control each part of a competition, with the given robot.
  * 
@@ -20,7 +22,7 @@ public abstract class Controller {
 	 * 
 	 * @param robot The robot that the controller controls.
 	 */
-	public Controller(AbstractRobot robot) {
+	public Controller(Robot robot) {
 		this.robot = robot;
 	}
 	

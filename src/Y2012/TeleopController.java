@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.Watchdog;
 import _static.*;
 
 public class TeleopController extends Controller {
-	public TeleopController(AbstractRobot robot) {
+	public TeleopController(Robot robot) {
 		super(robot);
 	}
 	public void initialize() {}
