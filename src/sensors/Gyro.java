@@ -47,10 +47,6 @@ public class Gyro extends AnalogSensor {
 	 * @return The current radians value of the gyro.
 	 */
 	public double value() {
-		// TODO check this
-		if(sensor == null)
-			return 0;
-		
 		return sensor.getAngle() * Math.PI / 180;
 	}
 	

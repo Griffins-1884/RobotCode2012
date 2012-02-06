@@ -53,7 +53,7 @@ public abstract class BooleanSensor extends Sensor {
 	 */
 	public BooleanSensor(long sensorId) {
 		super(sensorId);
-		oldValue = value();
+		oldValue = false;
 	}
 	
 	/**

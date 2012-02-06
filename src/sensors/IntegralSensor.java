@@ -60,7 +60,7 @@ public abstract class IntegralSensor extends Sensor {
 	 */
 	public IntegralSensor(long sensorId) {
 		super(sensorId);
-		oldValue = value();
+		oldValue = 0;
 	}
 	
 	/**
