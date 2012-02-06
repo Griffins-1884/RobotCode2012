@@ -5,7 +5,7 @@ import _static.AbstractRobot;
 import _static.Controller;
 
 public class AutonomousController extends Controller {
-	public AutonomousController(AbstractRobot robot) {
+	public AutonomousController(Robot robot) {
 		super(robot);
 	}
 	public void initialize() {}

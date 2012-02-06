@@ -27,7 +27,7 @@ public class TeleopController extends Controller {
 	public static final double MIDDLE_ELEVATION = 61*kInch + blackRectangleHeight/2.0 - CAMERA_HEIGHT;
 	public static final double TOP_ELEVATION = 98*kInch + blackRectangleHeight/2.0 - CAMERA_HEIGHT;
 
-	public TeleopController(AbstractRobot robot) {
+	public TeleopController(Robot robot) {
 		super(robot);
 		leftJoystick = new AdjustableJoystick(1);
 		rightJoystick = new AdjustableJoystick(2);
@@ -42,7 +42,7 @@ public class TeleopController extends Controller {
 
 		if(rightJoystick.trigger()) {
 			try {
-				RectangleMatch[] reports = ((Robot) robot).camera.trackRectangles();
+				RectangleMatch[] reports = robot.camera.trackRectangles();
 				/*
 				 * for (int i = 0; i < reports.length; i++) { // print results
 				 * ParticleAnalysisReport r = reports[i];
@@ -202,20 +202,20 @@ public class TeleopController extends Controller {
 			}
 		}
 		if(leftJoystick.button(7)) {
-			rotation = ((Robot) robot).gyro.value();
+			rotation = robot.gyro.value();
 			System.out.println("Gyro: " + rotation * 180. / Math.PI + " degrees");
 			robot.driveSystem.move(new Movement(new Vector(rotation / (Math.PI / 6), 0, 0), 0));
 			Watchdog.getInstance().feed();
 			return;
 		} else if(rotation != 0) {
 			rotation = 0;
-			((Robot) robot).gyro.reset();
+			robot.gyro.reset();
 		}
 
 		// Ultrasonic output
 
 		if(leftJoystick.button(6)) {
-			System.out.println("Ultrasonic output: " + ((Robot) robot).ultrasonic.value() + " meters");
+			System.out.println("Ultrasonic output: " + robot.ultrasonic.value() + " meters");
 		}
 
 
