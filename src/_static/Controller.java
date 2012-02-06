@@ -15,7 +15,7 @@ public abstract class Controller {
 	/**
 	 * The robot that the Controller controls.
 	 */
-	protected final AbstractRobot robot;
+	protected final Robot robot;
 	
 	/**
 	 * Constructs a controller to control the given robot.
