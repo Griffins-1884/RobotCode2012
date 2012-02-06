@@ -22,7 +22,7 @@ public class TeleopController extends Controller {
 	public static final double kInch = 0.0254; // an inch in meters
 	public static final double blackRectangleHeight = 22*kInch;
 	
-	public static final double CAMERA_HEIGHT = 0.492;
+	public static final double CAMERA_HEIGHT = 18*kInch;
 	public static final double BOTTOM_ELEVATION = 28*kInch + blackRectangleHeight/2.0 - CAMERA_HEIGHT;
 	public static final double MIDDLE_ELEVATION = 61*kInch + blackRectangleHeight/2.0 - CAMERA_HEIGHT;
 	public static final double TOP_ELEVATION = 98*kInch + blackRectangleHeight/2.0 - CAMERA_HEIGHT;
@@ -36,6 +36,8 @@ public class TeleopController extends Controller {
 	public void initialize() {
 	}
 	private boolean previousButton2State = false;
+	private boolean startCountdown = true;
+	private long time = 0;
 	private double rotation = 0;
 
 	public void periodic() {
@@ -59,7 +61,8 @@ public class TeleopController extends Controller {
 				boolean movementMade = false;
 
 				RectangleMatch[] bestReports = getBestReports(reports);
-				sortReportsByPosition(bestReports); // sorts reports so the highest report is first
+				
+				System.out.println(reports.length);
 
 				RectangleMatch topReport = null;
 				double topCenterY = -1.0;
@@ -162,7 +165,7 @@ public class TeleopController extends Controller {
 					}
 				}
 				
-				ModdedSmartDashboard.overlayEnd();
+				//ModdedSmartDashboard.overlayEnd();
 				
 				
 				// Turn towards rectangle chosen
@@ -237,7 +240,24 @@ public class TeleopController extends Controller {
 			robot.driveSystem.move(new Movement(new Vector((rightJoystick.forward() + leftJoystick.forward()) / 2.0, 0, 0), (rightJoystick.forward() - leftJoystick.forward()) / 2.0));
 		}
 
-
+		/*if(!Wiring.boxSensor.value()) // nothing blocking the way
+		{
+			startCountdown = true; // can start countdown
+		}
+		
+		if(leftJoystick.button(8))
+		{
+			if(startCountdown && Wiring.boxSensor.value())
+			{
+				time = System.currentTimeMillis();
+				startCountdown = false;
+			}
+			
+			if((System.currentTimeMillis() - time) > 1500)
+			{
+			
+			}
+		}*/
 
 		Watchdog.getInstance().feed();
 	}
@@ -271,26 +291,6 @@ public class TeleopController extends Controller {
 
 		return result;
 
-	}
-
-	public void sortReportsByPosition(RectangleMatch[] reports) {
-		RectangleMatch temp;
-		int maxIndex;
-
-		for(int startingIndex = 0; startingIndex < reports.length; startingIndex++) {
-			maxIndex = startingIndex;
-
-			for(int i = startingIndex; i < reports.length; i++) // find max value and its index
-			{
-				if(reports[i].center_mass_y_normalized > reports[maxIndex].center_mass_y_normalized) {
-					maxIndex = i;
-				}
-			}
-
-			temp = reports[maxIndex]; // store temp as the max value
-			reports[maxIndex] = reports[startingIndex];
-			reports[startingIndex] = temp;
-		}
 	}
 
 	public void continuous() {
