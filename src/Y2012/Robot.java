@@ -8,7 +8,7 @@ import _static.AbstractRobot;
 
 public class Robot extends AbstractRobot {
 	public static final ShootingApparatus shootingApparatus;
-	static {shootingApparatus = new ShootingApparatus(Wiring.shootingMotors, Wiring.shootingMotorCoefficients);}
+	static {shootingApparatus = new ShootingApparatus(Wiring.shootingMotors, Wiring.shootingMotorCoefficients, Wiring.lightSensors);}
 	public static Robot robot() {
 		DriveSystem driveSystem = new CaliforniaDrive(Wiring.driveMotors, Wiring.drivingMotorCoefficients);
 		Apparatus[] apparatuses = new Apparatus[] {shootingApparatus};
