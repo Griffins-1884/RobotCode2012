@@ -1,6 +1,10 @@
 # Compiled source #
 ###################
 bin/*
+build/*
+j2meclasses/*
+nbproject/private/*
+suite/*
 
 # Packages #
 ############
@@ -26,7 +30,3 @@ Thumbs.db
 #####################
 .project
 .classpath
-
-# WPILibJ #
-###########
-WPILibJ/*
