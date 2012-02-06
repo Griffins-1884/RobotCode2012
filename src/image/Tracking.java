@@ -9,8 +9,6 @@ public class Tracking {
 	public static final double realTargetHeight = 0.4572; // target height in meters
 	public static final double realTargetWidth = 0.6096; // target width in meters
 	public static final double focalLength = 0.0004; // Axis 206 camera focal length in meters
-	public static final double elevationDifference = 0.1235; // TODO: CHANGE; is elevation difference between camera's lens and 
-	// center of rectangle
 	public static final double axis206FOV = 48.0*Math.PI/180.0; // 54 degrees in radians. A doc suggested 48 degrees is better
 	public static final double FOVHeightPixels = 240.0;
 	public static final double FOVWidthPixels = 320.0;
@@ -21,15 +19,13 @@ public class Tracking {
 	 * Gets the location of the target, setting the robot as the origin.
 	 * See the whitepaper for more on the process.
 	 * 
-	 * @param COM_normalized_x The center of mass x-coordinate (normalized between -1 and 1) of the rectangle
-	 * @param COM_normalized_y The center of mass y-coordinate (normalized between -1 and 1) of the rectangle
-	 * @param rectangleHeight The height of the rectangle in pixels
-	 * @param rectangleWidth the width of the rectangle in pixels
+	 * @param rect	The rectangle we're looking at
+	 * @param elevationDifference	The difference in elevation between the camera and COM of the rect
 	 * 
 	 * @return The Location of the rectangle in x and y space, with x defined as the axis in
 	 * the direction of the robot and y rotated 90 degrees CW from that. The robot is at the origin.
 	 */
-	public static Vector findRectangle(RectangleMatch rect) {
+	public static Vector findRectangle(RectangleMatch rect, double elevationDifference) {
 		double hImage; // height of rectangle in meters on the camera's "plate"
 		double wImage;
 		

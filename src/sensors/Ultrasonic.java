@@ -69,7 +69,7 @@ public class Ultrasonic extends AnalogSensor {
 		if(sensor == null)
 			return 0.0;
 		
-		return sensor.getVoltage() * INCHES_PER_VOLT * conversionFactor;
+		return sensor.getAverageVoltage() * INCHES_PER_VOLT * conversionFactor;
 	}
 	
 	/**
