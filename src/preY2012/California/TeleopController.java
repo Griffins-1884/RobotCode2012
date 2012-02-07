@@ -1,5 +1,6 @@
 package preY2012.California;
 
+import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.ModdedSmartDashboard;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
@@ -35,7 +36,7 @@ public class TeleopController extends Controller {
 
 	public void initialize() {
 	}
-	private boolean previousButton2State = false;
+	private boolean previousButton2State = false, previousButton5State;
 	private boolean startCountdown = true;
 	private long time = 0;
 	private double rotation = 0;
@@ -238,6 +239,11 @@ public class TeleopController extends Controller {
 		} else {
 			// Divide both by 2 so that sensitivity doesn't max out when both joysticks are at halfway
 			robot.driveSystem.move(new Movement(new Vector((rightJoystick.forward() + leftJoystick.forward()) / 2.0, 0, 0), (rightJoystick.forward() - leftJoystick.forward()) / 2.0));
+		}
+		if(rightJoystick.button(5)) {
+			robot.monodent.set(Value.kReverse);
+		} else if(rightJoystick.button(6)) {
+			robot.monodent.set(Value.kForward);
 		}
 
 		/*if(!Wiring.boxSensor.value()) // nothing blocking the way
