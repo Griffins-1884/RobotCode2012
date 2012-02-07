@@ -4,13 +4,14 @@ import sensors.LightSensor;
 import Y2012.shooting.ShootingApparatus;
 import driveSystems.DriveSystem;
 import edu.wpi.first.wpilibj.Jaguar;
+import edu.wpi.first.wpilibj.Relay;
 
 public class Wiring {
 	public static final Jaguar[] driveMotors = new Jaguar[4];
 	public static final double[] drivingMotorCoefficients = new double[4];
-	public static final Jaguar[] shootingMotors = new Jaguar[4];
-	public static final double[] shootingMotorCoefficients = new double[4];
-	public static final LightSensor[] lightSensors = new LightSensor[2];
+	public static final Relay lowerBeltMotor, upperBeltMotor;
+	public static final Jaguar powerMotor, angleMotor;
+	public static final LightSensor lowerLightSensor, upperLightSensor;
 	public static final int[] sensors = new int[0];
 	static {
 		driveMotors[DriveSystem.LEFT + DriveSystem.FRONT] = new Jaguar(1);
@@ -22,16 +23,12 @@ public class Wiring {
 		driveMotors[DriveSystem.RIGHT + DriveSystem.BACK] = new Jaguar(4);
 			drivingMotorCoefficients[DriveSystem.RIGHT + DriveSystem.BACK] = -1;
 		
-		shootingMotors[ShootingApparatus.CONVEYOR + ShootingApparatus.LOWER] = new Jaguar(5);
-			shootingMotorCoefficients[ShootingApparatus.CONVEYOR + ShootingApparatus.LOWER] = 1; // TODO check this
-		shootingMotors[ShootingApparatus.CONVEYOR + ShootingApparatus.UPPER] = new Jaguar(6);
-			shootingMotorCoefficients[ShootingApparatus.CONVEYOR + ShootingApparatus.UPPER] = 1; // TODO check this
-		shootingMotors[ShootingApparatus.SHOOTING + ShootingApparatus.POWER] = new Jaguar(7);
-			shootingMotorCoefficients[ShootingApparatus.SHOOTING + ShootingApparatus.POWER] = 1; // TODO check this
-		shootingMotors[ShootingApparatus.SHOOTING + ShootingApparatus.ANGLE] = new Jaguar(8);
-			shootingMotorCoefficients[ShootingApparatus.SHOOTING + ShootingApparatus.ANGLE] = 1; // TODO check this
+		powerMotor = new Jaguar(5);
+		angleMotor = new Jaguar(6);
+		lowerBeltMotor = new Relay(7);
+		upperBeltMotor = new Relay(8);
 		
-		lightSensors[ShootingApparatus.LOWER] = new LightSensor("upper_sensor".hashCode(), 1); // TODO update for wiring
-		lightSensors[ShootingApparatus.UPPER] = new LightSensor("lower_sensor".hashCode(), 2); // TODO update for wiring
+		lowerLightSensor = new LightSensor("upper_sensor".hashCode(), 1); // TODO update for wiring
+		upperLightSensor = new LightSensor("lower_sensor".hashCode(), 2); // TODO update for wiring
 	}
 }

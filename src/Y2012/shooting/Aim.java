@@ -1,18 +1,21 @@
 package Y2012.shooting;
 
-import actions.Action;
 import actions.Interval;
+import actions.MultiAction;
 
-public class Aim extends Action {
-	public Aim(double verticalAngle, double horizontalAngle) {
-		super(null);
-		// TODO [getting your attention via an error] // Implement
+public class Aim extends ShootingApparatus.ShootingApparatusAction {
+	public final double angle, power;
+	public Aim(double angle, double power, ShootingApparatus apparatus, MultiAction parent) {
+		super(apparatus, parent);
+		this.angle = angle;
+		this.power = power;
 	}
 	public void act() {
-		// TODO [getting your attention via an error] // Move the shooting apparatus
+		apparatus.setPower(power);
+		// TODO how do we set angle?
 	}
 	public Interval duration() {
-		return null;
-		// TODO [getting your attention via an error] // How long will it take to get into position
+		return new Interval(1000); // TODO time these
 	}
+	public void _destroy() {}
 }

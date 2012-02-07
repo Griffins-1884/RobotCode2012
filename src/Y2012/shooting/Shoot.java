@@ -1,20 +1,23 @@
 package Y2012.shooting;
 
-import actions.Action;
 import actions.Interval;
 import actions.MultiAction;
 
-public class Shoot extends Action {
+public class Shoot extends ShootingApparatus.ShootingApparatusAction {
 	private int balls;
-	public Shoot(int balls, MultiAction parent) {
-		super(parent);
+	public Shoot(int balls, ShootingApparatus apparatus, MultiAction parent) {
+		super(apparatus, parent);
 		this.balls = balls;
 	}
 	public void act() {
-		// TODO [getting your attention via an error] // Shoot the basketball
+		apparatus.setUpperBelt(true);
+		apparatus.setLowerBelt(true);
 	}
 	public Interval duration() {
-		return null;
-		// TODO [getting your attention via an error] // How long will shooting take?
+		return new Interval(1000); // TODO How long will shooting take?
+	}
+	public void _destroy() {
+		apparatus.setUpperBelt(false);
+		apparatus.setLowerBelt(false);
 	}
 }
