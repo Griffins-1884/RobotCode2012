@@ -1,5 +1,7 @@
 package _static;
 
+import preY2012.California.Robot;
+
 /**
  * This class should be extended by another class to control each part of a competition, with the given robot.
  * 
@@ -13,14 +15,14 @@ public abstract class Controller {
 	/**
 	 * The robot that the Controller controls.
 	 */
-	protected final AbstractRobot robot;
+	protected final Robot robot;
 	
 	/**
 	 * Constructs a controller to control the given robot.
 	 * 
 	 * @param robot The robot that the controller controls.
 	 */
-	public Controller(AbstractRobot robot) {
+	public Controller(Robot robot) {
 		this.robot = robot;
 	}
 	
