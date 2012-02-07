@@ -2,11 +2,13 @@ package Y2012.shooting;
 
 import actions.Action;
 import actions.Interval;
+import actions.MultiAction;
 
 public class Shoot extends Action {
-	public Shoot(double power) {
-		super(null);
-		// TODO [getting your attention via an error] // Implement
+	private int balls;
+	public Shoot(int balls, MultiAction parent) {
+		super(parent);
+		this.balls = balls;
 	}
 	public void act() {
 		// TODO [getting your attention via an error] // Shoot the basketball
