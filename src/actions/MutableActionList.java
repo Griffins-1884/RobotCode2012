@@ -4,6 +4,7 @@ import java.util.Vector;
 
 public class MutableActionList extends SequentialActions {
 	private final Vector actionList;
+	private Action currentAction;
 	
 	/**
 	 * Constructs an empty MutableActionList.
@@ -53,14 +54,22 @@ public class MutableActionList extends SequentialActions {
 	 * Starts calling Actions.
 	 */
 	public void act() {
-		Action a = poll();
-		if(a == null) {
-			finished();
+		currentAction = poll();
+		if(currentAction == null) {
+			stop();
 			return;
 		}
-		thread = new ActionThread(a);
-		a.addListener(this);
-		thread.start();
+		currentAction.addListener(this);
+		currentAction.startSeparate();
+	}
+	
+	/**
+	 * Cleans up the action
+	 */
+	public void destroy() {
+		if(currentAction != null) {
+			currentAction.stop();
+		}
 	}
 	
 	/**

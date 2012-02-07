@@ -13,11 +13,6 @@ public class SequentialActions extends Action implements ActionListener, MultiAc
 	protected int actionsCompleted;
 	
 	/**
-	 * The thread executing the actions.
-	 */
-	protected ActionThread thread;
-	
-	/**
 	 * Constructs a SequentialActions from the array of actions, and the parent.
 	 * 
 	 * @param actions The actions to be called sequentially.
@@ -33,12 +28,18 @@ public class SequentialActions extends Action implements ActionListener, MultiAc
 	 */
 	public void act() {
 		if(actionsCompleted >= actions.length) {
-			finished();
+			stop();
 			return;
 		}
-		thread = new ActionThread(actions[actionsCompleted]);
 		actions[actionsCompleted].addListener(this);
-		thread.start();
+		actions[actionsCompleted].startSeparate();
+	}
+	
+	/**
+	 * Cleans up the action
+	 */
+	public void destroy() {
+		actions[actionsCompleted].stop();
 	}
 	
 	/**
@@ -77,33 +78,5 @@ public class SequentialActions extends Action implements ActionListener, MultiAc
 			return new Interval(etd.milliseconds + start.longValue() - System.currentTimeMillis());
 		}
 		return etd;
-	}
-	
-	/**
-	 * An ActionThread for SequentialActions.
-	 * 
-	 * @author Colin Poler
-	 */
-	protected class ActionThread extends Thread {
-		/**
-		 * The action the thread is executing.
-		 */
-		public final Action action;
-		
-		/**
-		 * Constructs an ActionThread with the specified action.
-		 * 
-		 * @param action The action to call;
-		 */
-		public ActionThread(Action action) {
-			this.action = action;
-		}
-		
-		/**
-		 * Goes through actions and calls them.
-		 */
-		public void run() {
-			action.start();
-		}
 	}
 }

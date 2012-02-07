@@ -14,6 +14,7 @@ public abstract class Action {
 	public final MultiAction parent;
 	protected Long start = null;
 	private final Vector listeners;
+	private SeparateActionThread thread;
 	
 	public Action(MultiAction parent) {
 		this.parent = parent;
@@ -59,8 +60,25 @@ public abstract class Action {
 	public void start() {
 		this.start = new Long(System.currentTimeMillis());
 		act();
+		stop();
+	}
+	
+	/**
+	 * Cleans up the thread, and calls destroy
+	 */
+	public void stop() {
+		if(thread != null) {
+			thread.interrupt();
+			thread.stop();
+		}
+		destroy();
 		finished();
 	}
+	
+	/**
+	 * Cleans up the action
+	 */
+	public abstract void destroy();
 	
 	/**
 	 * An ActionThread for Actions in separate threads.
@@ -94,7 +112,7 @@ public abstract class Action {
 	 * Starts the action in a separate thread
 	 */
 	public void startSeparate() {
-		SeparateActionThread thread = new SeparateActionThread(this);
+		thread = new SeparateActionThread(this);
 		thread.start();
 	}
 	

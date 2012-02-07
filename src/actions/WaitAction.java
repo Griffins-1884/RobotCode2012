@@ -7,6 +7,7 @@ package actions;
  */
 public class WaitAction extends Action {
 	private final Interval duration;
+	private Thread waitThread;
 	
 	/**
 	 * Constructs a WaitAction with the specified duration and parent.
@@ -23,12 +24,20 @@ public class WaitAction extends Action {
 	 * Pauses the thread for the duration of the action.
 	 */
 	public void act() {
+		waitThread = Thread.currentThread();
 		try {
-			wait(duration.milliseconds);
-		} catch(InterruptedException e) {
-			e.printStackTrace();
+			Thread.sleep(duration.milliseconds);
+		} catch(InterruptedException e) {} // If interrupted, just continue
+		stop();
+	}
+	
+	/**
+	 * Cleans up the action
+	 */
+	public void destroy() {
+		if(waitThread != null) {
+			waitThread.interrupt();
 		}
-		finished();
 	}
 	
 	/**
