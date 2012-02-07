@@ -63,6 +63,42 @@ public abstract class Action {
 	}
 	
 	/**
+	 * An ActionThread for Actions in separate threads.
+	 * 
+	 * @author Colin Poler
+	 */
+	protected class SeparateActionThread extends Thread {
+		/**
+		 * The action the thread is executing.
+		 */
+		public final Action action;
+		
+		/**
+		 * Constructs an SeparateActionThread with the specified action.
+		 * 
+		 * @param action The action to call;
+		 */
+		public SeparateActionThread(Action action) {
+			this.action = action;
+		}
+		
+		/**
+		 * Calls the action.
+		 */
+		public void run() {
+			action.start();
+		}
+	}
+	
+	/**
+	 * Starts the action in a separate thread
+	 */
+	public void startSeparate() {
+		SeparateActionThread thread = new SeparateActionThread(this);
+		thread.start();
+	}
+	
+	/**
 	 * The act method. This method should run all the code to complete the action.
 	 */
 	protected abstract void act();
