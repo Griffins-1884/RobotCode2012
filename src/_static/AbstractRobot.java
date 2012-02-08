@@ -16,18 +16,12 @@ public abstract class AbstractRobot {
 	public final DriveSystem driveSystem;
 	
 	/**
-	 * The robot's apparatuses.
-	 */
-	public final Apparatus[] apparatuses;
-	
-	/**
 	 * Constructs a robot with the specified drive system, and apparatuses.
 	 * 
 	 * @param driveSystem The drive system to use.
 	 * @param apparatuses The apparatuses to use.
 	 */
-	public AbstractRobot(DriveSystem driveSystem, Apparatus[] apparatuses) {
+	public AbstractRobot(DriveSystem driveSystem) {
 		this.driveSystem = driveSystem;
-		this.apparatuses = apparatuses;
 	}
 }

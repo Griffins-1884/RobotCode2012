@@ -17,7 +17,7 @@ public class InternalController extends edu.wpi.first.wpilibj.IterativeRobot {
 	 * Initializes the InternalController.
 	 */
 	public void robotInit() {
-		robot = Robot.robot();
+		robot = Robot.robot;
 		autonomousController = new AutonomousController(robot);
 		teleopController = new TeleopController(robot);
 		disabledController = new DisabledController(robot);
