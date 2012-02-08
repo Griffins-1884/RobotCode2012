@@ -5,6 +5,15 @@ import actions.MultiAction;
 
 public abstract class Apparatus {
 	private boolean lock = false;
+	private boolean locked() {
+		return lock;
+	}
+	private synchronized void lock() {
+		lock = true;
+	}
+	private synchronized void unlock() {
+		lock = false;
+	}
 	public static abstract class ApparatusAction extends Action {
 		public final Apparatus apparatus;
 		public ApparatusAction(Apparatus apparatus, MultiAction parent) {
@@ -12,13 +21,13 @@ public abstract class Apparatus {
 			this.apparatus = apparatus;
 		}
 		public void start() {
-			while(apparatus.lock) {} // Idle until the shooter is not busy
-			apparatus.lock = true;
+			while(apparatus.locked()) {} // Idle until the shooter is not busy
+			apparatus.lock();
 			super.start();
-			apparatus.lock = false;
+			apparatus.unlock();
 		}
-		public void destroy() {
-			apparatus.lock = false;
+		public final void destroy() {
+			apparatus.unlock();
 			_destroy();
 		}
 		public abstract void _destroy();
