@@ -21,7 +21,7 @@ public class LightSensor extends BooleanSensor {
 	public final edu.wpi.first.wpilibj.DigitalInput sensor;
 	
 	/**
-	 * Constructs an Encoder with the specified ID and channel.
+	 * Constructs a Light Sensor with the specified ID and channel.
 	 * 
 	 * @param sensorId The ID of the sensor.
 	 * @param channel The channel of the sensor.

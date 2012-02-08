@@ -39,6 +39,7 @@ public abstract class Sensor {
 									  PNEUMATIC_PRESSURE_SENSOR = 8193,
 								  ABSTRACT_DIGITAL_SENSOR = 16384,
 								  	  LIGHT_SENSOR = 16385,
+									  LIMIT_SWITCH = 16386,
 								  OTHER_SENSOR = 24576,
 									  CAMERA = 24577;
 	}
