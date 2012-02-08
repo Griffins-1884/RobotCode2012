@@ -240,7 +240,7 @@ public class TeleopController extends Controller {
 			// Divide both by 2 so that sensitivity doesn't max out when both joysticks are at halfway
 			robot.driveSystem.move(new Movement(new Vector((rightJoystick.forward() + leftJoystick.forward()) / 2.0, 0, 0), (rightJoystick.forward() - leftJoystick.forward()) / 2.0));
 		}
-		if(rightJoystick.button(5)) {
+		if(rightJoystick.button(7)) {
 			robot.monodent.set(Value.kReverse);
 		} else if(rightJoystick.button(6)) {
 			robot.monodent.set(Value.kForward);
