@@ -244,6 +244,8 @@ public class TeleopController extends Controller {
 			robot.monodent.set(Value.kReverse);
 		} else if(rightJoystick.button(6)) {
 			robot.monodent.set(Value.kForward);
+		} else {
+			robot.monodent.set(Value.kOff);
 		}
 
 		/*if(!Wiring.boxSensor.value()) // nothing blocking the way
