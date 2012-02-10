@@ -1,70 +1,49 @@
 package image;
 
+import _static.Location;
 import _static.Vector;
 
 import com.sun.squawk.util.MathUtils;
 
 
 public class Tracking {
-	public static final double realTargetHeight = 0.4572; // target height in meters
-	public static final double realTargetWidth = 0.6096; // target width in meters
+	public static final double targetHeight = 0.4572; // target height in meters
+	public static final double targetWidth = 0.6096; // target width in meters
 	public static final double focalLength = 0.0004; // Axis 206 camera focal length in meters
-	public static final double axis206FOV = 48.0*Math.PI/180.0; // 54 degrees in radians. A doc suggested 48 degrees is better
-	public static final double FOVHeightPixels = 240.0;
-	public static final double FOVWidthPixels = 320.0;
+	public static final double cameraFOV = 48.0*Math.PI/180.0; // 54 degrees in radians. A doc suggested 48 degrees is better
+	public static final double imageHeightPixels = 240.0;
+	public static final double imageWidthPixels = 320.0;
+	public static final double cameraHeight = 9001; // TODO actually measure
 	
-	// See the whitepaper for the process
-	
-	/**
-	 * Gets the location of the target, setting the robot as the origin.
-	 * See the whitepaper for more on the process.
-	 * 
-	 * @param rect	The rectangle we're looking at
-	 * @param elevationDifference	The difference in elevation between the camera and COM of the rect
-	 * 
-	 * @return The Location of the rectangle in x and y space, with x defined as the axis in
-	 * the direction of the robot and y rotated 90 degrees CW from that. The robot is at the origin.
-	 */
-	public static Vector findRectangle(RectangleMatch rect, double elevationDifference) {
-		double hImage; // height of rectangle in meters on the camera's "plate"
-		double wImage;
+	public static final Vector getVectorToTarget(RectangleMatch rect, Location rectangleLocation) {
+		double imageWidth = Math.tan(cameraFOV / 2.0) * focalLength * 2.0, imageHeight = imageWidth * imageHeightPixels / imageWidthPixels;
 		
-		// tan FOV/2 = (wPlate/2)/f (see paper page 2)
-		// wPlate is the width of the camera's plate, which we need to find wImage
+		double rectangleWidthOnSensor = rect.boundingRectWidth * imageWidth / imageWidthPixels, rectangleHeightOnSensor = rect.boundingRectHeight * imageHeight / imageHeightPixels;
 		
-		// MAYBE LOOK THESE UP INSTEAD?
-		double wPlate = Math.tan(axis206FOV/2.0)*focalLength*2.0;
-		double hPlate = wPlate*3.0/4.0; // Is this true? Because it's 320 x 240
+		double angleOfElevation = MathUtils.asin(2.0 * (rectangleLocation.z - cameraHeight) * rectangleHeightOnSensor / (targetHeight * focalLength)) / 2.0; // TODO maybe more accurate by looking at position of the rectangle?
 		
-		hImage = rect.boundingRectHeight/FOVHeightPixels*hPlate; // convert pixel height to meter height
-		wImage = rect.boundingRectWidth/FOVWidthPixels*wPlate;
+		double distanceToTarget = (rectangleLocation.z - cameraHeight) / Math.sin(angleOfElevation);
 		
-		double alpha = MathUtils.asin(2.0*elevationDifference*hImage/(focalLength*realTargetHeight))/2.0;
-		
-		double distance = elevationDifference/Math.sin(alpha);
-		
-		double beta;
-		
-		
-		beta = MathUtils.acos((distance*wImage)/(focalLength*realTargetWidth));
-		
+		double angleOfRectangle = MathUtils.acos(distanceToTarget) * rectangleWidthOnSensor / (focalLength * targetWidth);
 		if(rect.center_mass_x_normalized < 0) {
-			beta *= -1; // resolve sign ambiguity due to arccos
+			angleOfRectangle *= -1;
 		}
 		
-		double y = distance*Math.sin(beta); // to return
-		double distanceAlongFloor = distance*Math.cos(alpha); // horizontal distance along floor
+		double horizontalDistance = distanceToTarget * Math.cos(angleOfElevation);
 		
-		double horizontalBeta = MathUtils.asin(y/distanceAlongFloor);
+		double yDistance = distanceToTarget * Math.sin(angleOfRectangle);
+		double horizontalAngleToTarget = MathUtils.acos(yDistance / horizontalDistance);
+		double xDistance = horizontalDistance * Math.sin(horizontalAngleToTarget);
 		
-		double x = distanceAlongFloor*Math.cos(horizontalBeta);
+		return new Vector(xDistance, yDistance, rectangleLocation.z - cameraHeight);
+	}
+	public static final Location getRobotLocation(RectangleMatch rect, Location rectangleLocation) {
+		Vector v = getVectorToTarget(rect, rectangleLocation);
 		
-		System.out.println("Horizontal Beta: " + horizontalBeta*180./Math.PI);
-		System.out.println("Beta: " + beta*180./Math.PI);
-		System.out.println("Alpha: " + alpha*180./Math.PI);
-		System.out.println("Distance: " + distance);
-		System.out.println("Distance along floor: " + distanceAlongFloor);
-		
-		return new Vector(y, x, 0); // TODO height of rectangle?
+		if(rectangleLocation.x < 0) {
+			return new Location(rectangleLocation.x + v.x, rectangleLocation.y - v.y, cameraHeight);
+		} else {
+			return new Location(rectangleLocation.x - v.x, rectangleLocation.y + v.y, cameraHeight);
+		}
 	}
 }
