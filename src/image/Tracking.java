@@ -25,7 +25,7 @@ public class Tracking {
 		double distanceToTarget = (rectangleLocation.z - cameraHeight) / Math.sin(angleOfElevation);
 		
 		double angleOfRectangle = MathUtils.acos(distanceToTarget) * rectangleWidthOnSensor / (focalLength * targetWidth);
-		if(rect.center_mass_x_normalized < 0) {
+		if(rect.center_mass_x_normalized < 0) { // TODO fix this bug
 			angleOfRectangle *= -1;
 		}
 		
@@ -45,5 +45,8 @@ public class Tracking {
 		} else {
 			return new Location(rectangleLocation.x - v.x, rectangleLocation.y + v.y, cameraHeight);
 		}
+	}
+	public static final double getAngleToRectangle(RectangleMatch rect) {
+		return MathUtils.atan2(Math.tan(cameraFOV / 2.0) * focalLength * rect.center_mass_x, focalLength);
 	}
 }
