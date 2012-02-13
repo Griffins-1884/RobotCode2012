@@ -22,7 +22,7 @@ public class MutableActionList extends SequentialActions {
 	public MutableActionList(Action[] actions, MultiAction parent) {
 		super(null, parent);
 		actionList = new Vector();
-		for(int i = 0; i < actionList.size(); i++) {
+		for(int i = 0; i < actions.length; i++) {
 			actionList.addElement(actions[i]);
 		}
 	}
