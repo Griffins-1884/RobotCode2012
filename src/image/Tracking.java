@@ -20,7 +20,7 @@ public class Tracking {
 		
 		double rectangleWidthOnSensor = rect.boundingRectWidth * imageWidth / imageWidthPixels, rectangleHeightOnSensor = rect.boundingRectHeight * imageHeight / imageHeightPixels;
 		
-		double angleOfElevation = MathUtils.asin(2.0 * (rectangleLocation.z - cameraHeight) * rectangleHeightOnSensor / (targetHeight * focalLength)) / 2.0; // TODO maybe more accurate by looking at position of the rectangle?
+		double angleOfElevation = MathUtils.asin(2.0 * (rectangleLocation.z - cameraHeight) * rectangleHeightOnSensor / (targetHeight * focalLength)) / 2.0;
 		
 		double distanceToTarget = (rectangleLocation.z - cameraHeight) / Math.sin(angleOfElevation);
 		
@@ -46,7 +46,10 @@ public class Tracking {
 			return new Location(rectangleLocation.x - v.x, rectangleLocation.y + v.y, cameraHeight);
 		}
 	}
-	public static final double getAngleToRectangle(RectangleMatch rect) {
+	public static final double getHorizontalAngleToRectangle(RectangleMatch rect) {
 		return MathUtils.atan2(Math.tan(cameraFOV / 2.0) * focalLength * rect.center_mass_x, focalLength);
+	}
+	public static final double getVerticalAngleToRectangle(RectangleMatch rect, double cameraAngle) {
+		return MathUtils.atan2(Math.tan(cameraFOV / 2.0) * focalLength * imageHeightPixels / imageWidthPixels * rect.center_mass_y, focalLength) + cameraAngle;
 	}
 }

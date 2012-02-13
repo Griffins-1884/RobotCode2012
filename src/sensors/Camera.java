@@ -129,6 +129,15 @@ public class Camera extends Sensor {
     }
 
     /**
+     * Gets the camera's current tilt value, in radians, with zero being the center
+     *
+     * @return The angle the camera is facing
+     */
+    public double angle() {
+        return tiltServo.get();
+    }
+
+    /**
      * Gets the CriteriaCollection for vision tracking.
      *
      * @return The CriteriaCollection object.
