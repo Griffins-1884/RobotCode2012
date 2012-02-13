@@ -1,7 +1,5 @@
 package sensors;
 
-import sensors.LightSensor.LightSensorListener;
-import sensors.Sensor.SensorListener;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class LimitSwitch extends BooleanSensor {

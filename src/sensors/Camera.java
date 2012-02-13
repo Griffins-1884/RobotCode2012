@@ -1,5 +1,6 @@
 package sensors;
 
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.camera.AxisCamera.ResolutionT;
@@ -58,14 +59,17 @@ public class Camera extends Sensor {
         }
     }
     private final AxisCamera camera;
-    private CriteriaCollection cc;      // the criteria for doing the particle filter operation
+    private final Servo tiltServo;
+    private CriteriaCollection cc;      // The criteria for doing the particle filter operation
 
     /**
-     * Constructs a Camera with the specified ID and address.
+     * Constructs a Camera with the specified ID, address (can be null) and tilt servo (can be null).
      *
      * @param sensorId The ID of the sensor.
+     * @param address The address at which to find the camera
+     * @param tiltServo The servo used for tilting the camera
      */
-    public Camera(long sensorId, String address) { // TODO add servo for camera tilt
+    public Camera(long sensorId, String address, Servo tiltServo) { // TODO add servo for camera tilt
         super(sensorId);
         if (address != null) {
             camera = AxisCamera.getInstance(address);
@@ -74,8 +78,9 @@ public class Camera extends Sensor {
         }
         camera.writeResolution(ResolutionT.k320x240);
         camera.writeCompression(30);
+        this.tiltServo = tiltServo;
 
-        Timer.delay(3); // Sometimes, the cRIO starts before the camera so we have to put in a wait
+        Timer.delay(8); // Sometimes, the cRIO starts before the camera so we have to put in a wait
 
         cc = new CriteriaCollection();      // create the criteria for the particle filter
         cc.addCriteria(NIVision.MeasurementType.IMAQ_MT_BOUNDING_RECT_WIDTH, 6, 320, true);
@@ -112,6 +117,15 @@ public class Camera extends Sensor {
      */
     public ColorImage image() throws AxisCameraException, NIVisionException {
         return camera.getImage();
+    }
+
+    /**
+     * Tilts the camera to the specified angle, in radians, with zero being the center
+     *
+     * @param angle The angle to tilt to
+     */
+    public void tilt(double angle) {
+        tiltServo.set(angle * 2 / Math.PI);
     }
 
     /**
