@@ -2,10 +2,11 @@ package Y2012.shooting;
 
 import _static.Location;
 import actions.Action;
+import actions.ActionListener;
 import actions.Interval;
 import actions.MultiAction;
 
-public class AutoAim extends Action {
+public class AutoAim extends Action implements ActionListener {
 	private Aim aimAction;
 	public AutoAim(Location location, ShootingApparatus apparatus, MultiAction parent) {
 		super(parent);
@@ -16,12 +17,16 @@ public class AutoAim extends Action {
 		aimAction = new Aim(angle, power, apparatus, parent);
 	}
 	public void act() {
-		aimAction.start(); // TODO Listen to the aim action, then stop
+		aimAction.addListener(this);
+		aimAction.start();
 	}
 	public Interval duration() {
 		return aimAction.duration();
 	}
 	public void destroy() {
-		aimAction = null;
+		aimAction.stop();
+	}
+	public void actionCompleted(Action source) {
+		stop();
 	}
 }

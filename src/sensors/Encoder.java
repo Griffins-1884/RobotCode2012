@@ -49,7 +49,6 @@ public class Encoder extends AnalogSensor {
 	 * @return The current radians value of the encoder.
 	 */
 	public double value() {
-		// TODO convert to radians
 		return sensor.getRaw() * 2 * Math.PI / clicksPerRevolution;
 	}
 	
