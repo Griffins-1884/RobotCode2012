@@ -10,7 +10,7 @@ public class MutableActionList extends SequentialActions {
 	 * Constructs an empty MutableActionList.
 	 */
 	public MutableActionList() {
-		this(null, null);
+		this(new Action[] {}, null);
 	}
 	
 	/**
