@@ -69,7 +69,7 @@ public abstract class Action {
 	public void stop() {
 		if(thread != null) {
 			thread.interrupt();
-			thread.stop();
+			//thread.stop(); TODO find another way, not valid in J2ME
 		}
 		destroy();
 		finished();
