@@ -148,7 +148,7 @@ public class Camera extends Sensor {
 
     public RectangleMatch[] trackRectangles() throws AxisCameraException, NIVisionException {
         ColorImage colorImage = image();
-        BinaryImage thresholdImage = colorImage.thresholdHSL(136, 182, 45, 100, 116, 255);	// Get only areas of a certain brightness
+        BinaryImage thresholdImage = colorImage.thresholdHSL(136, 182, 45, 100, 116, 255);	// Get only blue areas
         BinaryImage bigObjectsImage = thresholdImage.removeSmallObjects(false, 2);			// Remove smaller objects
         BinaryImage convexHullImage = bigObjectsImage.convexHull(false);					// Fill in damaged rectangles
         BinaryImage filteredImage = convexHullImage.particleFilter(cc());					// Find rectangles
