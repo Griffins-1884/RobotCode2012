@@ -1,4 +1,4 @@
-package _static;
+package communications;
 
 import java.util.Vector;
 
