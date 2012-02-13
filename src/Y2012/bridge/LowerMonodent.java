@@ -23,6 +23,7 @@ public class LowerMonodent extends Apparatus.ApparatusAction implements LimitSwi
 	}
 	public void _destroy() {
 		limitSwitch.removeListener(this);
+		((Monodent) apparatus).off();
 	}
 	public Interval duration() {
 		return new Interval(500); // TODO check duration

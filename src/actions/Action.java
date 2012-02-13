@@ -12,7 +12,16 @@ public abstract class Action {
 	 * The parent of the action.
 	 */
 	public final MultiAction parent;
+	
+	/**
+	 * The time at which this action started.
+	 */
 	protected Long start = null;
+	
+	/**
+	 * If true, this signals that the thread should exit. Please check it often, and before any time consuming code.
+	 */
+	protected boolean quit = false;
 	private final Vector listeners;
 	private SeparateActionThread thread;
 	
@@ -28,6 +37,15 @@ public abstract class Action {
 	 */
 	public void addListener(ActionListener listener) {
 		listeners.addElement(listener);
+	}
+	
+	/**
+	 * Removes an ActionListener from this action.
+	 * 
+	 * @param listener The listener to remove.
+	 */
+	public void removeListener(ActionListener listener) {
+		listeners.removeElement(listener);
 	}
 	
 	/**
@@ -68,8 +86,8 @@ public abstract class Action {
 	 */
 	public void stop() {
 		if(thread != null) {
+			this.quit = true;
 			thread.interrupt();
-			//thread.stop(); TODO find another way, not valid in J2ME
 		}
 		destroy();
 		finished();
