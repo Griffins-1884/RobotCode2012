@@ -65,7 +65,7 @@ public class Camera extends Sensor {
      *
      * @param sensorId The ID of the sensor.
      */
-    public Camera(long sensorId, String address) {
+    public Camera(long sensorId, String address) { // TODO add servo for camera tilt
         super(sensorId);
         if (address != null) {
             camera = AxisCamera.getInstance(address);
@@ -125,7 +125,7 @@ public class Camera extends Sensor {
 
     public RectangleMatch[] trackRectangles() throws AxisCameraException, NIVisionException {
         ColorImage colorImage = image();
-        BinaryImage thresholdImage = colorImage.thresholdHSL(0, 255, 0, 63, 200, 255);	// Get only areas of a certain brightness
+        BinaryImage thresholdImage = colorImage.thresholdHSL(0, 255, 0, 63, 200, 255);	// Get only areas of a certain brightness // TODO change for blue lights
         BinaryImage bigObjectsImage = thresholdImage.removeSmallObjects(false, 2);			// Remove smaller objects
         BinaryImage convexHullImage = bigObjectsImage.convexHull(false);					// Fill in damaged rectangles
         BinaryImage filteredImage = convexHullImage.particleFilter(cc());					// Find rectangles
