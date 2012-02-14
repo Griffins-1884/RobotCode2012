@@ -36,7 +36,7 @@ public class ConcurrentActions extends Action implements ActionListener, MultiAc
 	/**
 	 * Cleans up the action
 	 */
-	public void destroy() {
+	protected void destroy() {
 		for(int i = 0; i < actions.length; i++) {
 			actions[i].stop();
 		}

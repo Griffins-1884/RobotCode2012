@@ -66,7 +66,7 @@ public class MutableActionList extends SequentialActions {
 	/**
 	 * Cleans up the action
 	 */
-	public void destroy() {
+	protected void destroy() {
 		if(currentAction != null) {
 			currentAction.stop();
 		}

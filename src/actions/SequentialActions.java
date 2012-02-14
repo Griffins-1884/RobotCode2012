@@ -38,7 +38,7 @@ public class SequentialActions extends Action implements ActionListener, MultiAc
 	/**
 	 * Cleans up the action
 	 */
-	public void destroy() {
+	protected void destroy() {
 		actions[actionsCompleted].stop();
 	}
 	

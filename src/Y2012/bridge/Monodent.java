@@ -7,23 +7,23 @@ import edu.wpi.first.wpilibj.Relay.Value;
 
 public class Monodent extends Apparatus {
 	protected final Relay motor;
-	protected final LimitSwitch lowerSwitch, upperSwitch;
-	public Monodent(Relay motor, LimitSwitch lowerSwitch, LimitSwitch upperSwitch) {
+	protected final LimitSwitch frontSwitch, backSwitch;
+	public Monodent(Relay motor, LimitSwitch frontSwitch, LimitSwitch backSwitch) {
 		this.motor = motor;
-		this.lowerSwitch = lowerSwitch;
-		this.upperSwitch = upperSwitch;
+		this.frontSwitch = frontSwitch;
+		this.backSwitch = backSwitch;
 	}
 	protected void down() {
-		if(!lowerSwitch.value()) {
+		if(!frontSwitch.value()) {
 			motor.set(Value.kForward);
 		}
 	}
 	protected void up() {
-		if(!upperSwitch.value()) {
+		if(!backSwitch.value()) {
 			motor.set(Value.kReverse);
 		}
 	}
-	protected void off() {
+	public void off() {
 		motor.set(Value.kOff);
 	}
 }

@@ -25,10 +25,10 @@ public abstract class Apparatus {
 			apparatus.lock();
 			super.startSeparate();
 		}
-		public final void destroy() {
+		protected final void destroy() {
 			apparatus.unlock();
 			_destroy();
 		}
-		public abstract void _destroy();
+		protected abstract void _destroy();
 	}
 }

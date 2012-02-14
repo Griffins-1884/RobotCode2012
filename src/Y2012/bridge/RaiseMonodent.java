@@ -11,7 +11,7 @@ public class RaiseMonodent extends Apparatus.ApparatusAction implements LimitSwi
 	private final LimitSwitch limitSwitch;
 	public RaiseMonodent(Apparatus apparatus, MultiAction parent) {
 		super(apparatus, parent);
-		limitSwitch = ((Monodent) apparatus).upperSwitch;
+		limitSwitch = ((Monodent) apparatus).backSwitch;
 		limitSwitch.addListener(this);
 	}
 	protected void act() {
@@ -21,7 +21,7 @@ public class RaiseMonodent extends Apparatus.ApparatusAction implements LimitSwi
 		}
 		((Monodent) apparatus).up();
 	}
-	public void _destroy() {
+	protected void _destroy() {
 		limitSwitch.removeListener(this);
 		((Monodent) apparatus).off();
 	}

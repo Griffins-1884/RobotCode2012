@@ -96,7 +96,7 @@ public abstract class Action {
 	/**
 	 * Cleans up the action
 	 */
-	public abstract void destroy();
+	protected abstract void destroy();
 	
 	/**
 	 * An ActionThread for Actions in separate threads.

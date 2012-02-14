@@ -1,10 +1,13 @@
 package Y2012;
 
+import Y2012.bridge.LowerMonodent;
+import Y2012.bridge.RaiseMonodent;
 import driveSystems.Movement;
 import input.Joystick;
 import edu.wpi.first.wpilibj.Watchdog;
 
 import _static.*;
+import _static.Apparatus.ApparatusAction;
 
 public class TeleopController extends Controller {
 	public final Joystick leftJoystick, rightJoystick;
@@ -30,8 +33,8 @@ public class TeleopController extends Controller {
 	
 	private boolean previousSingleLeftButtonState = false, previousSingleRightButtonState = false;
 	public void joystickConfiguration() {
-		boolean singleLeftButtonState = leftJoystick.button(6) || leftJoystick.button(7) || leftJoystick.button(10) || leftJoystick.button(11);
-		boolean singleRightButtonState = rightJoystick.button(6) || rightJoystick.button(7) || rightJoystick.button(10) || rightJoystick.button(11);
+		boolean singleLeftButtonState = leftJoystick.button(6) || leftJoystick.button(7);
+		boolean singleRightButtonState = rightJoystick.button(10) || rightJoystick.button(11);
 		
 		if(singleLeftButtonState == previousSingleLeftButtonState && singleRightButtonState == previousSingleRightButtonState) {
 			return; // If the buttons haven't changed, don't do anything
@@ -66,8 +69,27 @@ public class TeleopController extends Controller {
 		}
 	}
 
-	private boolean previousMonodentButtonState = false;
+	private boolean previousMonodentUpButtonState = false, previousMonodentDownButtonState = false;
+	private ApparatusAction monodentAction = null;
 	public void monodent() {
-		
+		boolean currentMonodentUpButtonState = currentJoystickConfiguration[0].button(3) && ((currentJoystickConfiguration.length > 1) ? currentJoystickConfiguration[1].button(3) : true),
+				currentMonodentDownButtonState = currentJoystickConfiguration[0].button(2) && ((currentJoystickConfiguration.length > 1) ? currentJoystickConfiguration[1].button(2) : true);
+		if(currentMonodentUpButtonState == previousMonodentUpButtonState && currentMonodentDownButtonState == previousMonodentDownButtonState) {
+			return;
+		}
+		if(monodentAction != null) {
+			monodentAction.stop();
+		}
+		if(currentMonodentUpButtonState && currentMonodentDownButtonState) {
+			robot.monodent.off();
+		} else if(currentMonodentDownButtonState) {
+			monodentAction = new LowerMonodent(robot.monodent, null);
+			monodentAction.start();
+		} else if(currentMonodentUpButtonState) {
+			monodentAction = new RaiseMonodent(robot.monodent, null);
+			monodentAction.start();
+		}
+		previousMonodentUpButtonState = currentMonodentUpButtonState;
+		previousMonodentDownButtonState = currentMonodentDownButtonState;
 	}
 }
