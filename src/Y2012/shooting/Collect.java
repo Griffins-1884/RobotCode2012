@@ -15,7 +15,10 @@ public class Collect extends Apparatus.ApparatusAction implements LightSensor.Li
 	}
 	protected void act() {
 		((ShootingApparatus) apparatus).setLowerBelt(true);
-		((ShootingApparatus) apparatus).setUpperBelt(true);
+		
+		if(((ShootingApparatus) apparatus).upperSensor.value())
+			((ShootingApparatus) apparatus).setUpperBelt(true);
+		
 		try {
 			Thread.sleep(length.milliseconds);
 		} catch(InterruptedException ex) {}
