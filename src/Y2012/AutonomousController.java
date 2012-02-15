@@ -13,7 +13,7 @@ public class AutonomousController extends Controller {
 	}
 	
 	public void initialize() {
-		robot.ledRing.set(Relay.Value.kOn);
+		robot.ledRing.set(Relay.Value.kForward);
 	}
 	
 	public void periodic() {

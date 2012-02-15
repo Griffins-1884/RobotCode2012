@@ -44,7 +44,7 @@ public class AutoAim extends Action implements ActionListener {
 	 * 
 	 * @return The jaguar input required to produce this muzzle velocity.
 	 */
-	public double findJagInput(double velocity)
+	public static double findJagInput(double velocity)
 	{
 		return regressionLineSlope*velocity + regressionLineYInt;
 	}

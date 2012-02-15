@@ -14,7 +14,7 @@ public class DisabledController extends Controller {
 		startTime = System.currentTimeMillis();
 		ledRingValue = true;
 		
-		robot.ledRing.set(Relay.Value.kOn);
+		robot.ledRing.set(Relay.Value.kForward);
 	}
 	public void periodic() {
 		// Flash LEDs!
@@ -25,7 +25,7 @@ public class DisabledController extends Controller {
 			ledRingValue = !ledRingValue;
 			
 			if(ledRingValue)
-				robot.ledRing.set(Relay.Value.kOn);
+				robot.ledRing.set(Relay.Value.kForward);
 			else
 				robot.ledRing.set(Relay.Value.kOff);
 			
