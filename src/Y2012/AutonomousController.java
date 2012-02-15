@@ -3,6 +3,7 @@ package Y2012;
 import actions.MutableActionList;
 import edu.wpi.first.wpilibj.Watchdog;
 import _static.Controller;
+import edu.wpi.first.wpilibj.Relay;
 
 public class AutonomousController extends Controller {
 	public final MutableActionList actions;
@@ -10,7 +11,11 @@ public class AutonomousController extends Controller {
 		super(robot);
 		actions = new MutableActionList();
 	}
-	public void initialize() {}
+	
+	public void initialize() {
+		robot.ledRing.set(Relay.Value.kOn);
+	}
+	
 	public void periodic() {
 		Watchdog.getInstance().feed();
 	}

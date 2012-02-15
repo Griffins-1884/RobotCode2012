@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Watchdog;
 
 import _static.*;
 import _static.Apparatus.ApparatusAction;
+import edu.wpi.first.wpilibj.Relay;
 
 public class TeleopController extends Controller {
 	public final Joystick leftJoystick, rightJoystick;
@@ -22,7 +23,11 @@ public class TeleopController extends Controller {
 		doubleJoysticksConfiguration = new Joystick[] {leftJoystick, rightJoystick};
 		currentJoystickConfiguration = doubleJoysticksConfiguration;
 	}
-	public void initialize() {}
+	
+	public void initialize() {
+		robot.ledRing.set(Relay.Value.kOn);
+	}
+	
 	public void periodic() {
 		joystickConfiguration();
 		drive();

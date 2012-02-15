@@ -26,7 +26,7 @@ public class AutoAim extends Action implements ActionListener {
 		
 		double muzzleVelocity = distanceAlongFloor/Math.cos(ANGLE) * 
 				Math.sqrt(GRAV_CONSTANT / 
-				( 2*(distanceAlongFloor*Math.tan(ANGLE) - location.z + BOX_HEIGHT) ) );
+				( 2*(distanceAlongFloor*Math.tan(ANGLE) - (location.z - BOX_HEIGHT)) ) );
 		
 		double power = findJagInput(muzzleVelocity);
 		

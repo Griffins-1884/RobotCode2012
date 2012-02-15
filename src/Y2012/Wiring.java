@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.Relay;
 public class Wiring {
 	public static final Jaguar[] driveMotors = new Jaguar[4];
 	public static final double[] drivingMotorCoefficients = new double[4];
-	public static final Relay lowerBeltMotor, upperBeltMotor;
+	public static final Relay lowerBeltMotor, upperBeltMotor, ledRing;
 	public static final Jaguar powerMotor;
 	public static final LightSensor lowerLightSensor, upperLightSensor;
 	public static final Relay monodentMotor;
@@ -24,14 +24,16 @@ public class Wiring {
 		driveMotors[DriveSystem.RIGHT + DriveSystem.BACK] = new Jaguar(4);
 			drivingMotorCoefficients[DriveSystem.RIGHT + DriveSystem.BACK] = 1;
 		
+		ledRing = new Relay(1);	
+			
 		powerMotor = new Jaguar(5); // TODO update for wiring
-		lowerBeltMotor = new Relay(1); // TODO update for wiring
-		upperBeltMotor = new Relay(2); // TODO update for wiring
-			lowerLightSensor = new LightSensor("lower_shooter_sensor".hashCode(), 1); // TODO update for wiring
-			upperLightSensor = new LightSensor("upper_shooter_sensor".hashCode(), 2); // TODO update for wiring
+		lowerBeltMotor = new Relay(2); // TODO update for wiring
+		upperBeltMotor = new Relay(3); // TODO update for wiring
+			lowerLightSensor = new LightSensor("lower_shooter_sensor".hashCode(), 3); // TODO update for wiring
+			upperLightSensor = new LightSensor("upper_shooter_sensor".hashCode(), 4); // TODO update for wiring
 		
 		monodentMotor = new Relay(3); // TODO update for wiring
-			monodentLowerSwitch = new LimitSwitch("lower_monodent_switch".hashCode(), 3);
-			monodentUpperSwitch = new LimitSwitch("upper_monodent_switch".hashCode(), 4);
+			monodentLowerSwitch = new LimitSwitch("lower_monodent_switch".hashCode(), 2);
+			monodentUpperSwitch = new LimitSwitch("upper_monodent_switch".hashCode(), 1);
 	}
 }
