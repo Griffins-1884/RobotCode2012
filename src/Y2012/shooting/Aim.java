@@ -5,57 +5,31 @@ import actions.Interval;
 import actions.MultiAction;
 
 public class Aim extends Apparatus.ApparatusAction {
-	public final double power;
-	public Aim(double power, ShootingApparatus apparatus, MultiAction parent) {
+	public final double targetPower;
+	public Aim(double targetPower, ShootingApparatus apparatus, MultiAction parent) {
 		super(apparatus, parent);
-		this.power = power;
+		this.targetPower = targetPower;
 	}
 	public void act() {
-		
-		// Note: setPower() changes oldPower
+		// Note: setPower() changes previousPower
 		double currentPower = ((ShootingApparatus) apparatus).previousPower;
 		final int millisecondsToWait = 100;
 		
-		while(currentPower < power)
-		{
+		while(currentPower != targetPower) {
 			currentPower = ((ShootingApparatus) apparatus).previousPower;
 			
-			if(power - currentPower < 0.05)
-			{
-				((ShootingApparatus) apparatus).setPower(power);
+			if(Math.abs(targetPower - currentPower) < 0.05) {
+				((ShootingApparatus) apparatus).setPower(targetPower);
+			} else {
+				((ShootingApparatus) apparatus).setPower(currentPower + Math.signum(targetPower - currentPower) * 0.05);
 			}
-			else
-			{
-				((ShootingApparatus) apparatus).setPower(currentPower + 0.05);
-			}
-			
+
 			try {
 				Thread.sleep(millisecondsToWait);
 			} catch(InterruptedException ex) {
-				ex.printStackTrace();
+				return; // Just exit, we were interrupted by stopping the action.
 			}
 		}
-		
-		while(power < currentPower)
-		{
-			currentPower = ((ShootingApparatus) apparatus).previousPower;
-			
-			if(currentPower - power < 0.05)
-			{
-				((ShootingApparatus) apparatus).setPower(power);
-			}
-			else
-			{
-				((ShootingApparatus) apparatus).setPower(currentPower - 0.05);
-			}
-			
-			try {
-				Thread.sleep(millisecondsToWait);
-			} catch(InterruptedException ex) {
-				ex.printStackTrace();
-			}
-		}
-		
 	}
 	public Interval duration() {
 		return new Interval(1000); // TODO time these
