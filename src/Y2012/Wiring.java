@@ -10,7 +10,7 @@ public class Wiring {
 	public static final Jaguar[] driveMotors = new Jaguar[4];
 	public static final double[] drivingMotorCoefficients = new double[4];
 	public static final Relay lowerBeltMotor, upperBeltMotor;
-	public static final Jaguar powerMotor, angleMotor;
+	public static final Jaguar powerMotor;
 	public static final LightSensor lowerLightSensor, upperLightSensor;
 	public static final Relay monodentMotor;
 	public static final LimitSwitch monodentLowerSwitch, monodentUpperSwitch;
@@ -25,7 +25,6 @@ public class Wiring {
 			drivingMotorCoefficients[DriveSystem.RIGHT + DriveSystem.BACK] = 1;
 		
 		powerMotor = new Jaguar(5); // TODO update for wiring
-		angleMotor = new Jaguar(6); // TODO update for wiring
 		lowerBeltMotor = new Relay(1); // TODO update for wiring
 		upperBeltMotor = new Relay(2); // TODO update for wiring
 			lowerLightSensor = new LightSensor("lower_shooter_sensor".hashCode(), 1); // TODO update for wiring

@@ -11,10 +11,10 @@ public class AutoAim extends Action implements ActionListener {
 	public AutoAim(Location location, ShootingApparatus apparatus, MultiAction parent) {
 		super(parent);
 		
-		double angle = 0.0, power = 0.0;
+		double power = 0.0;
 		// TODO figure out physics of where to aim
 		
-		aimAction = new Aim(angle, power, apparatus, parent);
+		aimAction = new Aim(power, apparatus, parent);
 	}
 	public void act() {
 		aimAction.addListener(this);

@@ -12,7 +12,7 @@ public class Robot extends AbstractRobot {
 	public final Monodent monodent;
 	public Robot() {
 		super(new CaliforniaDrive(Wiring.driveMotors, Wiring.drivingMotorCoefficients));
-		shootingApparatus = new ShootingApparatus(Wiring.lowerBeltMotor, Wiring.upperBeltMotor, Wiring.powerMotor, Wiring.angleMotor, Wiring.lowerLightSensor, Wiring.upperLightSensor);
+		shootingApparatus = new ShootingApparatus(Wiring.lowerBeltMotor, Wiring.upperBeltMotor, Wiring.powerMotor, Wiring.lowerLightSensor, Wiring.upperLightSensor);
 		monodent = new Monodent(Wiring.monodentMotor, Wiring.monodentLowerSwitch, Wiring.monodentUpperSwitch);
 	}
 }
