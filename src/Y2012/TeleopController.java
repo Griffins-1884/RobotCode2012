@@ -25,13 +25,13 @@ public class TeleopController extends Controller {
 	}
 	
 	public void initialize() {
-		robot.ledRing.set(Relay.Value.kForward);
+		robot.camera.setLEDRing(true);
 	}
 	
 	public void periodic() {
 		joystickConfiguration();
 		drive();
-		//monodent();
+//		monodent();
 		Watchdog.getInstance().feed();
 	}
 	public void continuous() {}
@@ -76,25 +76,25 @@ public class TeleopController extends Controller {
 
 	private boolean previousMonodentUpButtonState = false, previousMonodentDownButtonState = false;
 	private ApparatusAction monodentAction = null;
-	/*public void monodent() {
-		boolean currentMonodentUpButtonState = currentJoystickConfiguration[0].button(3) && ((currentJoystickConfiguration.length > 1) ? currentJoystickConfiguration[1].button(3) : true),
-				currentMonodentDownButtonState = currentJoystickConfiguration[0].button(2) && ((currentJoystickConfiguration.length > 1) ? currentJoystickConfiguration[1].button(2) : true);
-		if(currentMonodentUpButtonState == previousMonodentUpButtonState && currentMonodentDownButtonState == previousMonodentDownButtonState) {
-			return;
-		}
-		if(monodentAction != null) {
-			monodentAction.stop();
-		}
-		if(currentMonodentUpButtonState && currentMonodentDownButtonState) {
-			robot.monodent.off();
-		} else if(currentMonodentDownButtonState) {
-			monodentAction = new LowerMonodent(robot.monodent, null);
-			monodentAction.start();
-		} else if(currentMonodentUpButtonState) {
-			monodentAction = new RaiseMonodent(robot.monodent, null);
-			monodentAction.start();
-		}
-		previousMonodentUpButtonState = currentMonodentUpButtonState;
-		previousMonodentDownButtonState = currentMonodentDownButtonState;
-	}*/
+//	public void monodent() {
+//		boolean currentMonodentUpButtonState = currentJoystickConfiguration[0].button(3) && ((currentJoystickConfiguration.length > 1) ? currentJoystickConfiguration[1].button(3) : true),
+//				currentMonodentDownButtonState = currentJoystickConfiguration[0].button(2) && ((currentJoystickConfiguration.length > 1) ? currentJoystickConfiguration[1].button(2) : true);
+//		if(currentMonodentUpButtonState == previousMonodentUpButtonState && currentMonodentDownButtonState == previousMonodentDownButtonState) {
+//			return;
+//		}
+//		if(monodentAction != null) {
+//			monodentAction.stop();
+//		}
+//		if(currentMonodentUpButtonState && currentMonodentDownButtonState) {
+//			robot.monodent.off();
+//		} else if(currentMonodentDownButtonState) {
+//			monodentAction = new LowerMonodent(robot.monodent, null);
+//			monodentAction.start();
+//		} else if(currentMonodentUpButtonState) {
+//			monodentAction = new RaiseMonodent(robot.monodent, null);
+//			monodentAction.start();
+//		}
+//		previousMonodentUpButtonState = currentMonodentUpButtonState;
+//		previousMonodentDownButtonState = currentMonodentDownButtonState;
+//	}
 }

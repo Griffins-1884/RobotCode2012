@@ -1,35 +1,35 @@
 package Y2012;
 
 import _static.Controller;
-import edu.wpi.first.wpilibj.Relay;
 
 public class DisabledController extends Controller {
-	public long startTime;
-	public boolean ledRingValue;
+	public long previousTime;
+	public boolean previousLEDRingValue;
 	
 	public DisabledController(Robot robot) {
 		super(robot);	
 	}
 	public void initialize() {
-		startTime = System.currentTimeMillis();
-		ledRingValue = true;
+		previousTime = System.currentTimeMillis();
+		previousLEDRingValue = true;
 		
-		robot.ledRing.set(Relay.Value.kForward);
+		robot.camera.setLEDRing(previousLEDRingValue);
 	}
 	public void periodic() {
 		// Flash LEDs!
 		long currentTime = System.currentTimeMillis();
 		
-		if(currentTime-startTime >= 1000)
+		if(currentTime-previousTime >= 200)
 		{
-			ledRingValue = !ledRingValue;
+			previousLEDRingValue = !previousLEDRingValue;
 			
-			if(ledRingValue)
-				robot.ledRing.set(Relay.Value.kForward);
-			else
-				robot.ledRing.set(Relay.Value.kOff);
+			if(previousLEDRingValue) {
+				robot.camera.setLEDRing(true);
+			} else {
+				robot.camera.setLEDRing(false);
+			}
 			
-			startTime = currentTime;
+			previousTime = currentTime;
 		}
 	}
 	public void continuous() {}

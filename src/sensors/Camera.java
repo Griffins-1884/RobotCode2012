@@ -1,7 +1,9 @@
 package sensors;
 
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.camera.AxisCamera.ResolutionT;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
@@ -60,16 +62,18 @@ public class Camera extends Sensor {
     }
     private final AxisCamera camera;
     private final Servo tiltServo;
+    private final Relay ledRing;
     private CriteriaCollection cc;      // The criteria for doing the particle filter operation
 
     /**
-     * Constructs a Camera with the specified ID, address (can be null) and tilt servo (can be null).
+     * Constructs a Camera with the specified ID, address (can be null), tilt servo (can be null) and LED ring (can be null).
      *
      * @param sensorId The ID of the sensor.
      * @param address The address at which to find the camera
      * @param tiltServo The servo used for tilting the camera
+     * @param ledRing The LED ring used by the camera
      */
-    public Camera(long sensorId, String address, Servo tiltServo) {
+    public Camera(long sensorId, String address, Servo tiltServo, Relay ledRing) {
         super(sensorId);
         if (address != null) {
             camera = AxisCamera.getInstance(address);
@@ -78,7 +82,9 @@ public class Camera extends Sensor {
         }
         camera.writeResolution(ResolutionT.k320x240);
         camera.writeCompression(30);
+        
         this.tiltServo = tiltServo;
+        this.ledRing = ledRing;
 
         Timer.delay(8); // Sometimes, the cRIO starts before the camera so we have to put in a wait
 
@@ -125,7 +131,9 @@ public class Camera extends Sensor {
      * @param angle The angle to tilt to
      */
     public void tilt(double angle) {
-        tiltServo.set(angle * 2 / Math.PI);
+    	if(tiltServo != null) {
+    		tiltServo.set(angle * 2 / Math.PI);
+    	}
     }
 
     /**
@@ -134,7 +142,25 @@ public class Camera extends Sensor {
      * @return The angle the camera is facing
      */
     public double angle() {
-        return tiltServo.get();
+    	if(tiltServo != null) {
+    		return tiltServo.get();
+    	}
+    	return 0.0;
+    }
+
+    /**
+     * Turns the led ring on or off. IMPORTANT: LEDs must be mounted correctly. This will not work if the voltage must be reversed!
+     *
+     * @param on Whether the LED ring should be on or off.
+     */
+    public void setLEDRing(boolean on) {
+    	if(ledRing != null) {
+    		if(on) {
+    			ledRing.set(Value.kForward);
+    		} else {
+    			ledRing.set(Value.kOff);
+    		}
+    	}
     }
 
     /**
