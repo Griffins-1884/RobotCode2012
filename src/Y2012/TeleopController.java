@@ -31,7 +31,7 @@ public class TeleopController extends Controller {
 	public void periodic() {
 		joystickConfiguration();
 		drive();
-		monodent();
+		//monodent();
 		Watchdog.getInstance().feed();
 	}
 	public void continuous() {}
@@ -76,7 +76,7 @@ public class TeleopController extends Controller {
 
 	private boolean previousMonodentUpButtonState = false, previousMonodentDownButtonState = false;
 	private ApparatusAction monodentAction = null;
-	public void monodent() {
+	/*public void monodent() {
 		boolean currentMonodentUpButtonState = currentJoystickConfiguration[0].button(3) && ((currentJoystickConfiguration.length > 1) ? currentJoystickConfiguration[1].button(3) : true),
 				currentMonodentDownButtonState = currentJoystickConfiguration[0].button(2) && ((currentJoystickConfiguration.length > 1) ? currentJoystickConfiguration[1].button(2) : true);
 		if(currentMonodentUpButtonState == previousMonodentUpButtonState && currentMonodentDownButtonState == previousMonodentDownButtonState) {
@@ -96,5 +96,5 @@ public class TeleopController extends Controller {
 		}
 		previousMonodentUpButtonState = currentMonodentUpButtonState;
 		previousMonodentDownButtonState = currentMonodentDownButtonState;
-	}
+	}*/
 }

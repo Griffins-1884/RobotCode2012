@@ -10,11 +10,11 @@ import edu.wpi.first.wpilibj.Servo;
 public class Wiring {
 	public static final Jaguar[] driveMotors = new Jaguar[4];
 	public static final double[] drivingMotorCoefficients = new double[4];
-	public static final Relay lowerBeltMotor, upperBeltMotor, ledRing;
-	public static final Jaguar powerMotor;
-	public static final LightSensor lowerLightSensor, upperLightSensor;
-	public static final Relay monodentMotor;
-	public static final LimitSwitch monodentLowerSwitch, monodentUpperSwitch;
+	public static final Relay ledRing/*, lowerBeltMotor, upperBeltMotor*/;
+	//public static final Jaguar powerMotor;
+	//public static final LightSensor lowerLightSensor, upperLightSensor;
+	//public static final Relay monodentMotor;
+	//public static final LimitSwitch monodentLowerSwitch, monodentUpperSwitch;
 	public static final Servo cameraTiltServo;
 	public static final String cameraAddress = "Tracking Camera";
 	static {
@@ -31,14 +31,15 @@ public class Wiring {
 		
 		cameraTiltServo = new Servo(7);
 					
-		powerMotor = new Jaguar(5); // TODO update for wiring
+		/*powerMotor = new Jaguar(5); // TODO update for wiring
 		lowerBeltMotor = new Relay(3); // TODO update for wiring
 		upperBeltMotor = new Relay(4); // TODO update for wiring
 			lowerLightSensor = new LightSensor("lower_shooter_sensor".hashCode(), 3); // TODO update for wiring
 			upperLightSensor = new LightSensor("upper_shooter_sensor".hashCode(), 4); // TODO update for wiring
+		*/
 		
-		monodentMotor = new Relay(2); // TODO update for wiring
-			monodentLowerSwitch = new LimitSwitch("lower_monodent_switch".hashCode(), 2);
-			monodentUpperSwitch = new LimitSwitch("upper_monodent_switch".hashCode(), 1);
+		//monodentMotor = new Relay(2); // TODO update for wiring
+		//	monodentLowerSwitch = new LimitSwitch("lower_monodent_switch".hashCode(), 2);
+		//	monodentUpperSwitch = new LimitSwitch("upper_monodent_switch".hashCode(), 1);
 	}
 }
