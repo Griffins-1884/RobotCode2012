@@ -51,7 +51,7 @@ public class Gyro extends AnalogSensor {
 	}
 	
 	/**
-	 * Resets the value of the encoder to zero.
+	 * Resets the value of the gyro to zero.
 	 */
 	public void reset() {
 		sensor.reset();

@@ -35,7 +35,8 @@ public class Tracking {
 		double horizontalAngleToTarget = MathUtils.acos(yDistance / horizontalDistance);
 		double xDistance = horizontalDistance * Math.sin(horizontalAngleToTarget);
 		
-		return new Vector(xDistance, yDistance, rectangleLocation.z - cameraHeight);
+		// Don't subtract camera height for this location vector. Keep height off floor
+		return new Vector(xDistance, yDistance, rectangleLocation.z);
 	}
 	public static final Location getRobotLocation(RectangleMatch rect, Location rectangleLocation) {
 		Vector v = getVectorToTarget(rect, rectangleLocation);
