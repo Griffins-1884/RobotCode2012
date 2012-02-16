@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.SpeedController;
 import exceptions.UnsupportedMovementException;
 
 import exceptions.InvalidArrayException;
+import spatial.Vector;
 
 /**
  * A class for a california drive. It cannot move sideways or move relative to the field.
@@ -52,6 +53,8 @@ public class CaliforniaDrive extends DriveSystem {
 		return FORWARD_BACKWARD_MOTION + ROTATIONAL_MOTION;
 	}
 	
+	public Vector oldVector = new Vector(0, 0, 0);
+	
 	/**
 	 * Updates the motors to the most recent movement.
 	 */
@@ -67,5 +70,7 @@ public class CaliforniaDrive extends DriveSystem {
 		motors[LEFT + BACK].set(leftSpeed * motorCoefficients[LEFT + BACK]);
 		motors[RIGHT + FRONT].set(rightSpeed * motorCoefficients[RIGHT + FRONT]);
 		motors[RIGHT + BACK].set(rightSpeed * motorCoefficients[RIGHT + BACK]);
+		
+		oldVector = movement.translation;
 	}
 }

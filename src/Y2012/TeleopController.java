@@ -10,18 +10,20 @@ import input.Joystick;
 import edu.wpi.first.wpilibj.Watchdog;
 
 import _static.*;
+import driveSystems.CaliforniaDrive;
 import edu.wpi.first.wpilibj.ModdedSmartDashboard;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
 import edu.wpi.first.wpilibj.image.NIVisionException;
 
 public class TeleopController extends Controller {
-	public final Joystick leftJoystick, rightJoystick;
+	public final Joystick leftJoystick, rightJoystick,billyJoystick;
 	
 	
 	public TeleopController(Robot robot) {
 		super(robot);
 		leftJoystick = new Joystick(1);
 		rightJoystick = new Joystick(2);
+		billyJoystick = new Joystick(3);
 	}
 	
 	public void initialize() {
@@ -29,8 +31,7 @@ public class TeleopController extends Controller {
 	}
 	
 	public void periodic() {
-		System.out.println("Back limit switch: " + robot.monodent.backSwitch.value());
-		System.out.println("Front limit switch: " + robot.monodent.frontSwitch.value());
+		System.out.println("Gyro: " + robot.gyro.value()*180./Math.PI + " degrees");
 		
 		boolean cameraMadeMovement = cameraTrack();
 		
@@ -51,7 +52,7 @@ public class TeleopController extends Controller {
 	
 	public void shoot()
 	{
-		if(rightJoystick.trigger())
+		if(billyJoystick.trigger())
 		{	
 			// Get motor up to speed
 			
@@ -130,7 +131,7 @@ public class TeleopController extends Controller {
 	
 	public boolean intake()
 	{
-		if(leftJoystick.button(6))
+		if(billyJoystick.button(4))
 		{
 			if(!robot.shootingApparatus.upperSensor.value()) // false means no ball
 				robot.shootingApparatus.setUpperBelt(BeltDirection.UP);
@@ -141,7 +142,7 @@ public class TeleopController extends Controller {
 			
 			return true;
 		}
-		else if(leftJoystick.button(7))
+		else if(billyJoystick.button(3))
 		{
 			robot.shootingApparatus.setUpperBelt(BeltDirection.DOWN);
 			robot.shootingApparatus.setLowerBelt(BeltDirection.DOWN);
@@ -354,13 +355,32 @@ public class TeleopController extends Controller {
 	}
 	
 	private boolean singleJoystick = false;
+	public final double rampStep = 0.04;
+	
 	public void drive() {
+		
+		// oldVector updates every time we call CaliforniaDrive's move method
+		Vector oldVector = ((CaliforniaDrive) robot.driveSystem).oldVector;
+		double currentX = oldVector.x;
+		double targetX; // for ramping Jaguars so Suryansh doesn't tip over the robot again
+		double rotation;
+		
 		if(singleJoystick) {
-			double rotation = (rightJoystick.right() + rightJoystick.clockwise()) / 2;
-			robot.driveSystem.move(new Movement(new Vector(rightJoystick.forward(), 0, 0), rotation));
+			targetX = rightJoystick.forward();
+			rotation = (rightJoystick.right() + rightJoystick.clockwise()) / 2;
+			
 		} else { // Double joystick
 			// Divide both by 2 so that sensitivity doesn't max out when both joysticks are at halfway
-			robot.driveSystem.move(new Movement(new Vector((rightJoystick.forward() + leftJoystick.forward()) / 2.0, 0, 0), (rightJoystick.forward() - leftJoystick.forward()) / 2.0));
+			targetX = (rightJoystick.forward() + leftJoystick.forward()) / 2.0;
+			rotation = (rightJoystick.forward() - leftJoystick.forward()) / 2.0;
+		}
+		
+		if(Math.abs(currentX - targetX) < rampStep) {
+			robot.driveSystem.move(new Movement(new Vector(targetX, 0, 0), rotation)); // go to the target value if the step is small
+		} else if(currentX < targetX) {
+			robot.driveSystem.move(new Movement(new Vector(currentX + rampStep, 0, 0), rotation));
+		} else if(currentX > targetX) {
+			robot.driveSystem.move(new Movement(new Vector(currentX - rampStep, 0, 0), rotation));
 		}
 	}
 
