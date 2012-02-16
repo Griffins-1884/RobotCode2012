@@ -383,6 +383,12 @@ public class TeleopController extends Controller {
 		} else if(currentMonodentUpButtonState) {
 			robot.monodent.up();
 		}
+		
+		if(!currentMonodentUpButtonState || !currentMonodentDownButtonState)
+		{
+			robot.monodent.off();
+		}
+		
 		previousMonodentUpButtonState = currentMonodentUpButtonState;
 		previousMonodentDownButtonState = currentMonodentDownButtonState;
 	}

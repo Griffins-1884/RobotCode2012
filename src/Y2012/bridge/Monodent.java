@@ -17,10 +17,18 @@ public class Monodent extends Apparatus {
 		if(!frontSwitch.value()) {
 			motor.set(Value.kForward);
 		}
+		else
+		{
+			motor.set(Value.kOff);
+		}
 	}
 	public void up() {
 		if(!backSwitch.value()) {
 			motor.set(Value.kReverse);
+		}
+		else
+		{
+			motor.set(Value.kOff);
 		}
 	}
 	public void off() {
