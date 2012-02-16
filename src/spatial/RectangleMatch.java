@@ -1,4 +1,4 @@
-package image;
+package spatial;
 
 import edu.wpi.first.wpilibj.image.*;
 

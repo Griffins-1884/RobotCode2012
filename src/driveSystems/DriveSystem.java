@@ -1,6 +1,6 @@
 package driveSystems;
 
-import _static.Vector;
+import spatial.Vector;
 import edu.wpi.first.wpilibj.SpeedController;
 
 import exceptions.InvalidArrayException;

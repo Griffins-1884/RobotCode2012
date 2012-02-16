@@ -1,5 +1,9 @@
 package Y2012;
 
+import spatial.Location;
+import spatial.RectangleMatch;
+import spatial.Tracking;
+import spatial.Vector;
 import Y2012.shooting.ShootingApparatus.BeltDirection;
 import driveSystems.Movement;
 import input.Joystick;
@@ -9,8 +13,6 @@ import _static.*;
 import edu.wpi.first.wpilibj.ModdedSmartDashboard;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
 import edu.wpi.first.wpilibj.image.NIVisionException;
-import image.RectangleMatch;
-import image.Tracking;
 
 public class TeleopController extends Controller {
 	public final Joystick leftJoystick, rightJoystick;

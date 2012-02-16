@@ -1,12 +1,12 @@
 package Y2012.MiscellaneousActions;
 
 import Y2012.Robot;
-import _static.Vector;
 import actions.Action;
 import actions.Interval;
 import actions.MultiAction;
 import driveSystems.Movement;
 import sensors.Gyro;
+import spatial.Vector;
 
 public class TurnToAngle extends Action {
 

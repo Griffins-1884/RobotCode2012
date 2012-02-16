@@ -1,6 +1,6 @@
 package Y2012;
 
-import _static.Location;
+import spatial.Location;
 
 public class Field {
 	public static class Hoops {

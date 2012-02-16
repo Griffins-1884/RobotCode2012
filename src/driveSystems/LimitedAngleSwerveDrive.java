@@ -1,6 +1,5 @@
 package driveSystems;
 
-import _static.Vector;
 
 import com.sun.squawk.util.MathUtils;
 
@@ -11,6 +10,7 @@ import exceptions.UnsupportedMovementException;
 import sensors.AnalogSensor.AnalogSensorEvent;
 import sensors.Encoder;
 import sensors.Encoder.EncoderListener;
+import spatial.Vector;
 
 /**
  * A class designed to control a Swerve Drive.

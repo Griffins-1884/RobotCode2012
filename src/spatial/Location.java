@@ -1,4 +1,4 @@
-package _static;
+package spatial;
 
 import com.sun.squawk.util.MathUtils;
 

@@ -1,5 +1,6 @@
 package sensors;
 
+import spatial.RectangleMatch;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
@@ -13,7 +14,6 @@ import edu.wpi.first.wpilibj.image.CriteriaCollection;
 import edu.wpi.first.wpilibj.image.NIVision;
 import edu.wpi.first.wpilibj.image.NIVisionException;
 
-import image.RectangleMatch;
 
 /**
  * A camera (no shape tracking).

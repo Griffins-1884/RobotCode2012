@@ -1,6 +1,6 @@
 package driveSystems;
 
-import _static.Vector;
+import spatial.Vector;
 
 /**
  * A movement that a DriveSystem can move in.

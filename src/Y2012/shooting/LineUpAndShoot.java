@@ -1,8 +1,10 @@
 package Y2012.shooting;
 
+import spatial.Location;
+import spatial.RectangleMatch;
+import spatial.Tracking;
+import spatial.Vector;
 import Y2012.Robot;
-import _static.Location;
-import _static.Vector;
 import actions.Action;
 import actions.ActionListener;
 import actions.Interval;
@@ -11,8 +13,6 @@ import driveSystems.Movement;
 import edu.wpi.first.wpilibj.ModdedSmartDashboard;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
 import edu.wpi.first.wpilibj.image.NIVisionException;
-import image.RectangleMatch;
-import image.Tracking;
 
 public class LineUpAndShoot extends Action implements ActionListener {
 	

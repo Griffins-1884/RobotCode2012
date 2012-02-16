@@ -1,7 +1,5 @@
-package image;
+package spatial;
 
-import _static.Location;
-import _static.Vector;
 
 import com.sun.squawk.util.MathUtils;
 
