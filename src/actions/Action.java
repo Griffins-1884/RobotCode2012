@@ -137,7 +137,7 @@ public abstract class Action {
 	/**
 	 * The act method. This method should run all the code to complete the action.
 	 */
-	protected abstract void act();
+	protected abstract void act(); // TODO make protected for all actions
 	
 	/**
 	 * Estimates the duration of the action (given distance to travel, time piston takes to fire, etc.)

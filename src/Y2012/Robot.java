@@ -5,8 +5,7 @@ import Y2012.shooting.ShootingApparatus;
 import driveSystems.*;
 
 import _static.AbstractRobot;
-import sensors.Camera;
-import sensors.Gyro;
+import sensors.*;
 
 public class Robot extends AbstractRobot {
 	public static final Robot robot = new Robot();
@@ -14,6 +13,8 @@ public class Robot extends AbstractRobot {
 	public final Monodent monodent;
 	public final Camera camera;
 	public final Gyro gyro;
+	public final Accelerometer accelerometer;
+	public final Encoder encoder;
 	public Robot() {
 		// Drive system
 		super(new CaliforniaDrive(Wiring.driveMotors, Wiring.drivingMotorCoefficients));
@@ -25,9 +26,11 @@ public class Robot extends AbstractRobot {
 		monodent = new Monodent(Wiring.monodentMotor, Wiring.monodentFrontSwitch, Wiring.monodentBackSwitch);
 		
 		// Camera
-		camera = new Camera(23958672893547L, Wiring.cameraAddress, Wiring.tiltServo, Wiring.ledRing);
+		camera = new Camera("camera".hashCode(), Wiring.cameraAddress, Wiring.tiltServo, Wiring.ledRing);
 	
-		// Gyro
+		// Miscellaneous
 		gyro = Wiring.gyro;
+		accelerometer = Wiring.accelerometer;
+		encoder = Wiring.encoder;
 	}
 }

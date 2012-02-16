@@ -1,7 +1,6 @@
 package Y2012;
 
-import sensors.LightSensor;
-import sensors.LimitSwitch;
+import sensors.*;
 import driveSystems.DriveSystem;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Relay;
@@ -21,6 +20,8 @@ public class Wiring {
 	public static final Relay ledRing;
 	public static final Servo tiltServo;
 	public static final Gyro gyro;
+	public static final Accelerometer accelerometer;
+	public static final Encoder encoder;
 	static {
 		// Drive system
 		driveMotors[DriveSystem.LEFT + DriveSystem.FRONT] = new Jaguar(1);
@@ -36,8 +37,6 @@ public class Wiring {
 		shooterPowerMotor = new Jaguar(5);
 		shooterMotorCoefficient = -1;
 		
-		gyro = new Gyro("gyro1".hashCode(), 2);
-		
 		lowerBeltMotor = new Relay(3);
 		upperBeltMotor = new Relay(4);
 			lowerLightSensor = new LightSensor("lower_shooter_sensor".hashCode(), 3);
@@ -52,5 +51,8 @@ public class Wiring {
 		cameraAddress = null;
 			ledRing = new Relay(1);
 			tiltServo = new Servo(7);
+			gyro = new Gyro("gyro".hashCode(), 2);
+			accelerometer = new Accelerometer("accelerometer".hashCode(), 3, 4, -1);
+			encoder = new Encoder("encoder".hashCode(), 10, 11, 250, 8); // TODO check clicks and wheel radius
 	}
 }

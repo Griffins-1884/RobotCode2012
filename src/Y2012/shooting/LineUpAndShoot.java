@@ -28,7 +28,7 @@ public class LineUpAndShoot extends Action implements ActionListener {
 	public AutoAim aimAction;
 	public static final int waitTimeInMilliseconds = 100;
 
-	public LineUpAndShoot(MultiAction parent, int choice) {
+	public LineUpAndShoot(int choice, MultiAction parent) {
 		super(parent);
 		this.choice = choice;
 	}
@@ -40,7 +40,7 @@ public class LineUpAndShoot extends Action implements ActionListener {
 		while(!doneTurning)
 		{
 			try {
-				RectangleMatch[] reports = Robot.robot.camera.trackRectangles();
+				RectangleMatch[] reports = Robot.robot.camera.trackRectangles(); // TODO add to parameters, not direct access
 
 				// Turn towards the first rectangle
 				double tolerance = 0.025;
