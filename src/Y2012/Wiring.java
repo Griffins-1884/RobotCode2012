@@ -21,13 +21,13 @@ public class Wiring {
 	static {
 		// Drive system
 		driveMotors[DriveSystem.LEFT + DriveSystem.FRONT] = new Jaguar(1);
-			drivingMotorCoefficients[DriveSystem.LEFT + DriveSystem.FRONT] = -1;
+			drivingMotorCoefficients[DriveSystem.LEFT + DriveSystem.FRONT] = 1;
 		driveMotors[DriveSystem.RIGHT + DriveSystem.FRONT] = new Jaguar(2);
-			drivingMotorCoefficients[DriveSystem.RIGHT + DriveSystem.FRONT] = 1;
+			drivingMotorCoefficients[DriveSystem.RIGHT + DriveSystem.FRONT] = -1;
 		driveMotors[DriveSystem.LEFT + DriveSystem.BACK] = new Jaguar(3);
-			drivingMotorCoefficients[DriveSystem.LEFT + DriveSystem.BACK] = -1;
+			drivingMotorCoefficients[DriveSystem.LEFT + DriveSystem.BACK] = 1;
 		driveMotors[DriveSystem.RIGHT + DriveSystem.BACK] = new Jaguar(4);
-			drivingMotorCoefficients[DriveSystem.RIGHT + DriveSystem.BACK] = 1;
+			drivingMotorCoefficients[DriveSystem.RIGHT + DriveSystem.BACK] = -1;
 		
 		// Shooter
 		shooterPowerMotor = new Jaguar(5);
