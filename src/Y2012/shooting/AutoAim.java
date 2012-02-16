@@ -34,6 +34,7 @@ public class AutoAim extends Action implements ActionListener {
 		if(Math.abs(power) > 1)
 		{
 			System.out.println("Can't make shot, need too high of a jaguar input");
+			power = 1;
 		}
 		
 		aimAction = new Aim(power, apparatus, parent);

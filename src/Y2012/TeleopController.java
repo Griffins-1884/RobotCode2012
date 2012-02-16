@@ -132,12 +132,11 @@ public class TeleopController extends Controller {
 	{
 		if(leftJoystick.button(6))
 		{
-			/*if(!robot.shootingApparatus.upperSensor.value()) // false means no ball
+			if(!robot.shootingApparatus.upperSensor.value()) // false means no ball
 				robot.shootingApparatus.setUpperBelt(BeltDirection.UP);
 			else
-				robot.shootingApparatus.setUpperBelt(BeltDirection.STOP);*/
+				robot.shootingApparatus.setUpperBelt(BeltDirection.STOP);
 			
-			robot.shootingApparatus.setUpperBelt(BeltDirection.UP);
 			robot.shootingApparatus.setLowerBelt(BeltDirection.UP);
 			
 			return true;
@@ -377,15 +376,17 @@ public class TeleopController extends Controller {
 		}
 		
 		if(currentMonodentUpButtonState && currentMonodentDownButtonState) {
+			System.out.println("Off");
 			robot.monodent.off();
 		} else if(currentMonodentDownButtonState) {
+			System.out.println("Down");
 			robot.monodent.down();
 		} else if(currentMonodentUpButtonState) {
+			System.out.println("Up");
 			robot.monodent.up();
-		}
-		
-		if(!currentMonodentUpButtonState || !currentMonodentDownButtonState)
+		} else if(!currentMonodentUpButtonState || !currentMonodentDownButtonState)
 		{
+			System.out.println("Off");
 			robot.monodent.off();
 		}
 		

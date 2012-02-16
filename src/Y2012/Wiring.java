@@ -53,6 +53,6 @@ public class Wiring {
 			tiltServo = new Servo(7);
 			gyro = new Gyro("gyro".hashCode(), 2);
 			accelerometer = new Accelerometer("accelerometer".hashCode(), 3, 4, -1);
-			encoder = new Encoder("encoder".hashCode(), 10, 11, 250, 8); // TODO check clicks and wheel radius
+			encoder = new Encoder("encoder".hashCode(), 10, 11, 360, 4*0.0254); // TODO check clicks and wheel radius
 	}
 }
