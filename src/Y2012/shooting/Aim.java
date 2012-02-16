@@ -37,6 +37,8 @@ public class Aim extends Apparatus.ApparatusAction {
 				return; // Just exit, we were interrupted by stopping the action.
 			}
 		}
+		
+		stop();
 	}
 	public Interval duration() {
 		return new Interval(1000); // TODO time these

@@ -20,6 +20,7 @@ public class Encoder extends AnalogSensor {
 	 */
 	public final edu.wpi.first.wpilibj.Encoder sensor;
 	public final int clicksPerRevolution;
+	public final double wheelRadius; // in METERS!!!!!!!!
 	/**
 	 * Constructs an Encoder with the specified ID, A-channel and B-channel.
 	 * 
@@ -27,11 +28,12 @@ public class Encoder extends AnalogSensor {
 	 * @param aChannel The A-channel of the sensor.
 	 * @param bChannel The B-channel of the sensor.
 	 */
-	public Encoder(long sensorId, int aChannel, int bChannel, int clicksPerRevolution) {
+	public Encoder(long sensorId, int aChannel, int bChannel, int clicksPerRevolution, double wheelRadius) {
 		super(sensorId);
 		sensor = new edu.wpi.first.wpilibj.Encoder(aChannel, bChannel);
 		setThreshold(Math.PI / 100);
 		this.clicksPerRevolution = clicksPerRevolution;
+		this.wheelRadius = wheelRadius;
 	}
 	
 	/**
@@ -50,6 +52,16 @@ public class Encoder extends AnalogSensor {
 	 */
 	public double value() {
 		return sensor.getRaw() * 2 * Math.PI / clicksPerRevolution;
+	}
+	
+	/**
+	 * Gets the distance traveled in meters since the encoder began
+	 * 
+	 * @return The current number of meters the encoder has traveled
+	 */
+	public double distance()
+	{
+		return value()*wheelRadius;
 	}
 	
 	/**
