@@ -1,5 +1,6 @@
 package Y2012.shooting;
 
+import Y2012.Wiring;
 import _static.Apparatus;
 import actions.Interval;
 import actions.MultiAction;
@@ -8,7 +9,8 @@ public class Aim extends Apparatus.ApparatusAction {
 	public final double targetPower;
 	public Aim(double targetPower, ShootingApparatus apparatus, MultiAction parent) {
 		super(apparatus, parent);
-		this.targetPower = targetPower;
+		this.targetPower = targetPower*Wiring.shooterMotorCoefficient;
+		
 	}
 	public void act() {
 		// Note: setPower() changes previousPower
@@ -18,10 +20,15 @@ public class Aim extends Apparatus.ApparatusAction {
 		while(currentPower != targetPower) {
 			currentPower = ((ShootingApparatus) apparatus).previousPower;
 			
+			int sign = 1;
+			
+			if(targetPower < currentPower)
+				sign *= -1;
+			
 			if(Math.abs(targetPower - currentPower) < 0.05) {
 				((ShootingApparatus) apparatus).setPower(targetPower);
 			} else {
-				((ShootingApparatus) apparatus).setPower(currentPower + Math.signum(targetPower - currentPower) * 0.05);
+				((ShootingApparatus) apparatus).setPower(currentPower + sign * 0.05);
 			}
 
 			try {

@@ -9,18 +9,18 @@ import sensors.Camera;
 
 public class Robot extends AbstractRobot {
 	public static final Robot robot = new Robot();
-	//public final ShootingApparatus shootingApparatus;
-	//public final Monodent monodent;
+	public final ShootingApparatus shootingApparatus;
+	public final Monodent monodent;
 	public final Camera camera;
 	public Robot() {
 		// Drive system
 		super(new CaliforniaDrive(Wiring.driveMotors, Wiring.drivingMotorCoefficients));
 		
 		// Shooter
-		//shootingApparatus = new ShootingApparatus(Wiring.lowerBeltMotor, Wiring.upperBeltMotor, Wiring.powerMotor, Wiring.lowerLightSensor, Wiring.upperLightSensor);
+		shootingApparatus = new ShootingApparatus(Wiring.lowerBeltMotor, Wiring.upperBeltMotor, Wiring.shooterPowerMotor, null, null);
 		
 		// Monodent
-		//monodent = new Monodent(Wiring.monodentMotor, Wiring.monodentLowerSwitch, Wiring.monodentUpperSwitch);
+		monodent = new Monodent(Wiring.monodentMotor, Wiring.monodentFrontSwitch, Wiring.monodentBackSwitch);
 		
 		// Camera
 		camera = new Camera(23958672893547L, Wiring.cameraAddress, Wiring.tiltServo, Wiring.ledRing);

@@ -1,5 +1,6 @@
 package Y2012.shooting;
 
+import Y2012.shooting.ShootingApparatus.BeltDirection;
 import sensors.LightSensor;
 import sensors.BooleanSensor.BooleanSensorEvent;
 import _static.Apparatus;
@@ -15,15 +16,15 @@ public class Shoot extends Apparatus.ApparatusAction implements LightSensor.Ligh
 	}
 	public void act() {
 		((ShootingApparatus) apparatus).upperSensor.addListener(this);
-		((ShootingApparatus) apparatus).setUpperBelt(true);
-		((ShootingApparatus) apparatus).setLowerBelt(true);
+		((ShootingApparatus) apparatus).setUpperBelt(BeltDirection.UP);
+		((ShootingApparatus) apparatus).setLowerBelt(BeltDirection.UP);
 	}
 	public Interval duration() {
 		return new Interval(1000); // TODO How long will shooting take?
 	}
 	public void _destroy() {
-		((ShootingApparatus) apparatus).setUpperBelt(false);
-		((ShootingApparatus) apparatus).setLowerBelt(false);
+		((ShootingApparatus) apparatus).setUpperBelt(BeltDirection.STOP);
+		((ShootingApparatus) apparatus).setLowerBelt(BeltDirection.STOP);
 		((ShootingApparatus) apparatus).upperSensor.removeListener(this);
 	}
 	public void lightSensor(BooleanSensorEvent ev) {

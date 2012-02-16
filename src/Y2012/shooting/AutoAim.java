@@ -1,6 +1,7 @@
 package Y2012.shooting;
 
 import _static.Location;
+import _static.Vector;
 import actions.Action;
 import actions.ActionListener;
 import actions.Interval;
@@ -19,10 +20,10 @@ public class AutoAim extends Action implements ActionListener {
 	
 	public static final double BOX_HEIGHT = 0.5; // Height of box ABOVE FLOOR in meters
 	
-	public AutoAim(Location location, ShootingApparatus apparatus, MultiAction parent) {
+	public AutoAim(Vector location, ShootingApparatus apparatus, MultiAction parent) {
 		super(parent);
 		
-		double distanceAlongFloor = Math.sqrt(location.x*location.x + location.y*location.y);
+		double distanceAlongFloor = location.horizontalProjection().magnitude();
 		
 		double muzzleVelocity = distanceAlongFloor/Math.cos(ANGLE) * 
 				Math.sqrt(GRAV_CONSTANT / 

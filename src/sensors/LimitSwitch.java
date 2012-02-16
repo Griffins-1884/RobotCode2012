@@ -1,6 +1,6 @@
 package sensors;
 
-import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.AnalogChannel;
 
 public class LimitSwitch extends BooleanSensor {
 	/**
@@ -15,7 +15,7 @@ public class LimitSwitch extends BooleanSensor {
 	/**
 	 * The hardware sensor behind this object.
 	 */
-	public final DigitalInput sensor;
+	public final AnalogChannel sensor;
 	
 	/**
 	 * Constructs a Limit Switch with the specified ID and channel.
@@ -25,7 +25,7 @@ public class LimitSwitch extends BooleanSensor {
 	 */
 	public LimitSwitch(long sensorId, int channel) {
 		super(sensorId);
-		sensor = new DigitalInput(channel);
+		sensor = new AnalogChannel(channel);
 	}
 	
 	/**
@@ -43,7 +43,7 @@ public class LimitSwitch extends BooleanSensor {
 	 * @return The current value of the limit switch.
 	 */
 	public boolean value() {
-		return sensor.get();
+		return sensor.getVoltage() >= 4.0;
 	}
 	
 	/**

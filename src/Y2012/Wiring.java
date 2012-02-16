@@ -12,9 +12,10 @@ public class Wiring {
 	public static final double[] drivingMotorCoefficients = new double[4];
 	public static final Relay lowerBeltMotor, upperBeltMotor;
 	public static final Jaguar shooterPowerMotor;
-//	public static final LightSensor lowerLightSensor, upperLightSensor;
+	public static final double shooterMotorCoefficient;
+	//public static final LightSensor lowerLightSensor, upperLightSensor;
 	public static final Relay monodentMotor;
-//	public static final LimitSwitch monodentLowerSwitch, monodentUpperSwitch;
+	public static final LimitSwitch monodentFrontSwitch, monodentBackSwitch;
 	public static final String cameraAddress;
 	public static final Relay ledRing;
 	public static final Servo tiltServo;
@@ -31,15 +32,17 @@ public class Wiring {
 		
 		// Shooter
 		shooterPowerMotor = new Jaguar(5);
+		shooterMotorCoefficient = -1;
+		
 		lowerBeltMotor = new Relay(3);
 		upperBeltMotor = new Relay(4);
-//			lowerLightSensor = new LightSensor("lower_shooter_sensor".hashCode(), 3); // TODO update for wiring
-//			upperLightSensor = new LightSensor("upper_shooter_sensor".hashCode(), 4); // TODO update for wiring
+	//	lowerLightSensor = new LightSensor("lower_shooter_sensor".hashCode(), 3); // TODO update for wiring
+	//	upperLightSensor = new LightSensor("upper_shooter_sensor".hashCode(), 4); // TODO update for wiring
 		
 		// Monodent
 		monodentMotor = new Relay(2);
-//			monodentLowerSwitch = new LimitSwitch("lower_monodent_switch".hashCode(), 2); // TODO update for wiring
-//			monodentUpperSwitch = new LimitSwitch("upper_monodent_switch".hashCode(), 1); // TODO update for wiring
+		monodentFrontSwitch = new LimitSwitch("lower_monodent_switch".hashCode(), 5); // TODO update for wiring
+		monodentBackSwitch = new LimitSwitch("upper_monodent_switch".hashCode(), 6); // TODO update for wiring
 		
 		// Miscellaneous
 		cameraAddress = null;
