@@ -1,17 +1,12 @@
 package Y2012;
 
-import Y2012.bridge.LowerMonodent;
-import Y2012.bridge.RaiseMonodent;
-import Y2012.shooting.ShootingApparatus;
 import Y2012.shooting.ShootingApparatus.BeltDirection;
 import driveSystems.Movement;
 import input.Joystick;
 import edu.wpi.first.wpilibj.Watchdog;
 
 import _static.*;
-import _static.Apparatus.ApparatusAction;
 import edu.wpi.first.wpilibj.ModdedSmartDashboard;
-import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
 import edu.wpi.first.wpilibj.image.NIVisionException;
 import image.RectangleMatch;
@@ -19,18 +14,12 @@ import image.Tracking;
 
 public class TeleopController extends Controller {
 	public final Joystick leftJoystick, rightJoystick;
-	public final Joystick[] leftJoystickConfiguration, rightJoystickConfiguration, doubleJoysticksConfiguration;
-	public Joystick[] currentJoystickConfiguration;
 	
 	
 	public TeleopController(Robot robot) {
 		super(robot);
 		leftJoystick = new Joystick(1);
 		rightJoystick = new Joystick(2);
-		leftJoystickConfiguration = new Joystick[] {leftJoystick};
-		rightJoystickConfiguration = new Joystick[] {rightJoystick};
-		doubleJoysticksConfiguration = new Joystick[] {leftJoystick, rightJoystick};
-		currentJoystickConfiguration = doubleJoysticksConfiguration;
 	}
 	
 	public void initialize() {
@@ -38,8 +27,6 @@ public class TeleopController extends Controller {
 	}
 	
 	public void periodic() {
-		joystickConfiguration();
-		
 		System.out.println("Back limit switch: " + robot.monodent.backSwitch.value());
 		System.out.println("Front limit switch: " + robot.monodent.frontSwitch.value());
 		
@@ -365,45 +352,15 @@ public class TeleopController extends Controller {
 
 	}
 	
-	
-	private boolean previousSingleLeftButtonState = false, previousSingleRightButtonState = false;
-	public void joystickConfiguration() {
-		boolean singleLeftButtonState = leftJoystick.button(6) || leftJoystick.button(7);
-		boolean singleRightButtonState = rightJoystick.button(10) || rightJoystick.button(11);
-		
-		if(singleLeftButtonState == previousSingleLeftButtonState && singleRightButtonState == previousSingleRightButtonState) {
-			return; // If the buttons haven't changed, don't do anything
-		}
-		
-		if(singleLeftButtonState && singleRightButtonState) { // Both buttons are pressed, switch to double joysticks
-			currentJoystickConfiguration = doubleJoysticksConfiguration;
-		} else if(singleLeftButtonState) { // Switch to left joystick, or to both if already on left joystick
-			if(currentJoystickConfiguration == leftJoystickConfiguration) {
-				currentJoystickConfiguration = doubleJoysticksConfiguration;
-			} else {
-				currentJoystickConfiguration = leftJoystickConfiguration;
-			}
-		} else if(singleRightButtonState) { // Switch to right joystick, or to both if already on right joystick
-			if(currentJoystickConfiguration == rightJoystickConfiguration) {
-				currentJoystickConfiguration = doubleJoysticksConfiguration;
-			} else {
-				currentJoystickConfiguration = rightJoystickConfiguration;
-			}
-		}
-		previousSingleLeftButtonState = singleLeftButtonState;
-		previousSingleRightButtonState = singleRightButtonState;
-	}
-	
+	private boolean singleJoystick = false;
 	public void drive() {
-		/*if(currentJoystickConfiguration.length == 1) { // Single joystick
-			double rotation = (currentJoystickConfiguration[0].right() + currentJoystickConfiguration[0].clockwise()) / 2;
-			robot.driveSystem.move(new Movement(new Vector(currentJoystickConfiguration[0].forward(), 0, 0), rotation));
-		} else */
-		
-		//if(currentJoystickConfiguration.length == 2) { // Double joystick
+		if(singleJoystick) {
+			double rotation = (rightJoystick.right() + rightJoystick.clockwise()) / 2;
+			robot.driveSystem.move(new Movement(new Vector(rightJoystick.forward(), 0, 0), rotation));
+		} else { // Double joystick
 			// Divide both by 2 so that sensitivity doesn't max out when both joysticks are at halfway
 			robot.driveSystem.move(new Movement(new Vector((rightJoystick.forward() + leftJoystick.forward()) / 2.0, 0, 0), (rightJoystick.forward() - leftJoystick.forward()) / 2.0));
-		//}
+		}
 	}
 
 	private boolean previousMonodentUpButtonState = false, previousMonodentDownButtonState = false;
