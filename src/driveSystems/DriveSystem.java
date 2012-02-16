@@ -68,7 +68,7 @@ public abstract class DriveSystem {
 	 * @param movement The movement the robot should move with.
 	 */
 	public void move(Movement movement) {
-		movement = new Movement(movement.translation.horizontalProjection(), movement.rotation, movement.isAbsolute);
+		movement = new Movement(movement.translation.horizontalProjection(), movement.rotation);
 		checkMovement(movement);
 		this.movement = movement;
 		updateMovement();

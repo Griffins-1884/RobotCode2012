@@ -43,7 +43,6 @@ public class MecanumDrive extends DriveSystem {
 	 * Updates the drive with the movement it has specified.
 	 */
 	protected void updateMovement() {
-		// TODO modify for absolute movements
 		double frontLeft = movement.translation.x - movement.translation.y - movement.rotation,
 			   backLeft = movement.translation.x + movement.translation.y - movement.rotation,
 			   frontRight = movement.translation.x + movement.translation.y + movement.rotation,

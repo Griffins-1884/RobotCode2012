@@ -102,7 +102,6 @@ public class LimitedAngleSwerveDrive extends DriveSystem implements EncoderListe
 	/**
 	 * Updates the movement of the drive with the current movement.
 	 */
-	// TODO add support for absolute movement
 	protected void updateMovement() {
 		Vector leftVector = movement.translation.add(new Vector(-movement.rotation, 0, 0)),
 			   rightVector = movement.translation.add(new Vector(movement.rotation, 0, 0));
