@@ -53,7 +53,7 @@ public class MutableActionList extends SequentialActions {
 	/**
 	 * Starts calling Actions.
 	 */
-	public void act() {
+	protected void act() {
 		currentAction = poll();
 		if(currentAction == null) {
 			stop();

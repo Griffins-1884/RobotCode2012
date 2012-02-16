@@ -26,7 +26,7 @@ public class ConcurrentActions extends Action implements ActionListener, MultiAc
 	/**
 	 * Starts calling Actions.
 	 */
-	public void act() {
+	protected void act() {
 		for(int i = 0; i < actions.length; i++) {
 			actions[i].addListener(this);
 			actions[i].startSeparate();

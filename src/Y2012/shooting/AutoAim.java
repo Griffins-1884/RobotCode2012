@@ -51,7 +51,7 @@ public class AutoAim extends Action implements ActionListener {
 		return regressionLineSlope*velocity + regressionLineYInt;
 	}
 	
-	public void act() {
+	protected void act() {
 		aimAction.addListener(this);
 		aimAction.start();
 	}

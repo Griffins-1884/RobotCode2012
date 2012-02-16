@@ -14,7 +14,7 @@ public class Shoot extends Apparatus.ApparatusAction implements LightSensor.Ligh
 		this.balls = balls;
 		ballsShot = 0;
 	}
-	public void act() {
+	protected void act() {
 		((ShootingApparatus) apparatus).upperSensor.addListener(this);
 		((ShootingApparatus) apparatus).setUpperBelt(BeltDirection.UP);
 		((ShootingApparatus) apparatus).setLowerBelt(BeltDirection.UP);

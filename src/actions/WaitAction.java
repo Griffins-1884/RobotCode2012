@@ -23,7 +23,7 @@ public class WaitAction extends Action {
 	/**
 	 * Pauses the thread for the duration of the action.
 	 */
-	public void act() {
+	protected void act() {
 		waitThread = Thread.currentThread();
 		try {
 			Thread.sleep(duration.milliseconds);

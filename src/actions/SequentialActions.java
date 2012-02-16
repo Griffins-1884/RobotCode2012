@@ -26,7 +26,7 @@ public class SequentialActions extends Action implements ActionListener, MultiAc
 	/**
 	 * Starts calling Actions.
 	 */
-	public void act() {
+	protected void act() {
 		if(actionsCompleted >= actions.length) {
 			stop();
 			return;

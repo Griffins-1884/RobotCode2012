@@ -12,7 +12,7 @@ public class Aim extends Apparatus.ApparatusAction {
 		this.targetPower = targetPower*Wiring.shooterMotorCoefficient;
 		
 	}
-	public void act() {
+	protected void act() {
 		// Note: setPower() changes previousPower
 		double currentPower = ((ShootingApparatus) apparatus).previousPower;
 		final int millisecondsToWait = 100;
