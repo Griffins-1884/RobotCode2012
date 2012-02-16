@@ -5,7 +5,6 @@ import actions.Action;
 import actions.Interval;
 import actions.MultiAction;
 import driveSystems.Movement;
-import sensors.Gyro;
 import spatial.Vector;
 
 public class TurnToAngle extends Action {

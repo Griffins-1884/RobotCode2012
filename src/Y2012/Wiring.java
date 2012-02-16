@@ -40,13 +40,13 @@ public class Wiring {
 		
 		lowerBeltMotor = new Relay(3);
 		upperBeltMotor = new Relay(4);
-		lowerLightSensor = new LightSensor("lower_shooter_sensor".hashCode(), 3); // TODO update for wiring
-		upperLightSensor = new LightSensor("upper_shooter_sensor".hashCode(), 4); // TODO update for wiring
+			lowerLightSensor = new LightSensor("lower_shooter_sensor".hashCode(), 3);
+			upperLightSensor = new LightSensor("upper_shooter_sensor".hashCode(), 4);
 		
 		// Monodent
 		monodentMotor = new Relay(2);
-		monodentFrontSwitch = new LimitSwitch("lower_monodent_switch".hashCode(), 5); // TODO update for wiring
-		monodentBackSwitch = new LimitSwitch("upper_monodent_switch".hashCode(), 6); // TODO update for wiring
+			monodentFrontSwitch = new LimitSwitch("lower_monodent_switch".hashCode(), 5);
+			monodentBackSwitch = new LimitSwitch("upper_monodent_switch".hashCode(), 6);
 		
 		// Miscellaneous
 		cameraAddress = null;
