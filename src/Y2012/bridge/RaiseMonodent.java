@@ -26,7 +26,7 @@ public class RaiseMonodent extends Apparatus.ApparatusAction implements LimitSwi
 		((Monodent) apparatus).off();
 	}
 	public Interval duration() {
-		return new Interval(500); // TODO check duration
+		return new Interval(250);
 	}
 	public void limitSwitch(BooleanSensorEvent ev) {
 		((Monodent) apparatus).off();
