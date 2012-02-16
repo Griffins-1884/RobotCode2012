@@ -1,8 +1,5 @@
 package sensors;
 
-import sensors.AnalogSensor.AnalogSensorEvent;
-import sensors.Sensor.SensorEvent;
-
 /*
  * NB: we are using the ADXL335 3-axis +/- 3g accelerometer here.
  * This class only uses two of the axes (x and y).
@@ -186,7 +183,7 @@ public class Accelerometer extends AnalogSensor {
 	 */
 	protected void fireEvent(AnalogSensorEvent ev) {
 		for(int i = 0; i < listeners.size(); i++) {
-			((AccelerometerListener) listeners.elementAt(i)).accelerometer(ev);
+			((AccelerometerListener) listeners.elementAt(i)).accelerometer((AccelerometerEvent) ev);
 		}
 	}
 	
