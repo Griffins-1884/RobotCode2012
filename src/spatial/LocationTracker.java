@@ -1,40 +1,69 @@
 package spatial;
 
 import sensors.*;
-import sensors.Accelerometer.AccelerometerEvent;
-import sensors.Accelerometer.AccelerometerListener;
-import sensors.AnalogSensor.AnalogSensorEvent;
-import sensors.Gyro.GyroListener;
 
-public class LocationTracker implements AccelerometerListener, GyroListener {
+public class LocationTracker {
 	private final Accelerometer accelerometer;
 	private final Gyro gyro;
 	public LocationTracker(Accelerometer accelerometer, Gyro gyro) {
 		this.accelerometer = accelerometer;
 		this.gyro = gyro;
-		accelerometer.addListener(this);
-		gyro.addListener(this);
+		thread = new LocationTrackingThread(this);
+		start();
 	}
 	
-	private Vector velocity;
-	private Location location;
-	private long previousUpdate;
+	private static final double deltaTime = 0.050;
+	private Vector acceleration = new Vector(0, 0, 0);
+	private Location location = new Location(0, 0, 0), previousLocation = new Location(0, 0, 0);
 	public void update() {
-		long millisecondsSincePreviousUpdate = System.currentTimeMillis();
-		// TODO mathy stuff here
-		previousUpdate = System.currentTimeMillis();
+		// Find absolute acceleration
+		double rotation = gyro.value(); // I'll assume we start at 0 // TODO don't assume that
+		Vector relativeAcceleration = new Vector(accelerometer.xValue(), accelerometer.yValue(), 0.0);
+		
+		Vector absoluteAcceleration = relativeAcceleration.rotateHorizontal(rotation); // TODO check sign here, I believe it is positive
+		
+		// Figure out where we are
+		Location newLocation = new Location(2 * location.x - previousLocation.x + acceleration.x * deltaTime * deltaTime,
+											2 * location.y - previousLocation.y + acceleration.y * deltaTime * deltaTime,
+											0);
+		this.acceleration = absoluteAcceleration;
+		this.previousLocation = this.location;
+		this.location = newLocation;
 	}
-	public void gyro(AnalogSensorEvent ev) {
-		update();
-	}
-	public void accelerometer(AccelerometerEvent ev) {
-		update();
+	
+	public Location location() {
+		return location;
 	}
 	
 	public void correctLocation(Location correction) {
 		this.location = correction;
 	}
-	public void correctVelocity(Vector correction) {
-		this.velocity = correction;
+	
+	private final LocationTrackingThread thread;
+	protected static class LocationTrackingThread extends Thread {
+		private final LocationTracker locationTracker;
+		private boolean stop = false;
+		public LocationTrackingThread(LocationTracker locationTracker) {
+			this.locationTracker = locationTracker;
+		}
+		private long delay = (long) (deltaTime * 1000.0);
+		public void run() {
+			while(!stop) {
+				locationTracker.update();
+				try {
+					Thread.sleep(delay);
+				} catch(InterruptedException e) {
+					return;
+				}
+			}
+		}
+	}
+	public void start() {
+		thread.stop = false;
+		thread.start();
+	}
+	public void stop() {
+		thread.stop = true;
+		thread.interrupt();
 	}
 }

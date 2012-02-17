@@ -32,12 +32,21 @@ public class Location {
 	}
 	
 	/**
+	 * Gets a vector to another location.
+	 * 
+	 * @return A vector to the specified location.
+	 */
+	public Vector vectorTo(Location l) {
+		return new Vector(l.x - x, l.y - y, l.z - z);
+	}
+	
+	/**
 	 * Gets the distance to another location.
 	 * 
 	 * @return The distance to the specified location.
 	 */
 	public double distanceTo(Location l) {
-		return Math.sqrt((l.x - x) * (l.x - x) + (l.y - y) * (l.y - y));
+		return vectorTo(l).magnitude();
 	}
 	
 	/**
@@ -46,7 +55,7 @@ public class Location {
 	 * @return The direction of the vector.
 	 */
 	public double directionTo(Location l) {
-		return MathUtils.atan2(l.y - y, l.x - x);
+		return vectorTo(l).horizontalDirection();
 	}
 	
 	/**
