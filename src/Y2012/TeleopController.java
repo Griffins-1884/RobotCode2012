@@ -32,7 +32,9 @@ public class TeleopController extends Controller {
 	
 	public void periodic() {
 		System.out.println("Gyro: " + robot.gyro.value()*180./Math.PI + " degrees");
+		System.out.println("Encoder: " + robot.encoder.distance() + " meters");
 		
+		cameraServo();
 		boolean cameraMadeMovement = cameraTrack();
 		
 		if(!cameraMadeMovement)
@@ -46,6 +48,13 @@ public class TeleopController extends Controller {
 		Watchdog.getInstance().feed();
 	}
 	public void continuous() {}
+	
+	
+	public void cameraServo()
+	{
+		robot.camera.tiltServo.setAngle(90);
+	}
+	
 	
 	boolean targetWasReached = false;
 	long targetReachedTime;
@@ -133,18 +142,18 @@ public class TeleopController extends Controller {
 	{
 		if(billyJoystick.button(4))
 		{
-			if(!robot.shootingApparatus.upperSensor.value()) // false means no ball
+			/*if(!robot.shootingApparatus.upperSensor.value()) // false means no ball
 				robot.shootingApparatus.setUpperBelt(BeltDirection.UP);
 			else
 				robot.shootingApparatus.setUpperBelt(BeltDirection.STOP);
-			
+			*/
 			robot.shootingApparatus.setLowerBelt(BeltDirection.UP);
 			
 			return true;
 		}
 		else if(billyJoystick.button(3))
 		{
-			robot.shootingApparatus.setUpperBelt(BeltDirection.DOWN);
+			//robot.shootingApparatus.setUpperBelt(BeltDirection.DOWN);
 			robot.shootingApparatus.setLowerBelt(BeltDirection.DOWN);
 			
 			return true;
@@ -354,7 +363,7 @@ public class TeleopController extends Controller {
 
 	}
 	
-	private boolean singleJoystick = false;
+	private boolean singleJoystick = false; // SET TO FALSE!!!!!
 	public final double rampStep = 0.04;
 	
 	public void drive() {

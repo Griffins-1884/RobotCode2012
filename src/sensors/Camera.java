@@ -61,7 +61,7 @@ public class Camera extends Sensor {
         }
     }
     private final AxisCamera camera;
-    private final Servo tiltServo;
+    public final Servo tiltServo;
     private final Relay ledRing;
     private CriteriaCollection cc;      // The criteria for doing the particle filter operation
 

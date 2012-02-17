@@ -34,6 +34,25 @@ public class Encoder extends AnalogSensor {
 		setThreshold(Math.PI / 100);
 		this.clicksPerRevolution = clicksPerRevolution;
 		this.wheelRadius = wheelRadius;
+		
+		this.start(); // NEVER FORGET FEB 17 2012
+	}
+	
+	
+	/* Starts the encoder.
+	 * 
+	 */
+	public final void start()
+	{
+		sensor.start();
+	}
+	
+	/* Reset the encoder.
+	 * 
+	 */
+	public final void reset()
+	{
+		sensor.reset();
 	}
 	
 	/**
@@ -51,7 +70,8 @@ public class Encoder extends AnalogSensor {
 	 * @return The current radians value of the encoder.
 	 */
 	public double value() {
-		return sensor.getRaw() * 2 * Math.PI / clicksPerRevolution;
+		// NEGATE TO MAKE VALUE POSITIVE WHEN GOING FORWARD!
+		return -sensor.getRaw() * 2 * Math.PI / clicksPerRevolution;
 	}
 	
 	/**
