@@ -15,8 +15,10 @@ import driveSystems.CaliforniaDrive;
 import edu.wpi.first.wpilibj.ModdedSmartDashboard;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
 import edu.wpi.first.wpilibj.image.NIVisionException;
+import sensors.BooleanSensor.BooleanSensorEvent;
+import sensors.LightSensor.LightSensorListener;
 
-public class TeleopController extends Controller {
+public class TeleopController extends Controller implements LightSensorListener {
 	public final Joystick leftJoystick, rightJoystick,billyJoystick;
 
 
@@ -29,12 +31,10 @@ public class TeleopController extends Controller {
 
 	public void initialize() {
 		robot.camera.setLEDRing(true);
+		robot.shootingApparatus.upperSensor.addListener(this);
 	}
 
 	public void periodic() {
-		System.out.println("Gyro: " + robot.gyro.value()*180./Math.PI + " degrees");
-		System.out.println("Encoder: " + robot.encoder.distance() + " meters");
-
 		cameraServo();
 		boolean cameraMadeMovement = cameraTrack();
 
@@ -64,6 +64,8 @@ public class TeleopController extends Controller {
 	 */
 	public void turnOffBeltsAndShooter()
 	{
+		shooting = false;
+		
 		// Turn off all belts
 		robot.shootingApparatus.setUpperBelt(BeltDirection.STOP);
 		robot.shootingApparatus.setLowerBelt(BeltDirection.STOP);
@@ -86,8 +88,6 @@ public class TeleopController extends Controller {
 			robot.shootingApparatus.setPower(currentPower + sign * rampIncrement);
 		}
 
-		robot.shootingApparatus.setLowerBelt(BeltDirection.STOP);
-		robot.shootingApparatus.setUpperBelt(BeltDirection.STOP);	
 	}
 	
 	
@@ -119,12 +119,16 @@ public class TeleopController extends Controller {
 
 	public void cameraServo()
 	{
-		robot.camera.tiltServo.set(0.8);
+		robot.camera.tiltServo.set(Math.abs(rightJoystick.throttle()));
 	}
 
 
 	boolean targetWasReached = false;
+	boolean shooting = false;
+	boolean waitBeforeShooting = false;
+	long timeOfShot; // the time when the shot was made (i.e. when the ball left while shooting)
 	long targetReachedTime;
+	public static final int timeBetweenShots = 700; // time in milliseconds
 
 	public void dumbShoot(double targetPower)
 	{
@@ -152,6 +156,7 @@ public class TeleopController extends Controller {
 				robot.shootingApparatus.setPower(currentPower + sign * rampIncrement);
 			}
 
+			shooting = false;
 			robot.shootingApparatus.setLowerBelt(BeltDirection.STOP);
 			robot.shootingApparatus.setUpperBelt(BeltDirection.STOP);
 		}
@@ -161,11 +166,29 @@ public class TeleopController extends Controller {
 
 			if(timePassedSinceTargetReached > 1000)
 			{
-				robot.shootingApparatus.setLowerBelt(BeltDirection.UP);
-				robot.shootingApparatus.setUpperBelt(BeltDirection.UP);
+				shooting = true;
+				long currentTime = System.currentTimeMillis();
+				
+				if(waitBeforeShooting && currentTime - timeOfShot > timeBetweenShots)
+				{
+					waitBeforeShooting = false;
+				}
+				
+				if(!waitBeforeShooting)
+				{
+					robot.shootingApparatus.setLowerBelt(BeltDirection.UP);
+					robot.shootingApparatus.setUpperBelt(BeltDirection.UP);
+				}
+				else
+				{
+					System.out.println("DELAYING " + System.currentTimeMillis());
+					robot.shootingApparatus.setLowerBelt(BeltDirection.STOP);
+					robot.shootingApparatus.setUpperBelt(BeltDirection.STOP);
+				}
 			}
 			else
 			{
+				shooting = false;
 				robot.shootingApparatus.setLowerBelt(BeltDirection.STOP);
 				robot.shootingApparatus.setUpperBelt(BeltDirection.STOP);
 			}
@@ -177,18 +200,18 @@ public class TeleopController extends Controller {
 	{
 		if(billyJoystick.button(4))
 		{
-			/*if(!robot.shootingApparatus.upperSensor.value()) // false means no ball
+			if(!robot.shootingApparatus.upperSensor.value()) // false means no ball
 				robot.shootingApparatus.setUpperBelt(BeltDirection.UP);
 			else
 				robot.shootingApparatus.setUpperBelt(BeltDirection.STOP);
-			*/
+			
 			robot.shootingApparatus.setLowerBelt(BeltDirection.UP);
 
 			return true;
 		}
 		else if(billyJoystick.button(3))
 		{
-			//robot.shootingApparatus.setUpperBelt(BeltDirection.DOWN);
+			robot.shootingApparatus.setUpperBelt(BeltDirection.DOWN);
 			robot.shootingApparatus.setLowerBelt(BeltDirection.DOWN);
 
 			return true;
@@ -218,23 +241,24 @@ public class TeleopController extends Controller {
 		if(joystickToUse.trigger()) {
 			try {
 				RectangleMatch[] reports = robot.camera.trackRectangles();
-				/*
-				 * for (int i = 0; i < reports.length; i++) { // print results
-				 * ParticleAnalysisReport r = reports[i];
-				 * System.out.println("\n\nParticle: " + i + "\nCenter of mass x
-				 * normalized: " + r.center_mass_x_normalized + "\nCenter of
-				 * mass y normalized: " + r.center_mass_y_normalized + "\nWidth:
-				 * " + r.boundingRectWidth + "\nHeight: " +
-				 * r.boundingRectHeight); }
-				 */
+				
+				 /*for (int i = 0; i < reports.length; i++) { // print results
+					 RectangleMatch r = reports[i];
+					 System.out.println("\n\nParticle: " + i + 
+					 "\nCenter of mass x" + r.center_mass_x_normalized + 
+					 "\nCenter of mass y:" + r.center_mass_y_normalized +
+					 "\nWidth:" + r.boundingRectWidth + 
+					 "\nHeight: " + r.boundingRectHeight); 
+				 }*/
+				
 
 				// Turn towards the first rectangle
 				double tolerance = 0.025;
 				boolean movementMade = false;
 
-				RectangleMatch[] bestReports = getBestReports(reports);
-
 				System.out.println(reports.length);
+				
+				RectangleMatch[] bestReports = getBestReports(reports);
 
 				RectangleMatch topReport = null;
 				double topCenterY = -1.0;
@@ -279,10 +303,7 @@ public class TeleopController extends Controller {
 						}
 					}
 
-
 				}
-
-
 
 				RectangleMatch rectangleChosen = middleLeftReport; // the middle rectangles will be the first two we see
 				double elevation = Tracking.MIDDLE_ELEVATION;
@@ -445,21 +466,35 @@ public class TeleopController extends Controller {
 		}
 
 		if(currentMonodentUpButtonState && currentMonodentDownButtonState) {
-			System.out.println("Off");
+			//System.out.println("Off");
 			robot.monodent.off();
 		} else if(currentMonodentDownButtonState) {
-			System.out.println("Down");
+			//System.out.println("Down");
 			robot.monodent.down();
 		} else if(currentMonodentUpButtonState) {
-			System.out.println("Up");
+			//System.out.println("Up");
 			robot.monodent.up();
-		} else if(!currentMonodentUpButtonState || !currentMonodentDownButtonState)
-		{
-			System.out.println("Off");
+		} else if(!currentMonodentUpButtonState || !currentMonodentDownButtonState) {
+			//System.out.println("Off");
 			robot.monodent.off();
 		}
 
 		previousMonodentUpButtonState = currentMonodentUpButtonState;
 		previousMonodentDownButtonState = currentMonodentDownButtonState;
+	}
+
+	// LightSensorListener method
+	public void lightSensor(BooleanSensorEvent ev) {
+		
+		// The shooting variable is set to true every time the motor is powered
+		// and the belt is turning
+		if(shooting)
+		{
+			if(!ev.source.value()) // A ball has left while shooting
+			{
+				waitBeforeShooting = true;
+				timeOfShot = System.currentTimeMillis();
+			}
+		}
 	}
 }

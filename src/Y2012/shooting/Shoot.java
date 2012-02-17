@@ -1,5 +1,6 @@
 package Y2012.shooting;
 
+import Y2012.TeleopController;
 import Y2012.shooting.ShootingApparatus.BeltDirection;
 import sensors.LightSensor;
 import sensors.BooleanSensor.BooleanSensorEvent;
@@ -14,10 +15,31 @@ public class Shoot extends Apparatus.ApparatusAction implements LightSensor.Ligh
 		this.balls = balls;
 		ballsShot = 0;
 	}
+	
 	protected void act() {
 		((ShootingApparatus) apparatus).upperSensor.addListener(this);
-		((ShootingApparatus) apparatus).setUpperBelt(BeltDirection.UP);
-		((ShootingApparatus) apparatus).setLowerBelt(BeltDirection.UP);
+		
+		while(ballsShot < balls)
+		{
+		long currentTime = System.currentTimeMillis();
+				
+		if(waitBeforeShooting && currentTime - timeOfShot > TeleopController.timeBetweenShots)
+		{
+			waitBeforeShooting = false;
+		}
+
+		if(!waitBeforeShooting)
+		{
+			((ShootingApparatus) apparatus).setLowerBelt(BeltDirection.UP);
+			((ShootingApparatus) apparatus).setUpperBelt(BeltDirection.UP);
+		}
+		else
+		{
+			((ShootingApparatus) apparatus).setLowerBelt(BeltDirection.STOP);
+			((ShootingApparatus) apparatus).setUpperBelt(BeltDirection.STOP);
+		}
+		
+		}
 	}
 	public Interval duration() {
 		return new Interval(1000); // TODO How long will shooting take?
@@ -27,10 +49,18 @@ public class Shoot extends Apparatus.ApparatusAction implements LightSensor.Ligh
 		((ShootingApparatus) apparatus).setLowerBelt(BeltDirection.STOP);
 		((ShootingApparatus) apparatus).upperSensor.removeListener(this);
 	}
-	public void lightSensor(BooleanSensorEvent ev) {
-		if(ev.source.value()) {
+	
+	private boolean waitBeforeShooting = false;
+	private long timeOfShot;
+	
+	public void lightSensor(BooleanSensorEvent ev) {		
+		if(!ev.source.value()) // A ball has left while shooting
+		{
 			ballsShot++;
+			waitBeforeShooting = true;
+			timeOfShot = System.currentTimeMillis();
 		}
+		
 		if(ballsShot == balls) {
 			stop();
 		}

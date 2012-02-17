@@ -89,8 +89,8 @@ public class Camera extends Sensor {
         Timer.delay(8); // Sometimes, the cRIO starts before the camera so we have to put in a wait
 
         cc = new CriteriaCollection();      // create the criteria for the particle filter
-        cc.addCriteria(NIVision.MeasurementType.IMAQ_MT_BOUNDING_RECT_WIDTH, 6, 320, true);
-        cc.addCriteria(NIVision.MeasurementType.IMAQ_MT_BOUNDING_RECT_HEIGHT, 8, 240, true);
+        cc.addCriteria(NIVision.MeasurementType.IMAQ_MT_BOUNDING_RECT_WIDTH, 6, 320, false);
+        cc.addCriteria(NIVision.MeasurementType.IMAQ_MT_BOUNDING_RECT_HEIGHT, 8, 240, false);
     }
 
     /**
@@ -174,7 +174,7 @@ public class Camera extends Sensor {
 
     public RectangleMatch[] trackRectangles() throws AxisCameraException, NIVisionException {
         ColorImage colorImage = image();
-        BinaryImage thresholdImage = colorImage.thresholdHSL(136, 182, 45, 100, 116, 255);	// Get only blue areas
+        BinaryImage thresholdImage = colorImage.thresholdHSL(113, 178, 100, 255, 110, 255);	// Get only blue areas
         BinaryImage bigObjectsImage = thresholdImage.removeSmallObjects(false, 2);			// Remove smaller objects
         BinaryImage convexHullImage = bigObjectsImage.convexHull(false);					// Fill in damaged rectangles
         BinaryImage filteredImage = convexHullImage.particleFilter(cc());					// Find rectangles

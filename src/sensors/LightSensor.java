@@ -41,7 +41,7 @@ public class LightSensor extends BooleanSensor {
 	}
 	
 	/**
-	 * Gets the value of the light sensor.
+	 * Gets the value of the light sensor. False means there is light.
 	 * 
 	 * @return The current value of the light sensor.
 	 */

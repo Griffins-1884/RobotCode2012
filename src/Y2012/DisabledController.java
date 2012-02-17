@@ -19,7 +19,7 @@ public class DisabledController extends Controller {
 		// Flash LEDs!
 		long currentTime = System.currentTimeMillis();
 		
-		if(currentTime-previousTime >= 200)
+		if(currentTime-previousTime >= 1000)
 		{
 			previousLEDRingValue = !previousLEDRingValue;
 			

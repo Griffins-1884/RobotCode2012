@@ -43,9 +43,6 @@ public class Tracking {
 		double horizontalAngleToTarget = MathUtils.acos(yDistance / horizontalDistance);
 		double xDistance = horizontalDistance * Math.sin(horizontalAngleToTarget);
 		
-		System.out.println("X distance: " + xDistance + " meters");
-		System.out.println("Y distance: " + yDistance + " meters");
-		
 		// Don't subtract camera height for this location vector. Keep height off floor
 		return new Vector(horizontalDistance, 0, rectangleLocation.z);
 	}
