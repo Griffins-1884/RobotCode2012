@@ -35,8 +35,13 @@ public class LocationTracker {
 		return location;
 	}
 	
+	public void correct(Location correctionLocation, Vector correctionVelocity) {
+		this.location = correctionLocation;
+		this.previousLocation = new Location(this.location.x - deltaTime * correctionVelocity.x, this.location.y - deltaTime * correctionVelocity.y, 0);
+	}
 	public void correctLocation(Location correction) {
 		this.location = correction;
+		this.previousLocation = new Location(this.location.x - deltaTime * (this.location.x - this.previousLocation.x), this.location.y - deltaTime *  (this.location.y - this.previousLocation.y), 0);
 	}
 	
 	private final LocationTrackingThread thread;
