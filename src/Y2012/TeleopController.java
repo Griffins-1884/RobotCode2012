@@ -1,5 +1,6 @@
 package Y2012;
 
+import Y2012.shooting.AutoAim;
 import spatial.Location;
 import spatial.RectangleMatch;
 import spatial.Tracking;
@@ -17,109 +18,127 @@ import edu.wpi.first.wpilibj.image.NIVisionException;
 
 public class TeleopController extends Controller {
 	public final Joystick leftJoystick, rightJoystick,billyJoystick;
-	
-	
+
+
 	public TeleopController(Robot robot) {
 		super(robot);
 		leftJoystick = new Joystick(1);
 		rightJoystick = new Joystick(2);
 		billyJoystick = new Joystick(3);
 	}
-	
+
 	public void initialize() {
 		robot.camera.setLEDRing(true);
 	}
-	
+
 	public void periodic() {
 		System.out.println("Gyro: " + robot.gyro.value()*180./Math.PI + " degrees");
 		System.out.println("Encoder: " + robot.encoder.distance() + " meters");
-		
+
 		cameraServo();
 		boolean cameraMadeMovement = cameraTrack();
-		
+
 		if(!cameraMadeMovement)
 			drive();
-		
+
 		monodent();
-		
-		if(!intake())
-			shoot();
-		
+
+		if(!intake() && billyJoystick.trigger())
+		{
+			dumbShoot(-1.0); // TODO: Add various constant speeds
+		}
+		else if(!intake() && !billyJoystick.trigger())
+		{
+			turnOffBeltsAndShooter();
+		}
+
+		// smartShoot(); // uncomment later
+
 		Watchdog.getInstance().feed();
 	}
 	public void continuous() {}
+
 	
-	
-	public void cameraServo()
+	/* Turns off belts and ramps down shooter.
+	 * 
+	 */
+	public void turnOffBeltsAndShooter()
 	{
-		robot.camera.tiltServo.setAngle(90);
+		// Turn off all belts
+		robot.shootingApparatus.setUpperBelt(BeltDirection.STOP);
+		robot.shootingApparatus.setLowerBelt(BeltDirection.STOP);
+		targetWasReached = false;
+
+		// Set jaguar to zero by ramping
+		double targetPower = 0.0;
+		double currentPower = robot.shootingApparatus.previousPower;
+
+		int sign = 1;
+		double rampIncrement = 0.03;
+
+		if(targetPower < currentPower) {
+			sign *= -1;
+		}
+
+		if(Math.abs(targetPower - currentPower) < rampIncrement) {
+			robot.shootingApparatus.setPower(targetPower);
+		} else {
+			robot.shootingApparatus.setPower(currentPower + sign * rampIncrement);
+		}
+
+		robot.shootingApparatus.setLowerBelt(BeltDirection.STOP);
+		robot.shootingApparatus.setUpperBelt(BeltDirection.STOP);	
 	}
 	
 	
+	/* Shoots using the vector found through camera target tracking
+	 * 
+	 */
+	public void smartShoot()
+	{
+		if(vectorToShootAt == null)
+			return; // do nothing
+		
+		double distanceAlongFloor = vectorToShootAt.horizontalProjection().magnitude();
+		
+		double muzzleVelocity = distanceAlongFloor/Math.cos(AutoAim.ANGLE) * 
+				Math.sqrt(AutoAim.GRAV_CONSTANT / 
+				( 2*(distanceAlongFloor*Math.tan(AutoAim.ANGLE) - (vectorToShootAt.z - AutoAim.BOX_HEIGHT)) ) );
+		
+		double power = AutoAim.findJagInput(muzzleVelocity);
+		
+		if(Math.abs(power) > 1)
+		{
+			System.out.println("Can't make shot, need too high of a jaguar input");
+			power = 1;
+		}
+		
+		dumbShoot(-power);
+	}
+	
+
+	public void cameraServo()
+	{
+		robot.camera.tiltServo.set(0.8);
+	}
+
+
 	boolean targetWasReached = false;
 	long targetReachedTime;
-	
-	public void shoot()
+
+	public void dumbShoot(double targetPower)
 	{
-		if(billyJoystick.trigger())
-		{	
-			// Get motor up to speed
-			
-			double targetPower = -1.0;
-			double currentPower = robot.shootingApparatus.previousPower;
-			
-			if(!targetWasReached && targetPower == currentPower)
-			{
-				targetReachedTime = System.currentTimeMillis();
-				targetWasReached = true;
-			}
-			
-			if(!targetWasReached)
-			{
-				int sign = 1;
-				double rampIncrement = 0.03;
+		// Get motor up to speed
+		double currentPower = robot.shootingApparatus.previousPower;
 
-				if(targetPower < currentPower) {
-					sign *= -1;
-				}
-
-				if(Math.abs(targetPower - currentPower) < rampIncrement) {
-					robot.shootingApparatus.setPower(targetPower);
-				} else {
-					robot.shootingApparatus.setPower(currentPower + sign * rampIncrement);
-				}
-				
-				robot.shootingApparatus.setLowerBelt(BeltDirection.STOP);
-				robot.shootingApparatus.setUpperBelt(BeltDirection.STOP);
-			}
-			else
-			{
-				long timePassedSinceTargetReached = System.currentTimeMillis()-targetReachedTime;
-				
-				if(timePassedSinceTargetReached > 1000)
-				{
-					robot.shootingApparatus.setLowerBelt(BeltDirection.UP);
-					robot.shootingApparatus.setUpperBelt(BeltDirection.UP);
-				}
-				else
-				{
-					robot.shootingApparatus.setLowerBelt(BeltDirection.STOP);
-					robot.shootingApparatus.setUpperBelt(BeltDirection.STOP);
-				}
-			}
-			
-		}
-		else
+		if(!targetWasReached && targetPower == currentPower)
 		{
-			// Turn off all belts
-			robot.shootingApparatus.setUpperBelt(BeltDirection.STOP);
-			robot.shootingApparatus.setLowerBelt(BeltDirection.STOP);
-			targetWasReached = false;
-			
-			// Set jaguar to zero
-			double targetPower = 0.0;
-			double currentPower = robot.shootingApparatus.previousPower;
-		
+			targetReachedTime = System.currentTimeMillis();
+			targetWasReached = true;
+		}
+
+		if(!targetWasReached)
+		{
 			int sign = 1;
 			double rampIncrement = 0.03;
 
@@ -136,8 +155,24 @@ public class TeleopController extends Controller {
 			robot.shootingApparatus.setLowerBelt(BeltDirection.STOP);
 			robot.shootingApparatus.setUpperBelt(BeltDirection.STOP);
 		}
+		else
+		{
+			long timePassedSinceTargetReached = System.currentTimeMillis()-targetReachedTime;
+
+			if(timePassedSinceTargetReached > 1000)
+			{
+				robot.shootingApparatus.setLowerBelt(BeltDirection.UP);
+				robot.shootingApparatus.setUpperBelt(BeltDirection.UP);
+			}
+			else
+			{
+				robot.shootingApparatus.setLowerBelt(BeltDirection.STOP);
+				robot.shootingApparatus.setUpperBelt(BeltDirection.STOP);
+			}
+		}
+
 	}
-	
+
 	public boolean intake()
 	{
 		if(billyJoystick.button(4))
@@ -148,35 +183,38 @@ public class TeleopController extends Controller {
 				robot.shootingApparatus.setUpperBelt(BeltDirection.STOP);
 			*/
 			robot.shootingApparatus.setLowerBelt(BeltDirection.UP);
-			
+
 			return true;
 		}
 		else if(billyJoystick.button(3))
 		{
 			//robot.shootingApparatus.setUpperBelt(BeltDirection.DOWN);
 			robot.shootingApparatus.setLowerBelt(BeltDirection.DOWN);
-			
+
 			return true;
 		}
 		else
 		{
 			robot.shootingApparatus.setUpperBelt(BeltDirection.STOP);
 			robot.shootingApparatus.setLowerBelt(BeltDirection.STOP);
-			
+
 			return false;
 		}
-		
-		
+
+
 	}
-	
+
+
+	private Vector vectorToShootAt; // this is the vector we pass into the autoAim method
+
 	/* Tracks multiple rectangles
-	 * 
+	 *
 	 * @return true if the robot did move for vision tracking, or false if
 	 * the robot did not move
 	 */
 	public boolean cameraTrack() {
 		Joystick joystickToUse = leftJoystick;
-		
+
 		if(joystickToUse.trigger()) {
 			try {
 				RectangleMatch[] reports = robot.camera.trackRectangles();
@@ -311,12 +349,14 @@ public class TeleopController extends Controller {
 							+ "\nHeight: " + rectangleChosen.boundingRectHeight);
 
 					Location rectangleLocation = new Location(0, 0, elevation);
-					
+
+					vectorToShootAt = Tracking.getVectorToTarget(rectangleChosen, rectangleLocation);
+
 					// We are assuming a constant elevation difference between the camera and the target's CENTER!
 					// This is defined in the Location class
-					System.out.println(Tracking.getVectorToTarget(rectangleChosen, rectangleLocation));
+					System.out.println(vectorToShootAt);
 				}
-				
+
 				if(movementMade)
 					return true;
 				else
@@ -328,10 +368,10 @@ public class TeleopController extends Controller {
 				ex.printStackTrace();
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	// Get the best reports, up to a maximum of four
 	public RectangleMatch[] getBestReports(RectangleMatch[] reports) {
 		RectangleMatch temp;
@@ -362,28 +402,28 @@ public class TeleopController extends Controller {
 		return result;
 
 	}
-	
+
 	private boolean singleJoystick = false; // SET TO FALSE!!!!!
 	public final double rampStep = 0.04;
-	
+
 	public void drive() {
-		
+
 		// oldVector updates every time we call CaliforniaDrive's move method
 		Vector oldVector = ((CaliforniaDrive) robot.driveSystem).oldVector;
 		double currentX = oldVector.x;
 		double targetX; // for ramping Jaguars so Suryansh doesn't tip over the robot again
 		double rotation;
-		
+
 		if(singleJoystick) {
 			targetX = rightJoystick.forward();
 			rotation = (rightJoystick.right() + rightJoystick.clockwise()) / 2;
-			
+
 		} else { // Double joystick
 			// Divide both by 2 so that sensitivity doesn't max out when both joysticks are at halfway
 			targetX = (rightJoystick.forward() + leftJoystick.forward()) / 2.0;
 			rotation = (rightJoystick.forward() - leftJoystick.forward()) / 2.0;
 		}
-		
+
 		if(Math.abs(currentX - targetX) < rampStep) {
 			robot.driveSystem.move(new Movement(new Vector(targetX, 0, 0), rotation)); // go to the target value if the step is small
 		} else if(currentX < targetX) {
@@ -396,14 +436,14 @@ public class TeleopController extends Controller {
 	private boolean previousMonodentUpButtonState = false, previousMonodentDownButtonState = false;
 
 	public void monodent() {
-		
+
 		// Button 3 goes up, button 2 goes down
 		boolean currentMonodentUpButtonState = rightJoystick.button(3),
 				currentMonodentDownButtonState = rightJoystick.button(2);
 		if(currentMonodentUpButtonState == previousMonodentUpButtonState && currentMonodentDownButtonState == previousMonodentDownButtonState) {
 			return;
 		}
-		
+
 		if(currentMonodentUpButtonState && currentMonodentDownButtonState) {
 			System.out.println("Off");
 			robot.monodent.off();
@@ -418,7 +458,7 @@ public class TeleopController extends Controller {
 			System.out.println("Off");
 			robot.monodent.off();
 		}
-		
+
 		previousMonodentUpButtonState = currentMonodentUpButtonState;
 		previousMonodentDownButtonState = currentMonodentDownButtonState;
 	}
