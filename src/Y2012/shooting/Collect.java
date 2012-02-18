@@ -8,23 +8,18 @@ import actions.Interval;
 import actions.MultiAction;
 
 public class Collect extends Apparatus.ApparatusAction implements LightSensor.LightSensorListener {
-	
-	public final Interval length;
-	public Collect(Interval length, ShootingApparatus apparatus, MultiAction parent) {
+	public final int totalBallsToObtain; // The number of balls we end up with
+	public Collect(int totalBallsToObtain, ShootingApparatus apparatus, MultiAction parent) {
 		super(apparatus, parent);
-		apparatus.upperSensor.addListener(this);
-		this.length = length;
+		apparatus.upperSensor.addListener(this); // TODO do we want to just use the bottom belt?
+		apparatus.lowerSensor.addListener(this);
+		this.totalBallsToObtain = totalBallsToObtain;
 	}
 	protected void act() {
 		((ShootingApparatus) apparatus).setLowerBelt(BeltDirection.UP);
 		
-		//if(((ShootingApparatus) apparatus).upperSensor.value())
+		if(!((ShootingApparatus) apparatus).upperSensor.value())
 			((ShootingApparatus) apparatus).setUpperBelt(BeltDirection.UP);
-		
-		try {
-			Thread.sleep(length.milliseconds);
-		} catch(InterruptedException ex) {}
-		stop();
 	}
 	public void _destroy() {
 		((ShootingApparatus) apparatus).setLowerBelt(BeltDirection.STOP);
@@ -32,9 +27,14 @@ public class Collect extends Apparatus.ApparatusAction implements LightSensor.Li
 		((ShootingApparatus) apparatus).upperSensor.removeListener(this);
 	}
 	public Interval duration() {
-		return length;
+		return new Interval(1234);
 	}
 	public void lightSensor(BooleanSensorEvent ev) {
-		((ShootingApparatus) apparatus).setUpperBelt(BeltDirection.STOP);
+		if(((ShootingApparatus) apparatus).upperSensor.value()) {
+			((ShootingApparatus) apparatus).setUpperBelt(BeltDirection.STOP);
+		}
+		if(((ShootingApparatus) apparatus).ballCount == totalBallsToObtain) {
+			stop();
+		}
 	}
 }

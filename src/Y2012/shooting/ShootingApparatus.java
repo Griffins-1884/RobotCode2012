@@ -1,16 +1,19 @@
 package Y2012.shooting;
 
+import sensors.BooleanSensor.BooleanSensorEvent;
 import sensors.LightSensor;
+import sensors.LightSensor.LightSensorListener;
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Relay.Value;
 import _static.Apparatus;
 
-public class ShootingApparatus extends Apparatus {
+public class ShootingApparatus extends Apparatus implements LightSensorListener {
 	protected final Relay lowerBeltMotor, upperBeltMotor;
-	public final Jaguar powerMotor;
+	protected final Jaguar powerMotor;
 	public final LightSensor lowerSensor, upperSensor;
-	public double previousPower;
+	public double previousPower; // TODO make private
+	protected int ballCount = 2; // We start out with 2 balls
 	
 	/**
 	 * A class (more closely resembles an enum) for belt directions
@@ -50,5 +53,16 @@ public class ShootingApparatus extends Apparatus {
 			upperBeltMotor.set(Value.kReverse);
 		else if(dir == BeltDirection.STOP)
 			upperBeltMotor.set(Value.kOff);
+	}
+	public void lightSensor(BooleanSensorEvent ev) {
+		if(ev.source == lowerSensor) {
+			if(ev.currentValue) { // If sensor is blocked
+				ballCount++;
+			}
+		} else if(ev.source == upperSensor) {
+			if(!ev.currentValue) { // If sensor is not blocked
+				ballCount--;
+			}
+		}
 	}
 }

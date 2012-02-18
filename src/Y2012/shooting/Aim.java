@@ -1,4 +1,4 @@
-package Y2012.shooting; // TODO rewrite all of my actions
+package Y2012.shooting;
 
 import Y2012.Wiring;
 import _static.Apparatus;

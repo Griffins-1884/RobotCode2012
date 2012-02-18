@@ -1,6 +1,5 @@
 package Y2012.shooting;
 
-import Y2012.TeleopController;
 import Y2012.shooting.ShootingApparatus.BeltDirection;
 import sensors.LightSensor;
 import sensors.BooleanSensor.BooleanSensorEvent;
@@ -9,60 +8,51 @@ import actions.Interval;
 import actions.MultiAction;
 
 public class Shoot extends Apparatus.ApparatusAction implements LightSensor.LightSensorListener {
-	private int balls, ballsShot;
+	public static long DELAY = 700;
+	private DelayBelts thread = null;
+	private final int originalBalls = ((ShootingApparatus) apparatus).ballCount;
+	private int balls = 0;
 	public Shoot(int balls, ShootingApparatus apparatus, MultiAction parent) {
 		super(apparatus, parent);
 		this.balls = balls;
-		ballsShot = 0;
 	}
 	
 	protected void act() {
 		((ShootingApparatus) apparatus).upperSensor.addListener(this);
-		
-		while(ballsShot < balls)
-		{
-		long currentTime = System.currentTimeMillis();
-				
-		if(waitBeforeShooting && currentTime - timeOfShot > TeleopController.timeBetweenShots)
-		{
-			waitBeforeShooting = false;
-		}
-
-		if(!waitBeforeShooting)
-		{
-			((ShootingApparatus) apparatus).setLowerBelt(BeltDirection.UP);
-			((ShootingApparatus) apparatus).setUpperBelt(BeltDirection.UP);
-		}
-		else
-		{
-			((ShootingApparatus) apparatus).setLowerBelt(BeltDirection.STOP);
-			((ShootingApparatus) apparatus).setUpperBelt(BeltDirection.STOP);
-		}
-		
-		}
+		((ShootingApparatus) apparatus).setUpperBelt(BeltDirection.UP);
+		((ShootingApparatus) apparatus).setLowerBelt(BeltDirection.UP);
 	}
 	public Interval duration() {
-		return new Interval(1000); // TODO How long will shooting take?
+		return new Interval(1000 * balls);
 	}
 	public void _destroy() {
+		if(thread != null) {
+			thread.interrupt();
+		}
 		((ShootingApparatus) apparatus).setUpperBelt(BeltDirection.STOP);
 		((ShootingApparatus) apparatus).setLowerBelt(BeltDirection.STOP);
 		((ShootingApparatus) apparatus).upperSensor.removeListener(this);
 	}
-	
-	private boolean waitBeforeShooting = false;
-	private long timeOfShot;
-	
-	public void lightSensor(BooleanSensorEvent ev) {		
-		if(!ev.source.value()) // A ball has left while shooting
-		{
-			ballsShot++;
-			waitBeforeShooting = true;
-			timeOfShot = System.currentTimeMillis();
+	public void lightSensor(BooleanSensorEvent ev) {
+		if(!ev.currentValue) {
+			((ShootingApparatus) apparatus).setUpperBelt(BeltDirection.STOP);
+			((ShootingApparatus) apparatus).setLowerBelt(BeltDirection.STOP);
+			thread = new DelayBelts();
+			thread.start();
 		}
-		
-		if(ballsShot == balls) {
+		if(((ShootingApparatus) apparatus).ballCount == originalBalls - balls) {
 			stop();
+		}
+	}
+	protected class DelayBelts extends Thread {
+		public void run() {
+			try {
+				Thread.sleep(DELAY);
+			} catch(InterruptedException e) {
+				return;
+			}
+			((ShootingApparatus) apparatus).setUpperBelt(BeltDirection.UP);
+			((ShootingApparatus) apparatus).setLowerBelt(BeltDirection.UP);
 		}
 	}
 }
