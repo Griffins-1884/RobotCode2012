@@ -30,7 +30,11 @@ public class TeleopController extends Controller implements LightSensorListener 
 	}
 
 	public void initialize() {
+		if(AutonomousController.actions != null)
+			AutonomousController.actions.stop();
+		
 		robot.camera.setLEDRing(true);
+		robot.camera.tilt(60);
 		robot.shootingApparatus.upperSensor.addListener(this);
 	}
 
@@ -117,9 +121,40 @@ public class TeleopController extends Controller implements LightSensorListener 
 	}
 	
 
+	public static final double angleStep = 35./50.; // turn 35 degrees each second
+	public static final double maxAngle = 120;
+	public static final double minAngle = 0;
+	
 	public void cameraServo()
 	{
-		robot.camera.tiltServo.set(Math.abs(rightJoystick.throttle()));
+		double currentAngle = robot.camera.tiltServo.getAngle();
+		
+		System.out.println("Current angle: " + currentAngle + " degrees");
+		
+		if(rightJoystick.button(9))
+		{
+			if(currentAngle+angleStep <= maxAngle)
+			{
+				robot.camera.tilt(currentAngle+angleStep*3); // have to fight gravity
+			}
+			else
+			{
+				robot.camera.tilt(maxAngle);
+			}
+		}
+		
+		if(rightJoystick.button(8))
+		{
+			if(currentAngle-angleStep >= minAngle)
+			{
+				robot.camera.tilt(currentAngle - angleStep*1.5);
+			}
+			else
+			{
+				robot.camera.tilt(minAngle);
+			}
+		}
+		
 	}
 
 

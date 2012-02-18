@@ -86,7 +86,7 @@ public class Camera extends Sensor {
         this.tiltServo = tiltServo;
         this.ledRing = ledRing;
 
-        Timer.delay(8); // Sometimes, the cRIO starts before the camera so we have to put in a wait
+        Timer.delay(2); // Sometimes, the cRIO starts before the camera so we have to put in a wait
 
         cc = new CriteriaCollection();      // create the criteria for the particle filter
         cc.addCriteria(NIVision.MeasurementType.IMAQ_MT_BOUNDING_RECT_WIDTH, 6, 320, false);
@@ -126,13 +126,13 @@ public class Camera extends Sensor {
     }
 
     /**
-     * Tilts the camera to the specified angle, in radians, with zero being the center
+     * Tilts the camera to the specified angle, in degrees. This year, 60 is the center on our mount.
      *
      * @param angle The angle to tilt to
      */
     public void tilt(double angle) {
     	if(tiltServo != null) {
-    		tiltServo.set(angle * 2 / Math.PI);
+    		tiltServo.setAngle(angle);
     	}
     }
 
@@ -174,10 +174,17 @@ public class Camera extends Sensor {
 
     public RectangleMatch[] trackRectangles() throws AxisCameraException, NIVisionException {
         ColorImage colorImage = image();
-        BinaryImage thresholdImage = colorImage.thresholdHSL(130, 182, 45, 255, 116, 255);	// Get only blue areas
-        BinaryImage bigObjectsImage = thresholdImage.removeSmallObjects(false, 2);			// Remove smaller objects
-        BinaryImage convexHullImage = bigObjectsImage.convexHull(false);					// Fill in damaged rectangles
-        BinaryImage filteredImage = convexHullImage.particleFilter(cc());					// Find rectangles
+		
+		// Hue from 104 to 187
+		// Saturation from 112 to 255
+		// Luminance from 53 to 208
+		// Then convex hull
+		// Then remove small objects
+		
+        BinaryImage thresholdImage = colorImage.thresholdHSL(104, 187, 112, 255, 53, 208);	// Get only blue areas
+        BinaryImage convexHullImage = thresholdImage.convexHull(false);					// Fill in damaged rectangles
+		BinaryImage bigObjectsImage = convexHullImage.removeSmallObjects(false, 2);			// Remove smaller objects
+        BinaryImage filteredImage = bigObjectsImage.particleFilter(cc());					// Find rectangles
 
         RectangleMatch[] result = new RectangleMatch[NIVision.countParticles(filteredImage.image)];
         for (int i = 0; i < result.length; i++) {
