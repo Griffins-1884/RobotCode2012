@@ -31,6 +31,7 @@ public class Goto extends DriveSystem.DrivingAction implements LocationTrackerLi
 		this.targetAngle = targetAngle;
 		this.tracker = tracker;
 		this.holomonic = (driveSystem.capabilities() & DriveSystem.LEFT_RIGHT_MOTION) > 0;
+		System.out.println("constructed");
 	}
 	protected void act() {
 		tracker.addListener(this);
