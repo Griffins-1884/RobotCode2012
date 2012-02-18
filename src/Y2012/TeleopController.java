@@ -15,6 +15,7 @@ import driveSystems.CaliforniaDrive;
 import edu.wpi.first.wpilibj.ModdedSmartDashboard;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
 import edu.wpi.first.wpilibj.image.NIVisionException;
+import input.AdjustableJoystick;
 import sensors.BooleanSensor.BooleanSensorEvent;
 import sensors.LightSensor.LightSensorListener;
 
@@ -24,8 +25,8 @@ public class TeleopController extends Controller implements LightSensorListener 
 
 	public TeleopController(Robot robot) {
 		super(robot);
-		leftJoystick = new Joystick(1);
-		rightJoystick = new Joystick(2);
+		leftJoystick = new AdjustableJoystick(1);
+		rightJoystick = new AdjustableJoystick(2);
 		billyJoystick = new Joystick(3);
 	}
 
@@ -128,9 +129,7 @@ public class TeleopController extends Controller implements LightSensorListener 
 	public void cameraServo()
 	{
 		double currentAngle = robot.camera.tiltServo.getAngle();
-		
-		System.out.println("Current angle: " + currentAngle + " degrees");
-		
+				
 		if(rightJoystick.button(9))
 		{
 			if(currentAngle+angleStep <= maxAngle)
