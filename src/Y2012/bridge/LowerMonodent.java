@@ -4,13 +4,12 @@ import sensors.BooleanSensor.BooleanSensorEvent;
 import sensors.LimitSwitch;
 import sensors.LimitSwitch.LimitSwitchListener;
 import actions.Interval;
-import actions.MultiAction;
 import _static.Apparatus;
 
 public class LowerMonodent extends Apparatus.ApparatusAction implements LimitSwitchListener {
 	private final LimitSwitch limitSwitch;
-	public LowerMonodent(Apparatus apparatus, MultiAction parent) {
-		super(apparatus, parent);
+	public LowerMonodent(Apparatus apparatus) {
+		super(apparatus);
 		limitSwitch = ((Monodent) apparatus).frontSwitch;
 		limitSwitch.addListener(this);
 	}

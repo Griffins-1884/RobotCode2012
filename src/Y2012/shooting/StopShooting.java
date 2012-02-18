@@ -6,7 +6,6 @@ package Y2012.shooting;
 
 import _static.Apparatus.ApparatusAction;
 import actions.Interval;
-import actions.MultiAction;
 
 /**
  *
@@ -14,9 +13,9 @@ import actions.MultiAction;
  */
 public class StopShooting extends ApparatusAction {
 		
-	public StopShooting(ShootingApparatus apparatus, MultiAction parent)
+	public StopShooting(ShootingApparatus apparatus)
 	{
-		super(apparatus, parent);
+		super(apparatus);
 	}
 	
 	protected void act() {

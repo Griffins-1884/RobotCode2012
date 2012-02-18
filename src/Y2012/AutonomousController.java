@@ -27,13 +27,13 @@ public class AutonomousController extends Controller {
 		
 		actions = new MutableActionList();
 		LocationTracker l = new LocationTracker(Wiring.accelerometer, Wiring.gyro);
-		actions.add(new Goto(new Location(-5, 5, 0), Math.PI / 6, l, robot.driveSystem, actions));
-		//actions.add(new WaitAction(new Interval(500), actions));
-		//actions.add(new Aim(1.0, Robot.robot.shootingApparatus, actions));
-		//actions.add(new Shoot(2, Robot.robot.shootingApparatus, actions));
-		//actions.add(new StopShooting(Robot.robot.shootingApparatus, actions));
-		//actions.add(new TurnToAngle(Robot.robot.gyro.value() + 178.*Math.PI/180., actions));
-		//actions.add(new TravelDistance(Robot.robot.encoder, 2.5, actions));
+		actions.add(new Goto(new Location(-5, 5, 0), Math.PI / 6, l, robot.driveSystem));
+		//actions.add(new WaitAction(new Interval(500)));
+		//actions.add(new Aim(1.0, Robot.robot.shootingApparatus));
+		//actions.add(new Shoot(2, Robot.robot.shootingApparatus));
+		//actions.add(new StopShooting(Robot.robot.shootingApparatus));
+		//actions.add(new TurnToAngle(Robot.robot.gyro.value() + 178.*Math.PI/180.));
+		//actions.add(new TravelDistance(Robot.robot.encoder, 2.5));
 		
 		robot.camera.setLEDRing(true);
 		robot.camera.tilt(77);

@@ -5,15 +5,14 @@ import sensors.LightSensor;
 import sensors.BooleanSensor.BooleanSensorEvent;
 import _static.Apparatus;
 import actions.Interval;
-import actions.MultiAction;
 
 public class Shoot extends Apparatus.ApparatusAction implements LightSensor.LightSensorListener {
 	public static long DELAY = 1500;
 	private DelayBelts thread = null;
 	private int ballsShot = 0;
 	private int balls = 0;
-	public Shoot(int balls, ShootingApparatus apparatus, MultiAction parent) {
-		super(apparatus, parent);
+	public Shoot(int balls, ShootingApparatus apparatus) {
+		super(apparatus);
 		this.balls = balls;
 	}
 	

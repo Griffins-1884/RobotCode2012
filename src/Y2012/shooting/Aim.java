@@ -3,12 +3,11 @@ package Y2012.shooting;
 import Y2012.Wiring;
 import _static.Apparatus;
 import actions.Interval;
-import actions.MultiAction;
 
 public class Aim extends Apparatus.ApparatusAction {
 	public final double targetPower;
-	public Aim(double targetPower, ShootingApparatus apparatus, MultiAction parent) {
-		super(apparatus, parent);
+	public Aim(double targetPower, ShootingApparatus apparatus) {
+		super(apparatus);
 		this.targetPower = targetPower*Wiring.shooterMotorCoefficient;
 		
 	}

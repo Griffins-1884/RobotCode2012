@@ -16,8 +16,7 @@ public abstract class Apparatus {
 	}
 	public static abstract class ApparatusAction extends Action {
 		public final Apparatus apparatus;
-		public ApparatusAction(Apparatus apparatus, MultiAction parent) {
-			super(parent);
+		public ApparatusAction(Apparatus apparatus) {
 			this.apparatus = apparatus;
 		}
 		public void start() {

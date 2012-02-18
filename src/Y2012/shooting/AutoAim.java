@@ -4,7 +4,6 @@ import spatial.Vector;
 import actions.Action;
 import actions.ActionListener;
 import actions.Interval;
-import actions.MultiAction;
 
 public class AutoAim extends Action implements ActionListener {
 	private Aim aimAction;
@@ -18,9 +17,7 @@ public class AutoAim extends Action implements ActionListener {
 	public static final double GRAV_CONSTANT = 9.8;
 	
 	
-	public AutoAim(Vector location, ShootingApparatus apparatus, MultiAction parent) {
-		super(parent);
-		
+	public AutoAim(Vector location, ShootingApparatus apparatus) {
 		double distanceAlongFloor = location.horizontalProjection().magnitude();
 		
 		double muzzleVelocity = distanceAlongFloor/Math.cos(ANGLE) * 
@@ -36,7 +33,7 @@ public class AutoAim extends Action implements ActionListener {
 			power = 1;
 		}
 		
-		aimAction = new Aim(power, apparatus, parent);
+		aimAction = new Aim(power, apparatus);
 	}
 	
 	/* Finds the jaguar input that will produce the required muzzle velocity.

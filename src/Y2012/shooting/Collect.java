@@ -5,12 +5,11 @@ import sensors.BooleanSensor.BooleanSensorEvent;
 import sensors.LightSensor;
 import _static.Apparatus;
 import actions.Interval;
-import actions.MultiAction;
 
 public class Collect extends Apparatus.ApparatusAction implements LightSensor.LightSensorListener {
 	public final int totalBallsToObtain; // The number of balls we end up with
-	public Collect(int totalBallsToObtain, ShootingApparatus apparatus, MultiAction parent) {
-		super(apparatus, parent);
+	public Collect(int totalBallsToObtain, ShootingApparatus apparatus) {
+		super(apparatus);
 		apparatus.upperSensor.addListener(this); // TODO do we want to just use the bottom belt?
 		apparatus.lowerSensor.addListener(this);
 		this.totalBallsToObtain = totalBallsToObtain;

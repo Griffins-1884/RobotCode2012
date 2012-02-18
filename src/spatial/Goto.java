@@ -14,8 +14,8 @@ public class Goto extends DriveSystem.DrivingAction implements LocationTrackerLi
 	private final double targetAngle;
 	private final LocationTracker tracker;
 	private final boolean holomonic; // If true, we move and rotate simultaneously, if false, we turn, drive, then turn again
-	public Goto(Location destination, LocationTracker tracker, DriveSystem driveSystem, MultiAction parent) { // If no angle specified, then just go to the final location
-		super(driveSystem, parent);
+	public Goto(Location destination, LocationTracker tracker, DriveSystem driveSystem) { // If no angle specified, then just go to the final location
+		super(driveSystem);
 		this.destination = destination;
 		this.tracker = tracker;
 		this.holomonic = (driveSystem.capabilities() & DriveSystem.LEFT_RIGHT_MOTION) > 0;
@@ -25,8 +25,8 @@ public class Goto extends DriveSystem.DrivingAction implements LocationTrackerLi
 			this.targetAngle = tracker.location().directionTo(destination);
 		}
 	}
-	public Goto(Location destination, double targetAngle, LocationTracker tracker, DriveSystem driveSystem, MultiAction parent) {
-		super(driveSystem, parent);
+	public Goto(Location destination, double targetAngle, LocationTracker tracker, DriveSystem driveSystem) {
+		super(driveSystem);
 		this.destination = destination;
 		this.targetAngle = targetAngle;
 		this.tracker = tracker;
