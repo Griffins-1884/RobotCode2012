@@ -7,14 +7,14 @@ public class Dashboard {
 	static {
 		SmartDashboard.init();
 	}
-	public void displayLocation(Location location, double rotation) {
+	public static void displayLocation(Location location, double rotation) {
 		String value = "{x:" + location.x + "," + 
 						"y:" + location.y + "," + 
 						"z:" + location.z + "," + 
 						"r:" + rotation + "}";
 		SmartDashboard.log(value, "__location__");
 	}
-	public void overlay(int x, int y, int height, int width, int color) {
+	public static void overlay(int x, int y, int height, int width, int color) {
 		String value = "{x:" + x + "," + 
 						"y:" + y + "," + 
 						"h:" + height + "," + 
