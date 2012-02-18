@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.ModdedSmartDashboard;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
 import edu.wpi.first.wpilibj.image.NIVisionException;
 
-public class LineUpAndShoot extends Action implements ActionListener {
+public class LineUpAndAim extends Action implements ActionListener {
 	
 	public static class RectangleChoice {
 		public static final int TOP = 0,
@@ -25,10 +25,11 @@ public class LineUpAndShoot extends Action implements ActionListener {
 	
 	public int choice; // is a RectangleChoice
 	public Vector vectorToRectangle;
-	public AutoAim aimAction;
+	// public AutoAim aimAction;
+	public Aim aimAction;
 	public static final int waitTimeInMilliseconds = 100;
 
-	public LineUpAndShoot(int choice, MultiAction parent) {
+	public LineUpAndAim(int choice, MultiAction parent) {
 		super(parent);
 		this.choice = choice;
 	}
@@ -185,7 +186,8 @@ public class LineUpAndShoot extends Action implements ActionListener {
 		}
 		
 		// At this point, we've found the vector to the rectangle. Just shoot
-		aimAction = new AutoAim(vectorToRectangle, Robot.robot.shootingApparatus, parent);
+		//aimAction = new AutoAim(vectorToRectangle, Robot.robot.shootingApparatus, parent);
+		aimAction = new Aim(-1.0, Robot.robot.shootingApparatus, parent);
 		aimAction.addListener(this);
 		aimAction.start();
 	}
