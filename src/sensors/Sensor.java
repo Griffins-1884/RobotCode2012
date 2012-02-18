@@ -41,7 +41,8 @@ public abstract class Sensor {
 								  	  LIGHT_SENSOR = 16385,
 									  LIMIT_SWITCH = 16386,
 								  OTHER_SENSOR = 24576,
-									  CAMERA = 24577;
+									  CAMERA = 24577,
+									  COMPOUND = 24578;
 	}
 	
 	/**

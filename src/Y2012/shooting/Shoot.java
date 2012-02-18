@@ -37,22 +37,26 @@ public class Shoot extends Apparatus.ApparatusAction implements LightSensor.Ligh
 		if(!ev.currentValue) {
 			((ShootingApparatus) apparatus).setUpperBelt(BeltDirection.STOP);
 			((ShootingApparatus) apparatus).setLowerBelt(BeltDirection.STOP);
-			thread = new DelayBelts();
+			thread = new DelayBelts(((ShootingApparatus) apparatus));
 			thread.start();
 		}
 		if(((ShootingApparatus) apparatus).ballCount == originalBalls - balls) {
 			stop();
 		}
 	}
-	protected class DelayBelts extends Thread {
+	protected static class DelayBelts extends Thread {
+		private final ShootingApparatus apparatus;
+		public DelayBelts(ShootingApparatus apparatus) {
+			this.apparatus = apparatus;
+		}
 		public void run() {
 			try {
 				Thread.sleep(DELAY);
 			} catch(InterruptedException e) {
 				return;
 			}
-			((ShootingApparatus) apparatus).setUpperBelt(BeltDirection.UP);
-			((ShootingApparatus) apparatus).setLowerBelt(BeltDirection.UP);
+			apparatus.setUpperBelt(BeltDirection.UP);
+			apparatus.setLowerBelt(BeltDirection.UP);
 		}
 	}
 }

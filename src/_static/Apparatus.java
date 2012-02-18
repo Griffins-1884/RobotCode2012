@@ -21,7 +21,7 @@ public abstract class Apparatus {
 			this.apparatus = apparatus;
 		}
 		public void start() {
-			while(apparatus.locked()) {} // Idle until the shooter is not busy
+			while(apparatus.locked()) {} // Idle until the apparatus is not busy
 			apparatus.lock();
 			super.startSeparate();
 		}

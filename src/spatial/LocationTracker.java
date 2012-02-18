@@ -2,10 +2,11 @@ package spatial;
 
 import sensors.*;
 
-public class LocationTracker {
+public class LocationTracker extends Sensor {
 	private final Accelerometer accelerometer;
 	private final Gyro gyro;
 	public LocationTracker(Accelerometer accelerometer, Gyro gyro) {
+		super("__location-tracker".hashCode());
 		this.accelerometer = accelerometer;
 		this.gyro = gyro;
 		thread = new LocationTrackingThread(this);
@@ -29,10 +30,14 @@ public class LocationTracker {
 		this.acceleration = absoluteAcceleration;
 		this.previousLocation = this.location;
 		this.location = newLocation;
+		changed = true;
 	}
 	
 	public Location location() {
 		return location;
+	}
+	public double rotation() {
+		return gyro.value();
 	}
 	
 	public void correct(Location correctionLocation, Vector correctionVelocity) {
@@ -70,5 +75,35 @@ public class LocationTracker {
 	public void stop() {
 		thread.stop = true;
 		thread.interrupt();
+	}
+	
+	public short type() {
+		return Sensor.Types.COMPOUND;
+	}
+	
+	private boolean changed;
+	protected void checkForEvents() {
+		if(changed) {
+			for(int i = 0; i < listeners.size(); i++) {
+				((LocationTrackerListener) listeners.elementAt(i)).locationTracker(new LocationTrackerEvent(this, location, gyro.value()));
+			}
+		}
+		changed = false;
+	}
+	public static interface LocationTrackerListener extends SensorListener {
+		public void locationTracker(LocationTrackerEvent ev);
+	}
+	public static class LocationTrackerEvent extends SensorEvent {
+		public final Location currentLocation;
+		public final double currentRotation;
+		public final LocationTracker source;
+		public LocationTrackerEvent(LocationTracker source, Location currentLocation, double currentRotation) {
+			this.source = source;
+			this.currentLocation = currentLocation;
+			this.currentRotation = currentRotation;
+		}
+	}
+	protected boolean isValidListener(SensorListener listener) {
+		return listener instanceof LocationTrackerListener;
 	}
 }

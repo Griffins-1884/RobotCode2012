@@ -1,6 +1,5 @@
 package Y2012.shooting;
 
-import spatial.Location;
 import spatial.Vector;
 import actions.Action;
 import actions.ActionListener;

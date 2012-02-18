@@ -44,7 +44,6 @@ public class LineUpAndShoot extends Action implements ActionListener {
 
 				// Turn towards the first rectangle
 				double tolerance = 0.025;
-				boolean movementMade = false;
 
 				RectangleMatch[] bestReports = getBestReports(reports);
 

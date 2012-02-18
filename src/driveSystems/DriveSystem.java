@@ -1,5 +1,7 @@
 package driveSystems;
 
+import actions.Action;
+import actions.MultiAction;
 import spatial.Vector;
 import edu.wpi.first.wpilibj.SpeedController;
 
@@ -112,4 +114,32 @@ public abstract class DriveSystem {
 	 * The method to update the drive's motors with the current movement. The movement can be assumed to be valid, because it has already been checked.
 	 */
 	protected abstract void updateMovement();
+	
+	private boolean lock = false;
+	private boolean locked() {
+		return lock;
+	}
+	private synchronized void lock() {
+		lock = true;
+	}
+	private synchronized void unlock() {
+		lock = false;
+	}
+	public static abstract class DrivingAction extends Action {
+		public final DriveSystem driveSystem;
+		public DrivingAction(DriveSystem driveSystem, MultiAction parent) {
+			super(parent);
+			this.driveSystem = driveSystem;
+		}
+		public void start() {
+			while(driveSystem.locked()) {} // Idle until the drive is not busy
+			driveSystem.lock();
+			super.startSeparate();
+		}
+		protected final void destroy() {
+			driveSystem.unlock();
+			_destroy();
+		}
+		protected abstract void _destroy();
+	}
 }
