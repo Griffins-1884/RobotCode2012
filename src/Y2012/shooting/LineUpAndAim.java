@@ -50,10 +50,13 @@ public class LineUpAndAim extends Action implements ActionListener {
 
 				System.out.println(reports.length);
 
+				
+				// Center_of_mass_y_normalized is negative when above the origin
+				
 				RectangleMatch topReport = null;
-				double topCenterY = -1.0;
+				double topCenterY = 1.0;
 				RectangleMatch bottomReport = null;
-				double bottomCenterY = 1.0;
+				double bottomCenterY = -1.0;
 				RectangleMatch middleLeftReport = null;
 				double middleCenterLeftX = 1.0;
 				RectangleMatch middleRightReport = null;
@@ -66,36 +69,34 @@ public class LineUpAndAim extends Action implements ActionListener {
 					}
 
 					// Check if top
-					if(bestReports[i].center_mass_y_normalized >= topCenterY) {
+					if(bestReports[i].center_mass_y_normalized <= topCenterY) {
 						topReport = bestReports[i];
 						topCenterY = bestReports[i].center_mass_y_normalized;
 					}
 
 					// Check if bottom
-					if(bestReports[i].center_mass_y_normalized <= bottomCenterY) {
+					if(bestReports[i].center_mass_y_normalized >= bottomCenterY) {
 						bottomReport = bestReports[i];
 						bottomCenterY = bestReports[i].center_mass_y_normalized;
 					}
 
 					// Check if this report is in the middle
-					if(bestReports[i].center_mass_y_normalized >= bottomCenterY && bestReports[i].center_mass_y_normalized <= topCenterY) {
+					if(bestReports[i].center_mass_y_normalized <= bottomCenterY && bestReports[i].center_mass_y_normalized >= topCenterY) {
 
-						// Check if left
+					// Check if left
 						if(bestReports[i].center_mass_x_normalized <= middleCenterLeftX) {
 							middleLeftReport = bestReports[i];
 							middleCenterLeftX = bestReports[i].center_mass_x_normalized;
 						}
 
-						// Check if right
+					// Check if right
 						if(bestReports[i].center_mass_x_normalized >= middleCenterRightX) {
 							middleRightReport = bestReports[i];
 							middleCenterRightX = bestReports[i].center_mass_x_normalized;
 						}
 					}
 
-
 				}
-
 
 				RectangleMatch rectangleChosen = middleLeftReport; // the middle rectangles will be the first two we see
 				double elevation = Tracking.MIDDLE_ELEVATION;
@@ -143,7 +144,7 @@ public class LineUpAndAim extends Action implements ActionListener {
 				// TODO: Maybe use PID to set angle instead of rotating at a constant angular velocity
 				if(rectangleChosen != null) {
 					double multiplier = Math.abs(rectangleChosen.center_mass_x_normalized);
-					multiplier = Math.max(multiplier, 0.1);
+					multiplier = Math.max(multiplier, 0.15);
 
 
 					if(rectangleChosen.center_mass_x_normalized > tolerance) {

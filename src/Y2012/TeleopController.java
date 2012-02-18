@@ -123,34 +123,36 @@ public class TeleopController extends Controller implements LightSensorListener 
 	
 
 	public static final double angleStep = 35./50.; // turn 35 degrees each second
-	public static final double maxAngle = 120;
-	public static final double minAngle = 0;
+	public static final double maxAngle = 146;
+	public static final double minAngle = 26;
 	
 	public void cameraServo()
 	{
 		double currentAngle = robot.camera.tiltServo.getAngle();
+		
+		System.out.println("Current angle: " + currentAngle + " degrees");
 				
 		if(rightJoystick.button(9))
 		{
-			if(currentAngle+angleStep <= maxAngle)
+			if(currentAngle-angleStep >= minAngle)
 			{
-				robot.camera.tilt(currentAngle+angleStep*3); // have to fight gravity
+				robot.camera.tilt(currentAngle-angleStep*1.5);
 			}
 			else
 			{
-				robot.camera.tilt(maxAngle);
+				robot.camera.tilt(minAngle);
 			}
 		}
 		
 		if(rightJoystick.button(8))
 		{
-			if(currentAngle-angleStep >= minAngle)
+			if(currentAngle+angleStep <= maxAngle)
 			{
-				robot.camera.tilt(currentAngle - angleStep*1.5);
+				robot.camera.tilt(currentAngle + angleStep*3); // have to fight gravity
 			}
 			else
 			{
-				robot.camera.tilt(minAngle);
+				robot.camera.tilt(maxAngle);
 			}
 		}
 		
@@ -198,7 +200,7 @@ public class TeleopController extends Controller implements LightSensorListener 
 		{
 			long timePassedSinceTargetReached = System.currentTimeMillis()-targetReachedTime;
 
-			if(timePassedSinceTargetReached > 1000)
+			if(timePassedSinceTargetReached > 2000)
 			{
 				shooting = true;
 				long currentTime = System.currentTimeMillis();
@@ -287,17 +289,19 @@ public class TeleopController extends Controller implements LightSensorListener 
 				
 
 				// Turn towards the first rectangle
-				double tolerance = 0.025;
+				double tolerance = 0.06;
 				boolean movementMade = false;
 
 				System.out.println(reports.length);
 				
 				RectangleMatch[] bestReports = getBestReports(reports);
 
+				// Center_of_mass_y_normalized is negative when above the origin
+				
 				RectangleMatch topReport = null;
-				double topCenterY = -1.0;
+				double topCenterY = 1.0;
 				RectangleMatch bottomReport = null;
-				double bottomCenterY = 1.0;
+				double bottomCenterY = -1.0;
 				RectangleMatch middleLeftReport = null;
 				double middleCenterLeftX = 1.0;
 				RectangleMatch middleRightReport = null;
@@ -310,19 +314,19 @@ public class TeleopController extends Controller implements LightSensorListener 
 					}
 
 					// Check if top
-					if(bestReports[i].center_mass_y_normalized >= topCenterY) {
+					if(bestReports[i].center_mass_y_normalized <= topCenterY) {
 						topReport = bestReports[i];
 						topCenterY = bestReports[i].center_mass_y_normalized;
 					}
 
 					// Check if bottom
-					if(bestReports[i].center_mass_y_normalized <= bottomCenterY) {
+					if(bestReports[i].center_mass_y_normalized >= bottomCenterY) {
 						bottomReport = bestReports[i];
 						bottomCenterY = bestReports[i].center_mass_y_normalized;
 					}
 
 					// Check if this report is in the middle
-					if(bestReports[i].center_mass_y_normalized >= bottomCenterY && bestReports[i].center_mass_y_normalized <= topCenterY) {
+					if(bestReports[i].center_mass_y_normalized <= bottomCenterY && bestReports[i].center_mass_y_normalized >= topCenterY) {
 
 					// Check if left
 						if(bestReports[i].center_mass_x_normalized <= middleCenterLeftX) {
@@ -339,8 +343,8 @@ public class TeleopController extends Controller implements LightSensorListener 
 
 				}
 
-				RectangleMatch rectangleChosen = middleLeftReport; // the middle rectangles will be the first two we see
-				double elevation = Tracking.MIDDLE_ELEVATION;
+				RectangleMatch rectangleChosen = topReport; // the middle rectangles will be the first two we see
+				double elevation = Tracking.TOP_ELEVATION;
 				boolean showAllRectangles = false;
 
 				// Button choices are arranged in same formation as rectangles
@@ -379,25 +383,27 @@ public class TeleopController extends Controller implements LightSensorListener 
 					}
 				}
 
-				//ModdedSmartDashboard.overlayEnd();
+				ModdedSmartDashboard.overlayEnd();
 
 
 				// Turn towards rectangle chosen
 				// TODO: Maybe use PID to set angle instead of rotating at a constant angular velocity
 				if(rectangleChosen != null) {
 					double multiplier = Math.abs(rectangleChosen.center_mass_x_normalized);
-					multiplier = Math.max(multiplier, 0.1);
+					multiplier = Math.max(multiplier, 0.57);
 
+					System.out.println("Multiplier: " + multiplier);
 
 					if(rectangleChosen.center_mass_x_normalized > tolerance) {
-						robot.driveSystem.move(new Movement(new Vector(joystickToUse.forward(), 0, 0), multiplier * 0.45));
+						robot.driveSystem.move(new Movement(new Vector(joystickToUse.forward(), 0, 0), multiplier * 0.40));
 						movementMade = true;
 					} else if(rectangleChosen.center_mass_x_normalized < -tolerance) {
-						robot.driveSystem.move(new Movement(new Vector(joystickToUse.forward(), 0, 0), multiplier * -0.45));
+						robot.driveSystem.move(new Movement(new Vector(joystickToUse.forward(), 0, 0), multiplier * -0.40));
 						movementMade = true;
 					}
 
 					System.out.println("\n\nChosen rectangle: "
+							+ "\nHorizontal angle: " + Tracking.getHorizontalAngleToRectangle(rectangleChosen)
 							+ "\nCenter of mass x normalized: " + rectangleChosen.center_mass_x_normalized
 							+ "\nCenter of mass y normalized: " + rectangleChosen.center_mass_y_normalized
 							+ "\nWidth: " + rectangleChosen.boundingRectWidth

@@ -17,7 +17,7 @@ public class Tracking {
 	public static final double kInch = 0.0254; // an inch in meters
 	public static final double blackRectangleHeight = 22*kInch;
 
-	public static final double CAMERA_HEIGHT = 18*kInch;
+	public static final double CAMERA_HEIGHT = 1.345;
 	public static final double BOTTOM_ELEVATION = 28*kInch + blackRectangleHeight/2.0 - CAMERA_HEIGHT;
 	public static final double MIDDLE_ELEVATION = 61*kInch + blackRectangleHeight/2.0 - CAMERA_HEIGHT;
 	public static final double TOP_ELEVATION = 98*kInch + blackRectangleHeight/2.0 - CAMERA_HEIGHT;
