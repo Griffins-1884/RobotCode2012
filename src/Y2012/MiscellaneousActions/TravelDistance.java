@@ -29,6 +29,8 @@ public class TravelDistance extends Action {
 	
 	protected void act() {
 		
+		System.out.println("TravelDistance " + System.currentTimeMillis());
+		
 		if(firstIteration)
 		{
 			startDistance = enc.distance();

@@ -13,8 +13,8 @@ public class AutonomousController extends Controller {
 	public AutonomousController(Robot robot) {
 		super(robot);
 		actions = new MutableActionList();
-		actions.add(new LineUpAndShoot(LineUpAndShoot.RectangleChoice.TOP, actions));
-		actions.add(new Shoot(2, Robot.robot.shootingApparatus, actions));
+		//actions.add(new LineUpAndShoot(LineUpAndShoot.RectangleChoice.TOP, actions));
+		//actions.add(new Shoot(2, Robot.robot.shootingApparatus, actions));
 		actions.add(new TurnToAngle(Robot.robot.gyro.value() + Math.PI, actions));
 		actions.add(new TravelDistance(Robot.robot.encoder, 2.5, actions));
 	}

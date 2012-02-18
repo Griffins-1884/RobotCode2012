@@ -78,7 +78,6 @@ public abstract class Action {
 	public void start() {
 		this.start = new Long(System.currentTimeMillis());
 		act();
-		stop();
 	}
 	
 	/**

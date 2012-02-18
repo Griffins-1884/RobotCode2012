@@ -61,7 +61,7 @@ public class SequentialActions extends Action implements ActionListener, MultiAc
 	public void actionCompleted(Action source) {
 		actionsCompleted++;
 		if(!quit) {
-			start();
+			act();
 		}
 	}
 	
