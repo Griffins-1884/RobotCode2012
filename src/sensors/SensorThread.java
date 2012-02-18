@@ -44,7 +44,7 @@ public class SensorThread extends Thread {
 		if(!sensors.contains(sensor)) {
 			sensors.addElement(sensor);
 		}
-		if(threadNotRunning) {
+		if(threadNotRunning && !thread.isAlive()) {
 			start();
 		}
 	}

@@ -25,11 +25,11 @@ public class Wiring {
 	static {
 		// Drive system
 		driveMotors[DriveSystem.LEFT + DriveSystem.FRONT] = new Jaguar(1);
-			drivingMotorCoefficients[DriveSystem.LEFT + DriveSystem.FRONT] = 1;
+			drivingMotorCoefficients[DriveSystem.LEFT + DriveSystem.FRONT] = 0.975;
 		driveMotors[DriveSystem.RIGHT + DriveSystem.FRONT] = new Jaguar(2);
 			drivingMotorCoefficients[DriveSystem.RIGHT + DriveSystem.FRONT] = -1;
 		driveMotors[DriveSystem.LEFT + DriveSystem.BACK] = new Jaguar(3);
-			drivingMotorCoefficients[DriveSystem.LEFT + DriveSystem.BACK] = 1;
+			drivingMotorCoefficients[DriveSystem.LEFT + DriveSystem.BACK] = 0.975;
 		driveMotors[DriveSystem.RIGHT + DriveSystem.BACK] = new Jaguar(4);
 			drivingMotorCoefficients[DriveSystem.RIGHT + DriveSystem.BACK] = -1;
 		
@@ -53,8 +53,8 @@ public class Wiring {
 			tiltServo = new Servo(7);
 			gyro = new Gyro("gyro".hashCode(), 2);
 			accelerometer = new Accelerometer("accelerometer".hashCode(), 3, 4, -1);
-			// Because of compression, wheels are actually 3.684 inch radius 
+			// Because of compression, wheels are actually 4 inch radius 
 			// (measured by turning a revolution, finding distance travelled, dividing by 2*pi)
-			encoder = new Encoder("encoder".hashCode(), 10, 11, 360*4, 3.684*0.0254); // 360-count but QUADRATURE, so x4
+			encoder = new Encoder("encoder".hashCode(), 10, 11, 360*4, 4*0.0254); // 360-count, but quadrature
 	}
 }

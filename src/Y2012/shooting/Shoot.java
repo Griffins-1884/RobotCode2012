@@ -8,9 +8,9 @@ import actions.Interval;
 import actions.MultiAction;
 
 public class Shoot extends Apparatus.ApparatusAction implements LightSensor.LightSensorListener {
-	public static long DELAY = 700;
+	public static long DELAY = 1000;
 	private DelayBelts thread = null;
-	private final int originalBalls = ((ShootingApparatus) apparatus).ballCount;
+	private int ballsShot = 0;
 	private int balls = 0;
 	public Shoot(int balls, ShootingApparatus apparatus, MultiAction parent) {
 		super(apparatus, parent);
@@ -35,14 +35,18 @@ public class Shoot extends Apparatus.ApparatusAction implements LightSensor.Ligh
 	}
 	public void lightSensor(BooleanSensorEvent ev) {
 		if(!ev.currentValue) {
+			ballsShot ++;
 			((ShootingApparatus) apparatus).setUpperBelt(BeltDirection.STOP);
 			((ShootingApparatus) apparatus).setLowerBelt(BeltDirection.STOP);
 			thread = new DelayBelts(((ShootingApparatus) apparatus));
 			thread.start();
 		}
-		if(((ShootingApparatus) apparatus).ballCount == originalBalls - balls) {
+		
+		if(ballsShot == balls)
+		{
 			stop();
 		}
+		
 	}
 	protected static class DelayBelts extends Thread {
 		private final ShootingApparatus apparatus;
@@ -55,6 +59,7 @@ public class Shoot extends Apparatus.ApparatusAction implements LightSensor.Ligh
 			} catch(InterruptedException e) {
 				return;
 			}
+						
 			apparatus.setUpperBelt(BeltDirection.UP);
 			apparatus.setLowerBelt(BeltDirection.UP);
 		}

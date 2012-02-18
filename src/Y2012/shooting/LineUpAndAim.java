@@ -27,7 +27,7 @@ public class LineUpAndAim extends Action implements ActionListener {
 	public Vector vectorToRectangle;
 	// public AutoAim aimAction;
 	public Aim aimAction;
-	public static final int waitTimeInMilliseconds = 100;
+	public static final int waitTimeInMilliseconds = 40;
 
 	public LineUpAndAim(int choice, MultiAction parent) {
 		super(parent);
@@ -41,16 +41,26 @@ public class LineUpAndAim extends Action implements ActionListener {
 		while(!doneTurning)
 		{
 			try {
-				RectangleMatch[] reports = Robot.robot.camera.trackRectangles(); // TODO add to parameters, not direct access
+				RectangleMatch[] reports = Robot.robot.camera.trackRectangles();
+				
+				 /*for (int i = 0; i < reports.length; i++) { // print results
+					 RectangleMatch r = reports[i];
+					 System.out.println("\n\nParticle: " + i + 
+					 "\nCenter of mass x" + r.center_mass_x_normalized + 
+					 "\nCenter of mass y:" + r.center_mass_y_normalized +
+					 "\nWidth:" + r.boundingRectWidth + 
+					 "\nHeight: " + r.boundingRectHeight); 
+				 }*/
+				
 
 				// Turn towards the first rectangle
-				double tolerance = 0.025;
-
-				RectangleMatch[] bestReports = getBestReports(reports);
+				double tolerance = 0.06;
+				boolean movementMade = false;
 
 				System.out.println(reports.length);
-
 				
+				RectangleMatch[] bestReports = getBestReports(reports);
+
 				// Center_of_mass_y_normalized is negative when above the origin
 				
 				RectangleMatch topReport = null;
@@ -98,10 +108,11 @@ public class LineUpAndAim extends Action implements ActionListener {
 
 				}
 
-				RectangleMatch rectangleChosen = middleLeftReport; // the middle rectangles will be the first two we see
-				double elevation = Tracking.MIDDLE_ELEVATION;
+				RectangleMatch rectangleChosen = topReport; // the middle rectangles will be the first two we see
+				double elevation = Tracking.TOP_ELEVATION;
 				boolean showAllRectangles = false;
 
+				// Button choices are arranged in same formation as rectangles
 				if(choice == RectangleChoice.TOP) {
 					rectangleChosen = topReport;
 					elevation = Tracking.TOP_ELEVATION;
@@ -144,33 +155,31 @@ public class LineUpAndAim extends Action implements ActionListener {
 				// TODO: Maybe use PID to set angle instead of rotating at a constant angular velocity
 				if(rectangleChosen != null) {
 					double multiplier = Math.abs(rectangleChosen.center_mass_x_normalized);
-					multiplier = Math.max(multiplier, 0.15);
+					multiplier = Math.max(multiplier, 0.55);
 
+					System.out.println("Multiplier: " + multiplier);
 
 					if(rectangleChosen.center_mass_x_normalized > tolerance) {
-						Robot.robot.driveSystem.move(new Movement(new Vector(0, 0, 0), multiplier * 0.45));
+						Robot.robot.driveSystem.move(new Movement(new Vector(0, 0, 0), multiplier * 0.38));
+						movementMade = true;
 					} else if(rectangleChosen.center_mass_x_normalized < -tolerance) {
-						Robot.robot.driveSystem.move(new Movement(new Vector(0, 0, 0), multiplier * -0.45));
+						Robot.robot.driveSystem.move(new Movement(new Vector(0, 0, 0), multiplier * -0.38));
+						movementMade = true;
 					}
 					else
 					{
 						doneTurning = true;
 					}
 
-					System.out.println("\n\nChosen rectangle: "
-							+ "\nCenter of mass x normalized: " + rectangleChosen.center_mass_x_normalized
-							+ "\nCenter of mass y normalized: " + rectangleChosen.center_mass_y_normalized
-							+ "\nWidth: " + rectangleChosen.boundingRectWidth
-							+ "\nHeight: " + rectangleChosen.boundingRectHeight);
-
 					Location rectangleLocation = new Location(0, 0, elevation);
+
+					vectorToRectangle = Tracking.getVectorToTarget(rectangleChosen, rectangleLocation);
 
 					// We are assuming a constant elevation difference between the camera and the target's CENTER!
 					// This is defined in the Location class
-					vectorToRectangle = Tracking.getVectorToTarget(rectangleChosen, rectangleLocation);
-					
 					System.out.println(vectorToRectangle);
 				}
+
 			} catch(AxisCameraException ex) {
 				ex.printStackTrace();
 			} catch(NIVisionException ex) {
@@ -186,11 +195,13 @@ public class LineUpAndAim extends Action implements ActionListener {
 			}
 		}
 		
+		System.out.println("LINE UP");
+		
 		// At this point, we've found the vector to the rectangle. Just shoot
 		//aimAction = new AutoAim(vectorToRectangle, Robot.robot.shootingApparatus, parent);
 		aimAction = new Aim(-1.0, Robot.robot.shootingApparatus, parent);
 		aimAction.addListener(this);
-		aimAction.start();
+		aimAction.startSeparate();
 	}
 	
 	// Get the best reports, up to a maximum of four
@@ -225,6 +236,7 @@ public class LineUpAndAim extends Action implements ActionListener {
 	}
 
 	protected void destroy() {
+		Robot.robot.driveSystem.move(new Movement(new Vector(0, 0, 0), 0));
 		aimAction.stop();
 	}
 

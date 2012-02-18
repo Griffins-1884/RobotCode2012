@@ -17,7 +17,6 @@ public class AutoAim extends Action implements ActionListener {
 	// respect to the horizontal.
 	public static final double GRAV_CONSTANT = 9.8;
 	
-	public static final double BOX_HEIGHT = 0.5; // Height of box ABOVE FLOOR in meters
 	
 	public AutoAim(Vector location, ShootingApparatus apparatus, MultiAction parent) {
 		super(parent);
@@ -26,7 +25,8 @@ public class AutoAim extends Action implements ActionListener {
 		
 		double muzzleVelocity = distanceAlongFloor/Math.cos(ANGLE) * 
 				Math.sqrt(GRAV_CONSTANT / 
-				( 2*(distanceAlongFloor*Math.tan(ANGLE) - (location.z - BOX_HEIGHT)) ) );
+				( 2*(distanceAlongFloor*Math.tan(ANGLE) - (location.z)) ) );
+		// z-coordinate is relative to the box's exit point (the ball's COM there)
 		
 		double power = findJagInput(muzzleVelocity);
 		
@@ -52,7 +52,7 @@ public class AutoAim extends Action implements ActionListener {
 	
 	protected void act() {
 		aimAction.addListener(this);
-		aimAction.start();
+		aimAction.startSeparate();
 	}
 	public Interval duration() {
 		return aimAction.duration();

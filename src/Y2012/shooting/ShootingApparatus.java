@@ -61,6 +61,8 @@ public class ShootingApparatus extends Apparatus implements LightSensorListener 
 			}
 		} else if(ev.source == upperSensor) {
 			if(!ev.currentValue) { // If sensor is not blocked
+				
+				System.out.println("SHOT");
 				ballCount--;
 			}
 		}

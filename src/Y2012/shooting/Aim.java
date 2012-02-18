@@ -12,12 +12,16 @@ public class Aim extends Apparatus.ApparatusAction {
 		this.targetPower = targetPower*Wiring.shooterMotorCoefficient;
 		
 	}
+	
+	private long targetReachedTime;
+	
 	protected void act() {
 		// Note: setPower() changes previousPower
 		double currentPower = ((ShootingApparatus) apparatus).previousPower;
-		final int millisecondsToWait = 100;
+		final int millisecondsToWait = 50;
 		
-		while(currentPower != targetPower) {
+		
+		while(currentPower != targetPower) {			
 			currentPower = ((ShootingApparatus) apparatus).previousPower;
 			
 			int sign = 1;
@@ -27,10 +31,24 @@ public class Aim extends Apparatus.ApparatusAction {
 			
 			if(Math.abs(targetPower - currentPower) < 0.05) {
 				((ShootingApparatus) apparatus).setPower(targetPower);
+				targetReachedTime = System.currentTimeMillis();
 			} else {
 				((ShootingApparatus) apparatus).setPower(currentPower + sign * 0.05);
 			}
 
+			try {
+				Thread.sleep(millisecondsToWait);
+			} catch(InterruptedException ex) {
+				return; // Just exit, we were interrupted by stopping the action.
+			}
+		}
+		
+		long currentTime = System.currentTimeMillis();
+		
+		while(currentTime - targetReachedTime < 3000)
+		{
+			currentTime = System.currentTimeMillis();
+			
 			try {
 				Thread.sleep(millisecondsToWait);
 			} catch(InterruptedException ex) {

@@ -35,11 +35,14 @@ public class TeleopController extends Controller implements LightSensorListener 
 			AutonomousController.actions.stop();
 		
 		robot.camera.setLEDRing(true);
-		robot.camera.tilt(60);
+		robot.camera.tilt(77);
 		robot.shootingApparatus.upperSensor.addListener(this);
 	}
 
 	public void periodic() {
+		System.out.println("Encoder angle: " + robot.encoder.value()*180./Math.PI + " degrees");
+		System.out.println("Distance travelled: " + robot.encoder.distance() + " meters");
+		
 		cameraServo();
 		boolean cameraMadeMovement = cameraTrack();
 
@@ -108,7 +111,7 @@ public class TeleopController extends Controller implements LightSensorListener 
 		
 		double muzzleVelocity = distanceAlongFloor/Math.cos(AutoAim.ANGLE) * 
 				Math.sqrt(AutoAim.GRAV_CONSTANT / 
-				( 2*(distanceAlongFloor*Math.tan(AutoAim.ANGLE) - (vectorToShootAt.z - AutoAim.BOX_HEIGHT)) ) );
+				( 2*(distanceAlongFloor*Math.tan(AutoAim.ANGLE) - (vectorToShootAt.z)) ) );
 		
 		double power = AutoAim.findJagInput(muzzleVelocity);
 		
@@ -129,9 +132,7 @@ public class TeleopController extends Controller implements LightSensorListener 
 	public void cameraServo()
 	{
 		double currentAngle = robot.camera.tiltServo.getAngle();
-		
-		System.out.println("Current angle: " + currentAngle + " degrees");
-				
+						
 		if(rightJoystick.button(9))
 		{
 			if(currentAngle-angleStep >= minAngle)
@@ -390,20 +391,20 @@ public class TeleopController extends Controller implements LightSensorListener 
 				// TODO: Maybe use PID to set angle instead of rotating at a constant angular velocity
 				if(rectangleChosen != null) {
 					double multiplier = Math.abs(rectangleChosen.center_mass_x_normalized);
-					multiplier = Math.max(multiplier, 0.57);
+					multiplier = Math.max(multiplier, 0.5);
 
 					System.out.println("Multiplier: " + multiplier);
 
 					if(rectangleChosen.center_mass_x_normalized > tolerance) {
-						robot.driveSystem.move(new Movement(new Vector(joystickToUse.forward(), 0, 0), multiplier * 0.40));
+						robot.driveSystem.move(new Movement(new Vector(joystickToUse.forward(), 0, 0), multiplier * 0.38));
 						movementMade = true;
 					} else if(rectangleChosen.center_mass_x_normalized < -tolerance) {
-						robot.driveSystem.move(new Movement(new Vector(joystickToUse.forward(), 0, 0), multiplier * -0.40));
+						robot.driveSystem.move(new Movement(new Vector(joystickToUse.forward(), 0, 0), multiplier * -0.38));
 						movementMade = true;
 					}
 
 					System.out.println("\n\nChosen rectangle: "
-							+ "\nHorizontal angle: " + Tracking.getHorizontalAngleToRectangle(rectangleChosen)
+							+ "\nVertical angle: " + Tracking.getVerticalAngleToRectangle(rectangleChosen, 0)
 							+ "\nCenter of mass x normalized: " + rectangleChosen.center_mass_x_normalized
 							+ "\nCenter of mass y normalized: " + rectangleChosen.center_mass_y_normalized
 							+ "\nWidth: " + rectangleChosen.boundingRectWidth

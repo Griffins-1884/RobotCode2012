@@ -10,7 +10,7 @@ import spatial.Vector;
 public class TurnToAngle extends Action {
 
 	public double targetAngle;
-	public static final int waitTimeInMilliseconds = 100;
+	public static final int waitTimeInMilliseconds = 40;
 	
 	public TurnToAngle(double angle, MultiAction parent)
 	{
@@ -23,17 +23,18 @@ public class TurnToAngle extends Action {
 		double currentAngle = Robot.robot.gyro.value();
 		
 		// Two degree tolerance
-		while(Math.abs(currentAngle-targetAngle) > 0.035)
+		while(Math.abs(currentAngle-targetAngle) > 0.03)
 		{
-			System.out.println("TurnToAngle " + System.currentTimeMillis());
-			
+			System.out.println("Current angle: " + currentAngle*180./Math.PI + " degrees");
+					
 			if(currentAngle < targetAngle) // turn CCW
 			{
-				Robot.robot.driveSystem.move(new Movement(new Vector(0, 0, 0), -0.45));
+				Robot.robot.driveSystem.move(new Movement(new Vector(0, 0, 0), 0.3));
 			}
 			else // turn CW
 			{
-				Robot.robot.driveSystem.move(new Movement(new Vector(0, 0, 0), 0.45));
+				break;
+				//Robot.robot.driveSystem.move(new Movement(new Vector(0, 0, 0), -0.3));
 			}
 						
 			try {
@@ -49,7 +50,7 @@ public class TurnToAngle extends Action {
 	}
 	
 	protected void destroy() {
-		
+		Robot.robot.driveSystem.move(new Movement(new Vector(0, 0, 0), 0));
 	}
 
 	public Interval duration() {

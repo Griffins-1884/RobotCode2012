@@ -18,13 +18,15 @@ public class Tracking {
 	public static final double blackRectangleHeight = 22*kInch;
 
 	public static final double CAMERA_HEIGHT = 1.345;
-	public static final double BOTTOM_ELEVATION = 28*kInch + blackRectangleHeight/2.0 - CAMERA_HEIGHT;
-	public static final double MIDDLE_ELEVATION = 61*kInch + blackRectangleHeight/2.0 - CAMERA_HEIGHT;
-	public static final double TOP_ELEVATION = 98*kInch + blackRectangleHeight/2.0 - CAMERA_HEIGHT;
+	public static final double BOTTOM_ELEVATION = 28*kInch + blackRectangleHeight/2.0;
+	public static final double MIDDLE_ELEVATION = 61*kInch + blackRectangleHeight/2.0;
+	public static final double TOP_ELEVATION = 98*kInch + blackRectangleHeight/2.0;
 	
+	public static final double BOX_TO_CAMERA_X = 0;
+	public static final double BOX_TO_CAMERA_Z = 0.26;
 	
 	public static final Vector getVectorToTarget(RectangleMatch rect, Location rectangleLocation) {
-		double imageWidth = Math.tan(cameraFOV / 2.0) * focalLength * 2.0, imageHeight = imageWidth * imageHeightPixels / imageWidthPixels;
+		/*double imageWidth = Math.tan(cameraFOV / 2.0) * focalLength * 2.0, imageHeight = imageWidth * imageHeightPixels / imageWidthPixels;
 		
 		double rectangleWidthOnSensor = rect.boundingRectWidth * imageWidth / imageWidthPixels, rectangleHeightOnSensor = rect.boundingRectHeight * imageHeight / imageHeightPixels;
 		
@@ -45,6 +47,10 @@ public class Tracking {
 		
 		// Don't subtract camera height for this location vector. Keep height off floor
 		return new Vector(horizontalDistance, 0, rectangleLocation.z);
+		*/
+		
+		// This works according to Chief Delphi
+		return new Vector(150./rect.boundingRectHeight + BOX_TO_CAMERA_X, 0, rectangleLocation.z-BOX_TO_CAMERA_Z-CAMERA_HEIGHT);
 	}
 	public static final Location getRobotLocation(RectangleMatch rect, Location rectangleLocation) {
 		Vector v = getVectorToTarget(rect, rectangleLocation);

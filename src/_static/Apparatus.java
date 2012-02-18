@@ -23,7 +23,7 @@ public abstract class Apparatus {
 		public void start() {
 			while(apparatus.locked()) {} // Idle until the apparatus is not busy
 			apparatus.lock();
-			super.startSeparate();
+			super.start();
 		}
 		protected final void destroy() {
 			apparatus.unlock();

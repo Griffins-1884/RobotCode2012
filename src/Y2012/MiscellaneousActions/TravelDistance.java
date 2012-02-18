@@ -17,7 +17,7 @@ public class TravelDistance extends Action {
 	public double startDistance;
 	public double targetDistance;
 	
-	public int waitTimeInMilliseconds = 100;
+	public int waitTimeInMilliseconds = 40;
 	
 	public TravelDistance(Encoder enc, double distanceInMeters, MultiAction parent)
 	{
@@ -28,9 +28,7 @@ public class TravelDistance extends Action {
 	}
 	
 	protected void act() {
-		
-		System.out.println("TravelDistance " + System.currentTimeMillis());
-		
+				
 		if(firstIteration)
 		{
 			startDistance = enc.distance();
@@ -44,7 +42,10 @@ public class TravelDistance extends Action {
 		while(currentDistance < targetDistance)
 		{
 			// Move forwards
-			Robot.robot.driveSystem.move(new Movement(new Vector(0.8, 0, 0), 0));
+			Robot.robot.driveSystem.move(new Movement(new Vector(-0.4, 0, 0), 0));
+			
+			System.out.println("Current distance: " + currentDistance);
+			System.out.println("Target distance: " + targetDistance);
 			
 			// Wait
 			try {
@@ -60,6 +61,7 @@ public class TravelDistance extends Action {
 	}
 	
 	protected void destroy() {
+		Robot.robot.driveSystem.move(new Movement(new Vector(0, 0, 0), 0));
 	}
 	
 	public Interval duration() {
