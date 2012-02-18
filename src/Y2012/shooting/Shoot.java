@@ -8,7 +8,7 @@ import actions.Interval;
 import actions.MultiAction;
 
 public class Shoot extends Apparatus.ApparatusAction implements LightSensor.LightSensorListener {
-	public static long DELAY = 1000;
+	public static long DELAY = 1500;
 	private DelayBelts thread = null;
 	private int ballsShot = 0;
 	private int balls = 0;

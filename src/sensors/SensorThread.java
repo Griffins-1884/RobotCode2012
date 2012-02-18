@@ -18,13 +18,14 @@ public class SensorThread extends Thread {
 	private SensorThread() {
 		pollDelay = 20;
 		sensors = new Vector();
+		start();
 	}
 	
 	/**
 	 * Tells every sensor to check for events every duration of the poll delay.
 	 */
 	public void run() {
-		while(!sensors.isEmpty()) {
+		while(true) {
 			for(int i = 0; i < sensors.size(); i++) {
 				((Sensor) sensors.elementAt(i)).checkForEvents();
 			}
@@ -40,12 +41,8 @@ public class SensorThread extends Thread {
 	 * @param sensor The sensor to add.
 	 */
 	public void addSensor(Sensor sensor) {
-		boolean threadNotRunning = sensors.isEmpty();
 		if(!sensors.contains(sensor)) {
 			sensors.addElement(sensor);
-		}
-		if(threadNotRunning && !thread.isAlive()) {
-			start();
 		}
 	}
 	

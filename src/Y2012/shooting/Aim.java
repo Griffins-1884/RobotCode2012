@@ -45,7 +45,7 @@ public class Aim extends Apparatus.ApparatusAction {
 		
 		long currentTime = System.currentTimeMillis();
 		
-		while(currentTime - targetReachedTime < 3000)
+		while(currentTime - targetReachedTime < 3500)
 		{
 			currentTime = System.currentTimeMillis();
 			

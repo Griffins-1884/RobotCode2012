@@ -34,14 +34,16 @@ public class TeleopController extends Controller implements LightSensorListener 
 		if(AutonomousController.actions != null)
 			AutonomousController.actions.stop();
 		
+		
+		robot.driveSystem.move(new Movement(new Vector(0, 0, 0), 0));
 		robot.camera.setLEDRing(true);
 		robot.camera.tilt(77);
 		robot.shootingApparatus.upperSensor.addListener(this);
 	}
 
 	public void periodic() {
-		System.out.println("Encoder angle: " + robot.encoder.value()*180./Math.PI + " degrees");
-		System.out.println("Distance travelled: " + robot.encoder.distance() + " meters");
+		//System.out.println("Encoder angle: " + robot.encoder.value()*180./Math.PI + " degrees");
+		//System.out.println("Distance travelled: " + robot.encoder.distance() + " meters");
 		
 		cameraServo();
 		boolean cameraMadeMovement = cameraTrack();
@@ -502,9 +504,6 @@ public class TeleopController extends Controller implements LightSensorListener 
 		// Button 3 goes up, button 2 goes down
 		boolean currentMonodentUpButtonState = rightJoystick.button(3),
 				currentMonodentDownButtonState = rightJoystick.button(2);
-		if(currentMonodentUpButtonState == previousMonodentUpButtonState && currentMonodentDownButtonState == previousMonodentDownButtonState) {
-			return;
-		}
 
 		if(currentMonodentUpButtonState && currentMonodentDownButtonState) {
 			//System.out.println("Off");

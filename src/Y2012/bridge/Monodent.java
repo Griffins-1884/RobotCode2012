@@ -21,6 +21,8 @@ public class Monodent extends Apparatus {
 		else
 		{
 			motor.set(Value.kOff);
+			System.out.println("Forward, switch pressed");
+
 		}
 	}
 	public void up() {
@@ -31,6 +33,7 @@ public class Monodent extends Apparatus {
 		else
 		{
 			motor.set(Value.kOff);
+			System.out.println("Reverse, switch pressed");
 		}
 	}
 	public void off() {
