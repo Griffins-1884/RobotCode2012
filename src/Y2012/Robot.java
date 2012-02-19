@@ -5,6 +5,7 @@ import Y2012.shooting.ShootingApparatus;
 import driveSystems.*;
 
 import _static.AbstractRobot;
+import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
 import sensors.*;
 
 public class Robot extends AbstractRobot {
@@ -15,6 +16,7 @@ public class Robot extends AbstractRobot {
 	public final Gyro gyro;
 	public final Accelerometer accelerometer;
 	public final Encoder encoder;
+	public final DriverStationEnhancedIO buttonBox;
 	public Robot() {
 		// Drive system
 		super(new CaliforniaDrive(Wiring.driveMotors, Wiring.drivingMotorCoefficients));
@@ -32,5 +34,7 @@ public class Robot extends AbstractRobot {
 		gyro = Wiring.gyro;
 		accelerometer = Wiring.accelerometer;
 		encoder = Wiring.encoder;
+		
+		buttonBox = Wiring.buttonBox;
 	}
 }

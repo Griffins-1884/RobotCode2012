@@ -66,6 +66,19 @@ public class TeleopController extends Controller implements LightSensorListener 
 
 		Watchdog.getInstance().feed();
 	}
+	
+	public static class ButtonBoxTypes
+	{
+		public static final int DUMB_SHOOT = 1,
+				AIM_TOP = 2,
+				AIM_MIDDLE_LEFT = 3,
+				AIM_MIDDLE_RIGHT = 4,
+				AIM_BOTTOM = 5,
+				MONODENT_UP = 6,
+				MONODENT_DOWN = 7;
+	}
+	
+	
 	public void continuous() {}
 
 	
@@ -279,6 +292,8 @@ public class TeleopController extends Controller implements LightSensorListener 
 
 		if(joystickToUse.trigger()) {
 			try {
+				long processingStartTime = System.currentTimeMillis();
+				
 				RectangleMatch[] reports = robot.camera.trackRectangles();
 				
 				 /*for (int i = 0; i < reports.length; i++) { // print results
@@ -395,7 +410,7 @@ public class TeleopController extends Controller implements LightSensorListener 
 					double multiplier = Math.abs(rectangleChosen.center_mass_x_normalized);
 					multiplier = Math.max(multiplier, 0.5);
 
-					System.out.println("Multiplier: " + multiplier);
+					//System.out.println("Multiplier: " + multiplier);
 
 					if(rectangleChosen.center_mass_x_normalized > tolerance) {
 						robot.driveSystem.move(new Movement(new Vector(joystickToUse.forward(), 0, 0), multiplier * 0.38));
@@ -405,12 +420,12 @@ public class TeleopController extends Controller implements LightSensorListener 
 						movementMade = true;
 					}
 
-					System.out.println("\n\nChosen rectangle: "
+					/*System.out.println("\n\nChosen rectangle: "
 							+ "\nVertical angle: " + Tracking.getVerticalAngleToRectangle(rectangleChosen, 0)
 							+ "\nCenter of mass x normalized: " + rectangleChosen.center_mass_x_normalized
 							+ "\nCenter of mass y normalized: " + rectangleChosen.center_mass_y_normalized
 							+ "\nWidth: " + rectangleChosen.boundingRectWidth
-							+ "\nHeight: " + rectangleChosen.boundingRectHeight);
+							+ "\nHeight: " + rectangleChosen.boundingRectHeight);*/
 
 					Location rectangleLocation = new Location(0, 0, elevation);
 
@@ -419,6 +434,7 @@ public class TeleopController extends Controller implements LightSensorListener 
 					// We are assuming a constant elevation difference between the camera and the target's CENTER!
 					// This is defined in the Location class
 					System.out.println(vectorToShootAt);
+					System.out.println("Time taken: " + (int)(System.currentTimeMillis()-processingStartTime));
 				}
 
 				if(movementMade)

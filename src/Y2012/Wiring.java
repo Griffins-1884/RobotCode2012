@@ -2,9 +2,9 @@ package Y2012;
 
 import sensors.*;
 import driveSystems.DriveSystem;
-import edu.wpi.first.wpilibj.Jaguar;
-import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.*;
+import sensors.Accelerometer;
+import sensors.Encoder;
 import sensors.Gyro;
 
 public class Wiring {
@@ -22,6 +22,7 @@ public class Wiring {
 	public static final Gyro gyro;
 	public static final Accelerometer accelerometer;
 	public static final Encoder encoder;
+	public static final DriverStationEnhancedIO buttonBox;
 	static {
 		// Drive system
 		driveMotors[DriveSystem.LEFT + DriveSystem.FRONT] = new Jaguar(1);
@@ -33,6 +34,8 @@ public class Wiring {
 		driveMotors[DriveSystem.RIGHT + DriveSystem.BACK] = new Jaguar(4);
 			drivingMotorCoefficients[DriveSystem.RIGHT + DriveSystem.BACK] = -1 * 0.4;
 		
+		buttonBox = DriverStation.getInstance().getEnhancedIO();
+			
 		// Shooter
 		shooterPowerMotor = new Jaguar(5);
 		shooterMotorCoefficient = -1;
