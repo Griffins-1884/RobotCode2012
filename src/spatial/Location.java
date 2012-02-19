@@ -1,7 +1,5 @@
 package spatial;
 
-import com.sun.squawk.util.MathUtils;
-
 public class Location {
 	/**
 	 * The x component of the location (lengthwise on field)

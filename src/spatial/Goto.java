@@ -3,7 +3,6 @@ package spatial;
 import spatial.LocationTracker.LocationTrackerEvent;
 import spatial.LocationTracker.LocationTrackerListener;
 import actions.Interval;
-import actions.MultiAction;
 import driveSystems.DriveSystem;
 import driveSystems.Movement;
 
@@ -14,8 +13,8 @@ public class Goto extends DriveSystem.DrivingAction implements LocationTrackerLi
 	private final double targetAngle;
 	private final LocationTracker tracker;
 	private final boolean holomonic; // If true, we move and rotate simultaneously, if false, we turn, drive, then turn again
-	public Goto(Location destination, LocationTracker tracker, DriveSystem driveSystem, MultiAction parent) { // If no angle specified, then just go to the final location
-		super(driveSystem, parent);
+	public Goto(Location destination, LocationTracker tracker, DriveSystem driveSystem) { // If no angle specified, then just go to the final location
+		super(driveSystem);
 		this.destination = destination;
 		this.tracker = tracker;
 		this.holomonic = (driveSystem.capabilities() & DriveSystem.LEFT_RIGHT_MOTION) > 0;
@@ -25,13 +24,12 @@ public class Goto extends DriveSystem.DrivingAction implements LocationTrackerLi
 			this.targetAngle = tracker.location().directionTo(destination);
 		}
 	}
-	public Goto(Location destination, double targetAngle, LocationTracker tracker, DriveSystem driveSystem, MultiAction parent) {
-		super(driveSystem, parent);
+	public Goto(Location destination, double targetAngle, LocationTracker tracker, DriveSystem driveSystem) {
+		super(driveSystem);
 		this.destination = destination;
 		this.targetAngle = targetAngle;
 		this.tracker = tracker;
 		this.holomonic = (driveSystem.capabilities() & DriveSystem.LEFT_RIGHT_MOTION) > 0;
-		System.out.println("constructed");
 	}
 	protected void act() {
 		tracker.addListener(this);
@@ -45,6 +43,7 @@ public class Goto extends DriveSystem.DrivingAction implements LocationTrackerLi
 	public void locationTracker(LocationTrackerEvent ev) {
 		if(ev.currentLocation.distanceTo(destination) < DISTANCE_TOLERANCE && Math.abs(shortestRotation(ev.currentRotation, targetAngle)) < RADIAL_TOLERANCE) {
 			stop();
+			System.out.println("stopped");
 		} else if(holomonic) {
 			double rotation = shortestRotation(ev.currentRotation, targetAngle);
 			Vector movement = ev.currentLocation.vectorTo(destination).rotateHorizontal(-ev.currentRotation);
@@ -53,12 +52,15 @@ public class Goto extends DriveSystem.DrivingAction implements LocationTrackerLi
 			if(ev.currentLocation.distanceTo(destination) < DISTANCE_TOLERANCE) {
 				double rotation = shortestRotation(ev.currentRotation, targetAngle);
 				driveSystem.move(new Movement(new Vector(0, 0, 0), rotation / Math.PI)); // Turn towards target rotation
+				System.out.println("turned");
 			} else {
 				double driveAngle = ev.currentLocation.directionTo(destination), shortestAngle = shortestRotation(ev.currentRotation, driveAngle);
 				if(Math.abs(shortestAngle) < RADIAL_TOLERANCE) {
 					driveSystem.move(new Movement(new Vector(0, 0, 0), shortestAngle / Math.PI)); // Turn towards destination
+					System.out.println("turned");
 				} else {
 					driveSystem.move(new Movement(new Vector(1, 0, 0), 0)); // Go forward
+					System.out.println("moved");
 				}
 			}
 		}

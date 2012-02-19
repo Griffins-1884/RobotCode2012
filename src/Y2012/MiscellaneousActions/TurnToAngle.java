@@ -3,7 +3,6 @@ package Y2012.MiscellaneousActions;
 import Y2012.Robot;
 import actions.Action;
 import actions.Interval;
-import actions.MultiAction;
 import driveSystems.Movement;
 import spatial.Vector;
 
@@ -12,9 +11,8 @@ public class TurnToAngle extends Action {
 	public double targetAngle;
 	public static final int waitTimeInMilliseconds = 40;
 	
-	public TurnToAngle(double angle, MultiAction parent)
+	public TurnToAngle(double angle)
 	{
-		super(parent);
 		this.targetAngle = angle;
 	}
 	

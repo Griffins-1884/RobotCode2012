@@ -3,7 +3,6 @@ package Y2012.MiscellaneousActions;
 import Y2012.Robot;
 import actions.Action;
 import actions.Interval;
-import actions.MultiAction;
 import driveSystems.Movement;
 import sensors.Encoder;
 import spatial.Vector;
@@ -19,10 +18,8 @@ public class TravelDistance extends Action {
 	
 	public int waitTimeInMilliseconds = 40;
 	
-	public TravelDistance(Encoder enc, double distanceInMeters, MultiAction parent)
-	{
-		super(parent);
-		
+	public TravelDistance(Encoder enc, double distanceInMeters)
+	{	
 		this.enc = enc;
 		this.distanceToTravel = distanceInMeters;
 	}

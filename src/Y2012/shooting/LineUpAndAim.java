@@ -8,7 +8,6 @@ import Y2012.Robot;
 import actions.Action;
 import actions.ActionListener;
 import actions.Interval;
-import actions.MultiAction;
 import driveSystems.Movement;
 import edu.wpi.first.wpilibj.ModdedSmartDashboard;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
@@ -29,8 +28,7 @@ public class LineUpAndAim extends Action implements ActionListener {
 	public Aim aimAction;
 	public static final int waitTimeInMilliseconds = 40;
 
-	public LineUpAndAim(int choice, MultiAction parent) {
-		super(parent);
+	public LineUpAndAim(int choice) {
 		this.choice = choice;
 	}
 
@@ -199,7 +197,7 @@ public class LineUpAndAim extends Action implements ActionListener {
 		
 		// At this point, we've found the vector to the rectangle. Just shoot
 		//aimAction = new AutoAim(vectorToRectangle, Robot.robot.shootingApparatus, parent);
-		aimAction = new Aim(-1.0, Robot.robot.shootingApparatus, parent);
+		aimAction = new Aim(-1.0, Robot.robot.shootingApparatus);
 		aimAction.addListener(this);
 		aimAction.startSeparate();
 	}

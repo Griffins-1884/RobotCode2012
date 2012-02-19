@@ -10,7 +10,7 @@ public class MutableActionList extends SequentialActions {
 	 * Constructs an empty MutableActionList.
 	 */
 	public MutableActionList() {
-		this(new Action[] {}, null);
+		this(new Action[] {});
 	}
 	
 	/**
@@ -19,11 +19,12 @@ public class MutableActionList extends SequentialActions {
 	 * @param actions The actions to be called sequentially.
 	 * @param parent The parent of the action. null if it has no parent.
 	 */
-	public MutableActionList(Action[] actions, MultiAction parent) {
-		super(null, parent);
+	public MutableActionList(Action[] actions) {
+		super(null);
 		actionList = new Vector();
 		for(int i = 0; i < actions.length; i++) {
 			actionList.addElement(actions[i]);
+			actions[i].setParent(this);
 		}
 	}
 	

@@ -15,8 +15,7 @@ public class WaitAction extends Action {
 	 * @param duration The duration to wait.
 	 * @param parent The parent of the action. null if it has no parent.
 	 */
-	public WaitAction(Interval duration, MultiAction parent) {
-		super(parent);
+	public WaitAction(Interval duration) {
 		this.duration = duration;
 	}
 	

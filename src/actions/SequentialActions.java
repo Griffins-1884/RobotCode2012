@@ -18,9 +18,11 @@ public class SequentialActions extends Action implements ActionListener, MultiAc
 	 * @param actions The actions to be called sequentially.
 	 * @param parent The parent of the action. null if it has no parent.
 	 */
-	public SequentialActions(Action[] actions, MultiAction parent) {
-		super(parent);
+	public SequentialActions(Action[] actions) {
 		this.actions = actions;
+		for(int i = 0; i < actions.length; i++) {
+			actions[i].setParent(this);
+		}
 	}
 	
 	/**

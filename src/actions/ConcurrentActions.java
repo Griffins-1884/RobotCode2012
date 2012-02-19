@@ -18,9 +18,11 @@ public class ConcurrentActions extends Action implements ActionListener, MultiAc
 	 * @param actions The actions to be called simultaneously.
 	 * @param parent The parent of the action. null if it has no parent.
 	 */
-	public ConcurrentActions(Action[] actions, MultiAction parent) {
-		super(parent);
+	public ConcurrentActions(Action[] actions) {
 		this.actions = actions;
+		for(int i = 0; i < actions.length; i++) {
+			actions[i].setParent(this);
+		}
 	}
 	
 	/**

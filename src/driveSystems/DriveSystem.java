@@ -127,8 +127,7 @@ public abstract class DriveSystem {
 	}
 	public static abstract class DrivingAction extends Action {
 		public final DriveSystem driveSystem;
-		public DrivingAction(DriveSystem driveSystem, MultiAction parent) {
-			super(parent);
+		public DrivingAction(DriveSystem driveSystem) {
 			this.driveSystem = driveSystem;
 		}
 		public void start() {

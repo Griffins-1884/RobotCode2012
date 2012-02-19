@@ -11,7 +11,7 @@ public abstract class Action {
 	/**
 	 * The parent of the action.
 	 */
-	public final MultiAction parent;
+	public MultiAction parent;
 	
 	/**
 	 * The time at which this action started.
@@ -25,9 +25,12 @@ public abstract class Action {
 	private final Vector listeners;
 	private SeparateActionThread thread;
 	
-	public Action(MultiAction parent) {
-		this.parent = parent;
+	public Action() {
 		this.listeners = new Vector();
+	}
+	
+	protected void setParent(MultiAction parent) {
+		this.parent = parent;
 	}
 	
 	/**
