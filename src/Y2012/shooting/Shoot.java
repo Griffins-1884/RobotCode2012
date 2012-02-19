@@ -1,5 +1,6 @@
 package Y2012.shooting;
 
+import Y2012.TeleopController;
 import Y2012.shooting.ShootingApparatus.BeltDirection;
 import sensors.LightSensor;
 import sensors.BooleanSensor.BooleanSensorEvent;
@@ -7,7 +8,7 @@ import _static.Apparatus;
 import actions.Interval;
 
 public class Shoot extends Apparatus.ApparatusAction implements LightSensor.LightSensorListener {
-	public static long DELAY = 1500;
+	public static long DELAY = TeleopController.TIME_BETWEEN_SHOTS;
 	private DelayBelts thread = null;
 	private int ballsShot = 0;
 	private int balls = 0;

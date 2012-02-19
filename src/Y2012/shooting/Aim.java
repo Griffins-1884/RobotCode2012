@@ -1,5 +1,6 @@
 package Y2012.shooting;
 
+import Y2012.TeleopController;
 import Y2012.Wiring;
 import _static.Apparatus;
 import actions.Interval;
@@ -44,7 +45,7 @@ public class Aim extends Apparatus.ApparatusAction {
 		
 		long currentTime = System.currentTimeMillis();
 		
-		while(currentTime - targetReachedTime < 3500)
+		while(currentTime - targetReachedTime < TeleopController.TIME_BEFORE_INTAKE)
 		{
 			currentTime = System.currentTimeMillis();
 			

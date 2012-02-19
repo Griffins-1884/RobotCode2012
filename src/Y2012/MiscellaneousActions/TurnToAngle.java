@@ -27,12 +27,12 @@ public class TurnToAngle extends Action {
 					
 			if(currentAngle < targetAngle) // turn CCW
 			{
-				Robot.robot.driveSystem.move(new Movement(new Vector(0, 0, 0), 0.3));
+				Robot.robot.driveSystem.move(new Movement(new Vector(0, 0, 0), 0.5));
 			}
 			else // turn CW
 			{
 				break;
-				//Robot.robot.driveSystem.move(new Movement(new Vector(0, 0, 0), -0.3));
+				//Robot.robot.driveSystem.move(new Movement(new Vector(0, 0, 0), -0.5));
 			}
 						
 			try {

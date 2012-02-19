@@ -16,7 +16,7 @@ public class TravelDistance extends Action {
 	public double startDistance;
 	public double targetDistance;
 	
-	public int waitTimeInMilliseconds = 40;
+	public int waitTimeInMilliseconds = 35;
 	
 	public TravelDistance(Encoder enc, double distanceInMeters)
 	{	
@@ -36,22 +36,44 @@ public class TravelDistance extends Action {
 		
 		double currentDistance = enc.distance(); 
 		
-		while(currentDistance < targetDistance)
+		if(currentDistance < targetDistance)
 		{
-			// Move forwards
-			Robot.robot.driveSystem.move(new Movement(new Vector(-0.4, 0, 0), 0));
-			
-			System.out.println("Current distance: " + currentDistance);
-			System.out.println("Target distance: " + targetDistance);
-			
-			// Wait
-			try {
-				Thread.sleep(waitTimeInMilliseconds);
-			} catch(InterruptedException ex) {
-				ex.printStackTrace();
+			while(currentDistance < targetDistance) {
+				// Move forwards
+				Robot.robot.driveSystem.move(new Movement(new Vector(-0.4, 0, 0), 0));
+
+				System.out.println("Current distance: " + currentDistance);
+				System.out.println("Target distance: " + targetDistance);
+
+				// Wait
+				try {
+					Thread.sleep(waitTimeInMilliseconds);
+				} catch(InterruptedException ex) {
+					ex.printStackTrace();
+				}
+
+				currentDistance = enc.distance();
 			}
+		}
+		else if(currentDistance > targetDistance)
+		{
 			
-			currentDistance = enc.distance();
+			while(currentDistance > targetDistance) {
+				// Move backwards
+				Robot.robot.driveSystem.move(new Movement(new Vector(0.4, 0, 0), 0));
+
+				System.out.println("Current distance: " + currentDistance);
+				System.out.println("Target distance: " + targetDistance);
+
+				// Wait
+				try {
+					Thread.sleep(waitTimeInMilliseconds);
+				} catch(InterruptedException ex) {
+					ex.printStackTrace();
+				}
+
+				currentDistance = enc.distance();
+			}
 		}
 		
 		stop();

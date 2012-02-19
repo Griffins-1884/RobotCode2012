@@ -20,7 +20,7 @@ public class MutableActionList extends SequentialActions {
 	 * @param parent The parent of the action. null if it has no parent.
 	 */
 	public MutableActionList(Action[] actions) {
-		super(null);
+		super(new Action[] {});
 		actionList = new Vector();
 		for(int i = 0; i < actions.length; i++) {
 			actionList.addElement(actions[i]);

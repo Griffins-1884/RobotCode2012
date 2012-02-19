@@ -16,24 +16,24 @@ public class Monodent extends Apparatus {
 	public void down() {
 		if(!frontSwitch.value()) {
 			motor.set(Value.kForward);
-			System.out.println("Forward, switch not pressed");
+			//System.out.println("Forward, switch not pressed");
 		}
 		else
 		{
 			motor.set(Value.kOff);
-			System.out.println("Forward, switch pressed");
+			//System.out.println("Forward, switch pressed");
 
 		}
 	}
 	public void up() {
 		if(!backSwitch.value()) {
 			motor.set(Value.kReverse);
-			System.out.println("Reverse, switch not pressed");
+			//System.out.println("Reverse, switch not pressed");
 		}
 		else
 		{
 			motor.set(Value.kOff);
-			System.out.println("Reverse, switch pressed");
+			//System.out.println("Reverse, switch pressed");
 		}
 	}
 	public void off() {

@@ -4,6 +4,7 @@
  */
 package Y2012.shooting;
 
+import Y2012.TeleopController;
 import _static.Apparatus.ApparatusAction;
 import actions.Interval;
 
@@ -21,7 +22,7 @@ public class StopShooting extends ApparatusAction {
 	protected void act() {
 		// Note: setPower() changes previousPower
 		double currentPower = ((ShootingApparatus) apparatus).previousPower;
-		final int millisecondsToWait = 100;
+		final int millisecondsToWait = 35;
 		
 		while(currentPower != 0) {
 			currentPower = ((ShootingApparatus) apparatus).previousPower;
@@ -31,10 +32,10 @@ public class StopShooting extends ApparatusAction {
 			if(currentPower > 0)
 				sign *= -1;
 			
-			if(Math.abs(0 - currentPower) < 0.05) {
+			if(Math.abs(0 - currentPower) < TeleopController.RAMP_DECREMENT) {
 				((ShootingApparatus) apparatus).setPower(0);
 			} else {
-				((ShootingApparatus) apparatus).setPower(currentPower + sign * 0.05);
+				((ShootingApparatus) apparatus).setPower(currentPower + sign * TeleopController.RAMP_DECREMENT);
 			}
 
 			try {

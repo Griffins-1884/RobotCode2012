@@ -4,6 +4,7 @@ import actions.MutableActionList;
 import edu.wpi.first.wpilibj.Watchdog;
 import Y2012.MiscellaneousActions.TravelDistance;
 import Y2012.MiscellaneousActions.TurnToAngle;
+import Y2012.bridge.LowerMonodent;
 import Y2012.shooting.Aim;
 import Y2012.shooting.LineUpAndAim;
 import Y2012.shooting.Shoot;
@@ -26,14 +27,17 @@ public class AutonomousController extends Controller {
 		Robot.robot.gyro.reset();
 		
 		actions = new MutableActionList();
-		LocationTracker l = new LocationTracker(Wiring.accelerometer, Wiring.gyro);
-		actions.add(new Goto(new Location(-5, 5, 0), Math.PI / 6, l, robot.driveSystem));
-		//actions.add(new WaitAction(new Interval(500)));
-		//actions.add(new Aim(1.0, Robot.robot.shootingApparatus));
-		//actions.add(new Shoot(2, Robot.robot.shootingApparatus));
-		//actions.add(new StopShooting(Robot.robot.shootingApparatus));
-		//actions.add(new TurnToAngle(Robot.robot.gyro.value() + 178.*Math.PI/180.));
-		//actions.add(new TravelDistance(Robot.robot.encoder, 2.5));
+		
+		// around 7 cm of momentum!
+		
+		actions.add(new Aim(1.0, Robot.robot.shootingApparatus));
+		actions.add(new Shoot(2, Robot.robot.shootingApparatus));
+		actions.add(new StopShooting(Robot.robot.shootingApparatus));
+		actions.add(new TravelDistance(Robot.robot.encoder, -1.5));
+		actions.add(new TurnToAngle(Robot.robot.gyro.value() + 165.*Math.PI/180.)); // off by 15 degrees
+		actions.add(new TravelDistance(Robot.robot.encoder, 1.5/*2.1336*/));
+		actions.add(new WaitAction(new Interval(500)));
+		actions.add(new LowerMonodent(Robot.robot.monodent));
 		
 		robot.camera.setLEDRing(true);
 		robot.camera.tilt(77);
