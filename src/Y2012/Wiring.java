@@ -23,6 +23,7 @@ public class Wiring {
 	public static final Accelerometer accelerometer;
 	public static final Encoder encoder;
 	public static final DriverStationEnhancedIO buttonBox;
+	public static final DigitalInput dipSwitch1, dipSwitch2;
 	static {
 		// Drive system
 		driveMotors[DriveSystem.LEFT + DriveSystem.FRONT] = new Jaguar(1);
@@ -50,6 +51,11 @@ public class Wiring {
 			monodentFrontSwitch = new LimitSwitch("lower_monodent_switch".hashCode(), 5);
 			monodentBackSwitch = new LimitSwitch("upper_monodent_switch".hashCode(), 6);
 		
+		// Autonomous
+		
+		dipSwitch1 = new DigitalInput(12);
+		dipSwitch2 = new DigitalInput(13);
+		
 		// Miscellaneous
 		cameraAddress = null;
 			ledRing = new Relay(1);
@@ -58,6 +64,6 @@ public class Wiring {
 			accelerometer = new Accelerometer("accelerometer".hashCode(), 3, 4, -1);
 			// Because of compression, wheels are actually 4 inch radius 
 			// (measured by turning a revolution, finding distance travelled, dividing by 2*pi)
-			encoder = new Encoder("encoder".hashCode(), 10, 11, 360*4, 4*1.1*0.0254); // 360-count, but quadrature
+			encoder = new Encoder("encoder".hashCode(), 10, 11, 360*4, 4*0.0254); // 360-count, but quadrature
 	}
 }

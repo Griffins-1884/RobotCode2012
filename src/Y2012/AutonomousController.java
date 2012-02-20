@@ -22,22 +22,27 @@ public class AutonomousController extends Controller {
 		super(robot);
 	}
 	
-	public void initialize() {
-		
-		Robot.robot.gyro.reset();
-		
+	public void initialize() {		
 		actions = new MutableActionList();
+		
+		Robot.robot.encoder.reset();
 		
 		// around 7 cm of momentum!
 		
 		actions.add(new Aim(1.0, Robot.robot.shootingApparatus));
 		actions.add(new Shoot(2, Robot.robot.shootingApparatus));
 		actions.add(new StopShooting(Robot.robot.shootingApparatus));
-		actions.add(new TravelDistance(Robot.robot.encoder, -1.5));
-		actions.add(new TurnToAngle(Robot.robot.gyro.value() + 165.*Math.PI/180.)); // off by 15 degrees
-		actions.add(new TravelDistance(Robot.robot.encoder, 1.5/*2.1336*/));
-		actions.add(new WaitAction(new Interval(500)));
-		actions.add(new LowerMonodent(Robot.robot.monodent));
+		actions.add(new WaitAction(new Interval(250)));
+		
+		if(Robot.robot.dipSwitch1.get())
+		{ // True if in center	
+			actions.add(new TravelDistance(Robot.robot.encoder, -1.50));
+			actions.add(new TurnToAngle(170. * Math.PI / 180.)); // off by 10 degrees
+			actions.add(new WaitAction(new Interval(250)));
+			actions.add(new TravelDistance(Robot.robot.encoder, 1.40));
+			//actions.add(new WaitAction(new Interval(250)));
+			//actions.add(new LowerMonodent(Robot.robot.monodent));
+		}
 		
 		robot.camera.setLEDRing(true);
 		robot.camera.tilt(77);

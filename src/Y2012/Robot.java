@@ -5,6 +5,7 @@ import Y2012.shooting.ShootingApparatus;
 import driveSystems.*;
 
 import _static.AbstractRobot;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStationEnhancedIO;
 import sensors.*;
 
@@ -17,6 +18,7 @@ public class Robot extends AbstractRobot {
 	public final Accelerometer accelerometer;
 	public final Encoder encoder;
 	public final DriverStationEnhancedIO buttonBox;
+	public final DigitalInput dipSwitch1, dipSwitch2;
 	public Robot() {
 		// Drive system
 		super(new CaliforniaDrive(Wiring.driveMotors, Wiring.drivingMotorCoefficients));
@@ -36,5 +38,7 @@ public class Robot extends AbstractRobot {
 		encoder = Wiring.encoder;
 		
 		buttonBox = Wiring.buttonBox;
+		dipSwitch1 = Wiring.dipSwitch1;
+		dipSwitch2 = Wiring.dipSwitch2;
 	}
 }

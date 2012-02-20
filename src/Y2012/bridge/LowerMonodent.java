@@ -13,12 +13,39 @@ public class LowerMonodent extends Apparatus.ApparatusAction implements LimitSwi
 		limitSwitch = ((Monodent) apparatus).frontSwitch;
 		limitSwitch.addListener(this);
 	}
+	
+	private boolean firstIteration = false;
+	private long targetTime;
+	private int waitTimeInMilliseconds = 30;
+	
 	protected void act() {
+		
+		if(!firstIteration)
+		{
+			firstIteration = true;
+			targetTime = System.currentTimeMillis() + 1000; // act for 1 second
+		}
+		
+		long currentTime = System.currentTimeMillis();
+
 		if(limitSwitch.value()) {
 			stop();
 			return;
 		}
-		((Monodent) apparatus).down();
+		
+		while(currentTime < targetTime)
+		{
+			((Monodent) apparatus).down();
+			
+			// Wait
+			try {
+					Thread.sleep(waitTimeInMilliseconds);
+			} catch(InterruptedException ex) {
+					ex.printStackTrace();
+			}
+			
+			currentTime = System.currentTimeMillis();
+		}
 	}
 	protected void _destroy() {
 		limitSwitch.removeListener(this);

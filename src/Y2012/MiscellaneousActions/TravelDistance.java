@@ -42,8 +42,8 @@ public class TravelDistance extends Action {
 				// Move forwards
 				Robot.robot.driveSystem.move(new Movement(new Vector(-0.4, 0, 0), 0));
 
-				System.out.println("Current distance: " + currentDistance);
-				System.out.println("Target distance: " + targetDistance);
+				//System.out.println("Current distance: " + currentDistance);
+				//System.out.println("Target distance: " + targetDistance);
 
 				// Wait
 				try {
@@ -62,8 +62,8 @@ public class TravelDistance extends Action {
 				// Move backwards
 				Robot.robot.driveSystem.move(new Movement(new Vector(0.4, 0, 0), 0));
 
-				System.out.println("Current distance: " + currentDistance);
-				System.out.println("Target distance: " + targetDistance);
+				//System.out.println("Current distance: " + currentDistance);
+				//System.out.println("Target distance: " + targetDistance);
 
 				// Wait
 				try {

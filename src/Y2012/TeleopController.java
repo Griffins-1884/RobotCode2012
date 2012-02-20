@@ -50,8 +50,8 @@ public class TeleopController extends Controller implements LightSensorListener 
 	private boolean previousHighSpeedButtonState = false;
 	
 	public void periodic() {
-		System.out.println("Encoder angle: " + robot.encoder.value()*180./Math.PI + " degrees");
-		System.out.println("Distance travelled: " + robot.encoder.distance() + " meters");
+		//System.out.println("Encoder angle: " + robot.encoder.value()*180./Math.PI + " degrees");
+		//System.out.println("Distance travelled: " + robot.encoder.distance() + " meters");
 		//System.out.println(robot.accelerometer.xValue() +" " + robot.accelerometer.yValue());
 		
 		cameraServo();
@@ -195,7 +195,7 @@ public class TeleopController extends Controller implements LightSensorListener 
 	{
 		double currentAngle = robot.camera.tiltServo.getAngle();
 						
-		if(rightJoystick.button(3))
+		if(rightJoystick.button(2))
 		{
 			if(currentAngle-angleStep >= minAngle)
 			{
@@ -207,7 +207,7 @@ public class TeleopController extends Controller implements LightSensorListener 
 			}
 		}
 		
-		if(rightJoystick.button(2))
+		if(rightJoystick.trigger())
 		{
 			if(currentAngle+angleStep <= maxAngle)
 			{
@@ -616,7 +616,7 @@ public class TeleopController extends Controller implements LightSensorListener 
 		if(currentMonodentUpButtonState && currentMonodentDownButtonState) {
 			//System.out.println("Off");
 			robot.monodent.off();
-		} else if(currentMonodentDownButtonState || leftJoystick.button(3)) { //for control by both driver and controller
+		} else if(currentMonodentDownButtonState || leftJoystick.trigger()) { //for control by both driver and controller
 			//System.out.println("Down");
 			robot.monodent.down();
 		} else if(currentMonodentUpButtonState || leftJoystick.button(2)) {//for control by both driver and controller

@@ -9,30 +9,38 @@ import spatial.Vector;
 public class TurnToAngle extends Action {
 
 	public double targetAngle;
-	public static final int waitTimeInMilliseconds = 40;
+	public static final int waitTimeInMilliseconds = 24;
 	
 	public TurnToAngle(double angle)
 	{
 		this.targetAngle = angle;
 	}
 	
+	private boolean firstIteration = false;
+	
 	protected void act() {
 		// Angle in radians
-		double currentAngle = Robot.robot.gyro.value();
+		if(!firstIteration)
+		{
+			Robot.robot.gyro.reset();
+			firstIteration = true;
+		}
+		
+		double currentAngle = 0;
 		
 		// Two degree tolerance
 		while(Math.abs(currentAngle-targetAngle) > 0.03)
 		{
-			System.out.println("Current angle: " + currentAngle*180./Math.PI + " degrees");
+			//System.out.println("Current angle: " + currentAngle*180./Math.PI + " degrees");
 					
 			if(currentAngle < targetAngle) // turn CCW
 			{
-				Robot.robot.driveSystem.move(new Movement(new Vector(0, 0, 0), 0.5));
+				Robot.robot.driveSystem.move(new Movement(new Vector(0, 0, 0), 0.45));
 			}
 			else // turn CW
 			{
 				break;
-				//Robot.robot.driveSystem.move(new Movement(new Vector(0, 0, 0), -0.5));
+				//Robot.robot.driveSystem.move(new Movement(new Vector(0, 0, 0), -0.45));
 			}
 						
 			try {
