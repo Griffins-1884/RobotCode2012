@@ -31,6 +31,9 @@ public class TurnToAngle extends Action {
 		// Two degree tolerance
 		while(Math.abs(currentAngle-targetAngle) > 0.03)
 		{
+			if(stop) {
+				return;
+			}
 			//System.out.println("Current angle: " + currentAngle*180./Math.PI + " degrees");
 					
 			if(currentAngle < targetAngle) // turn CCW
@@ -54,8 +57,10 @@ public class TurnToAngle extends Action {
 		
 		stop();
 	}
-	
+
+	private boolean stop = false;
 	protected void destroy() {
+		stop = true;
 		Robot.robot.driveSystem.move(new Movement(new Vector(0, 0, 0), 0));
 	}
 

@@ -39,6 +39,9 @@ public class TravelDistance extends Action {
 		if(currentDistance < targetDistance)
 		{
 			while(currentDistance < targetDistance) {
+				if(stop) {
+					return;
+				}
 				// Move forwards
 				Robot.robot.driveSystem.move(new Movement(new Vector(-0.4, 0, 0), 0));
 
@@ -59,6 +62,9 @@ public class TravelDistance extends Action {
 		{
 			
 			while(currentDistance > targetDistance) {
+				if(stop) {
+					return;
+				}
 				// Move backwards
 				Robot.robot.driveSystem.move(new Movement(new Vector(0.4, 0, 0), 0));
 
@@ -79,7 +85,9 @@ public class TravelDistance extends Action {
 		stop();
 	}
 	
+	private boolean stop = false;
 	protected void destroy() {
+		stop = true;
 		Robot.robot.driveSystem.move(new Movement(new Vector(0, 0, 0), 0));
 	}
 	
