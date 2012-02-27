@@ -10,9 +10,11 @@ import _static.Apparatus.ApparatusAction;
 
 public class TravelTimeAndStopShooting extends ApparatusAction {
 	private long startTime, time;
-	public TravelTimeAndStopShooting(Apparatus apparatus, long time) {
+	private final double driveSpeed;
+	public TravelTimeAndStopShooting(Apparatus apparatus, long time, double speed) {
 		super(apparatus);
 		this.time = time;
+		this.driveSpeed = speed;
 	}
 	private boolean stop;
 	protected void _destroy() {
@@ -22,7 +24,7 @@ public class TravelTimeAndStopShooting extends ApparatusAction {
 	protected void act() {
 		this.startTime = System.currentTimeMillis();
 		final int waitTime = 50;
-		final double originalPower = ((ShootingApparatus) apparatus).previousPower, driveSpeed = 0.5; // TODO find appropriate speed
+		final double originalPower = ((ShootingApparatus) apparatus).previousPower;
 		
 		double powerFraction = 1.0;
 		long currentTime = System.currentTimeMillis();
