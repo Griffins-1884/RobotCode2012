@@ -22,4 +22,10 @@ public class Dashboard {
 						"c:" + color + "}";
 		SmartDashboard.log(value, "__overlay__");
 	}
+	public static final int MONODENT_UP = 0, MONODENT_DOWN = 2, MONODENT_MOVING = 1;
+	public static void displayStatus(int ballCount, int monodentState) {
+		String value = "{b:" + ballCount + "," + 
+						"m:" + monodentState + "}";
+		SmartDashboard.log(value, "__status__");
+	}
 }
