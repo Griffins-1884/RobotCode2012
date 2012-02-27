@@ -13,7 +13,6 @@ public class TravelTimeAndStopShooting extends ApparatusAction {
 	public TravelTimeAndStopShooting(Apparatus apparatus, long time) {
 		super(apparatus);
 		this.time = time;
-		this.startTime = System.currentTimeMillis();
 	}
 	private boolean stop;
 	protected void _destroy() {
@@ -21,13 +20,16 @@ public class TravelTimeAndStopShooting extends ApparatusAction {
 		Robot.robot.driveSystem.move(new Movement(new Vector(0,0,0), 0));
 	}
 	protected void act() {
-		double power = ((ShootingApparatus) apparatus).previousPower;
+		this.startTime = System.currentTimeMillis();
 		final int waitTime = 50;
-		final double driveSpeed = 0.5; // TODO find appropriate speed
+		final double originalPower = ((ShootingApparatus) apparatus).previousPower, driveSpeed = 0.5; // TODO find appropriate speed
+		
+		double powerFraction = 1.0;
 		long currentTime = System.currentTimeMillis();
+		
 		while(!stop && currentTime <= startTime + time) {
-			power = 1.0 - ((currentTime - startTime) * 1.0 / time);
-			((ShootingApparatus) apparatus).setPower(power);
+			powerFraction = 1.0 - ((currentTime - startTime) * 1.0 / time);
+			((ShootingApparatus) apparatus).setPower(originalPower * powerFraction);
 
 			Robot.robot.driveSystem.move(new Movement(new Vector(driveSpeed,0,0), 0));
 			
@@ -37,6 +39,7 @@ public class TravelTimeAndStopShooting extends ApparatusAction {
 				return; // Just exit
 			}
 		}
+		((ShootingApparatus) apparatus).setPower(0);
 		stop();
 	}
 	public Interval duration() {
