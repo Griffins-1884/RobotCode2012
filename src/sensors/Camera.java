@@ -181,7 +181,8 @@ public class Camera extends Sensor {
 		// Then convex hull
 		// Then remove small objects
 		
-        BinaryImage thresholdImage = colorImage.thresholdHSL(104, 187, 112, 255, 53, 208);	// Get only blue areas
+		// HSL thresholds as of March 8, 2012 (shots of red baskets at WPI) 
+        BinaryImage thresholdImage = colorImage.thresholdHSL(104, 187, 94, 255, 53, 208);	// Get only blue areas
         BinaryImage convexHullImage = thresholdImage.convexHull(false);					// Fill in damaged rectangles
 		BinaryImage bigObjectsImage = convexHullImage.removeSmallObjects(false, 2);			// Remove smaller objects
         BinaryImage filteredImage = bigObjectsImage.particleFilter(cc());					// Find rectangles
