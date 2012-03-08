@@ -26,15 +26,15 @@ public class TeleopController extends Controller implements LightSensorListener 
 
 	public TeleopController(Robot robot) {
 		super(robot);
-		leftJoystick = new AdjustableJoystick(1);
-		rightJoystick = new AdjustableJoystick(2);
+		leftJoystick = new Joystick(1);
+		rightJoystick = new Joystick(2);
 	}
 
 	public void initialize() {
 		if(AutonomousController.actions != null)
 			AutonomousController.actions.stop();
 		
-		ModdedSmartDashboard.log(-1, "Distance to basket");
+		//ModdedSmartDashboard.log(-1, "Distance to basket");
 
 		
 		robot.driveSystem.move(new Movement(new Vector(0, 0, 0), 0));
@@ -207,7 +207,7 @@ public class TeleopController extends Controller implements LightSensorListener 
 			}
 		}
 		
-		if(rightJoystick.trigger())
+		if(rightJoystick.button(1))
 		{
 			if(currentAngle+angleStep <= maxAngle)
 			{
@@ -456,25 +456,25 @@ public class TeleopController extends Controller implements LightSensorListener 
 				showAllRectangles = true;
 			}
 
-			ModdedSmartDashboard.overlayStart();
-
-			// Display rectangle
-			if(showAllRectangles) // display all four if one isn't locked on
-			{
-				for(int i = 0; i < bestReports.length; i++) {
-					if(bestReports[i] == null) {
-						break;
-					}
-
-					ModdedSmartDashboard.overlay(bestReports[i].center_mass_x, bestReports[i].center_mass_y, bestReports[i].boundingRectWidth, bestReports[i].boundingRectHeight);
-				}
-			} else {
-				if(rectangleChosen != null) {
-					ModdedSmartDashboard.overlay(rectangleChosen.center_mass_x, rectangleChosen.center_mass_y, rectangleChosen.boundingRectWidth, rectangleChosen.boundingRectHeight);
-				}
-			}
-
-			//ModdedSmartDashboard.overlayEnd();
+//			ModdedSmartDashboard.overlayStart();
+//
+//			// Display rectangle
+//			if(showAllRectangles) // display all four if one isn't locked on
+//			{
+//				for(int i = 0; i < bestReports.length; i++) {
+//					if(bestReports[i] == null) {
+//						break;
+//					}
+//
+//					ModdedSmartDashboard.overlay(bestReports[i].center_mass_x, bestReports[i].center_mass_y, bestReports[i].boundingRectWidth, bestReports[i].boundingRectHeight);
+//				}
+//			} else {
+//				if(rectangleChosen != null) {
+//					ModdedSmartDashboard.overlay(rectangleChosen.center_mass_x, rectangleChosen.center_mass_y, rectangleChosen.boundingRectWidth, rectangleChosen.boundingRectHeight);
+//				}
+//			}
+//
+//			//ModdedSmartDashboard.overlayEnd();
 
 
 			// Turn towards rectangle chosen
@@ -616,7 +616,7 @@ public class TeleopController extends Controller implements LightSensorListener 
 		if(currentMonodentUpButtonState && currentMonodentDownButtonState) {
 			//System.out.println("Off");
 			robot.monodent.off();
-		} else if(currentMonodentDownButtonState || leftJoystick.trigger()) { //for control by both driver and controller
+		} else if(currentMonodentDownButtonState || leftJoystick.button(1)) { //for control by both driver and controller
 			//System.out.println("Down");
 			robot.monodent.down();
 		} else if(currentMonodentUpButtonState || leftJoystick.button(2)) {//for control by both driver and controller
