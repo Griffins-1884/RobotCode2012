@@ -3,6 +3,7 @@ package Y2012;
 import actions.MutableActionList;
 import edu.wpi.first.wpilibj.Watchdog;
 import Y2012.MiscellaneousActions.TravelDistance;
+import Y2012.MiscellaneousActions.TravelTimeAndStopShooting;
 import Y2012.MiscellaneousActions.TurnToAngle;
 import Y2012.bridge.LowerMonodent;
 import Y2012.shooting.Aim;
@@ -31,17 +32,18 @@ public class AutonomousController extends Controller {
 		
 		actions.add(new Aim(1.0, Robot.robot.shootingApparatus));
 		actions.add(new Shoot(2, Robot.robot.shootingApparatus));
-		actions.add(new StopShooting(Robot.robot.shootingApparatus));
-		actions.add(new WaitAction(new Interval(250)));
 		
 		if(Robot.robot.dipSwitch1.get())
 		{ // True if in center	
-			actions.add(new TravelDistance(Robot.robot.encoder, -1.50));
+			actions.add(new TravelTimeAndStopShooting(Robot.robot.shootingApparatus, 1000, 0.4));
 			actions.add(new TurnToAngle(170. * Math.PI / 180.)); // off by 10 degrees
 			actions.add(new WaitAction(new Interval(250)));
-			actions.add(new TravelDistance(Robot.robot.encoder, 1.40));
+			actions.add(new TravelTimeAndStopShooting(Robot.robot.shootingApparatus, 1000, -0.4));
 			//actions.add(new WaitAction(new Interval(250)));
 			//actions.add(new LowerMonodent(Robot.robot.monodent));
+		} else {
+			actions.add(new StopShooting(Robot.robot.shootingApparatus));
+			actions.add(new WaitAction(new Interval(250)));
 		}
 		
 		robot.camera.setLEDRing(true);
