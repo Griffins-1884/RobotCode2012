@@ -22,7 +22,7 @@ public class TurnToAngle extends Action {
 		// Angle in radians
 		if(!firstIteration)
 		{
-			Robot.robot.gyro.reset();
+			//Robot.robot.gyro.reset();
 			firstIteration = true;
 		}
 		
@@ -52,7 +52,8 @@ public class TurnToAngle extends Action {
 				ex.printStackTrace();
 			}
 			
-			currentAngle = Robot.robot.gyro.value();
+			// UNCOMMENT ALL OF THIS IF GYRO IS ADDED BACK!
+			//currentAngle = Robot.robot.gyro.value();
 		}
 		
 		stop();

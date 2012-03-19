@@ -32,7 +32,7 @@ public class TravelTimeAndStopShooting extends ApparatusAction {
 		while(!stop && currentTime <= startTime + time) {
 			powerFraction = 1.0 - ((currentTime - startTime) * 1.0 / time);
 			((ShootingApparatus) apparatus).setPower(originalPower * powerFraction);
-
+			
 			Robot.robot.driveSystem.move(new Movement(new Vector(driveSpeed,0,0), 0));
 			
 			try {
@@ -40,8 +40,11 @@ public class TravelTimeAndStopShooting extends ApparatusAction {
 			} catch(InterruptedException ex) {
 				return; // Just exit
 			}
+			
+			currentTime = System.currentTimeMillis();
 		}
 		((ShootingApparatus) apparatus).setPower(0);
+		Robot.robot.driveSystem.move(new Movement(new Vector(0,0,0), 0));
 		stop();
 	}
 	public Interval duration() {

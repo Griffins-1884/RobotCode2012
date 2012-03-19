@@ -14,9 +14,9 @@ public class Robot extends AbstractRobot {
 	public final ShootingApparatus shootingApparatus;
 	public final Monodent monodent;
 	public final Camera camera;
-	public final Gyro gyro;
-	public final Accelerometer accelerometer;
-	public final Encoder encoder;
+	//public final Gyro gyro;
+	//public final Accelerometer accelerometer;
+	//public final Encoder encoder;
 	public final DriverStationEnhancedIO buttonBox;
 	public final DigitalInput dipSwitch1, dipSwitch2;
 	public Robot() {
@@ -33,9 +33,9 @@ public class Robot extends AbstractRobot {
 		camera = new Camera("camera".hashCode(), Wiring.cameraAddress, Wiring.tiltServo, Wiring.ledRing);
 	
 		// Miscellaneous
-		gyro = Wiring.gyro;
-		accelerometer = Wiring.accelerometer;
-		encoder = Wiring.encoder;
+		//gyro = Wiring.gyro;
+		//accelerometer = Wiring.accelerometer;
+		//encoder = Wiring.encoder;
 		
 		buttonBox = Wiring.buttonBox;
 		dipSwitch1 = Wiring.dipSwitch1;

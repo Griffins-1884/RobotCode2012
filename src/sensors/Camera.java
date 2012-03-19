@@ -156,7 +156,7 @@ public class Camera extends Sensor {
     public void setLEDRing(boolean on) {
     	if(ledRing != null) {
     		if(on) {
-    			ledRing.set(Value.kForward);
+    			ledRing.set(Value.kReverse);
     		} else {
     			ledRing.set(Value.kOff);
     		}

@@ -26,28 +26,35 @@ public class AutonomousController extends Controller {
 	public void initialize() {		
 		actions = new MutableActionList();
 		
-		Robot.robot.encoder.reset();
+		//Robot.robot.encoder.reset();
+		
 		
 		// around 7 cm of momentum!
 		
 		actions.add(new Aim(1.0, Robot.robot.shootingApparatus));
 		actions.add(new Shoot(2, Robot.robot.shootingApparatus));
+		actions.add(new WaitAction(new Interval(500)));
+		
+		// DO NOT DO TURNTOANGLE UNTIL GYRO IS WORKING
 		
 		if(Robot.robot.dipSwitch1.get())
 		{ // True if in center	
-			actions.add(new TravelTimeAndStopShooting(Robot.robot.shootingApparatus, 1000, 0.4));
-			actions.add(new TurnToAngle(170. * Math.PI / 180.)); // off by 10 degrees
-			actions.add(new WaitAction(new Interval(250)));
-			actions.add(new TravelTimeAndStopShooting(Robot.robot.shootingApparatus, 1000, -0.4));
+			actions.add(new TravelTimeAndStopShooting(Robot.robot.shootingApparatus, 2200, 0.4));
+			//actions.add(new TurnToAngle(170. * Math.PI / 180.)); // off by 10 degrees
+			//actions.add(new WaitAction(new Interval(250)));
+			//actions.add(new TravelTimeAndStopShooting(Robot.robot.shootingApparatus, 1000, -0.4));
 			//actions.add(new WaitAction(new Interval(250)));
 			//actions.add(new LowerMonodent(Robot.robot.monodent));
 		} else {
-			actions.add(new StopShooting(Robot.robot.shootingApparatus));
-			actions.add(new WaitAction(new Interval(250)));
+//			actions.add(new StopShooting(Robot.robot.shootingApparatus));
+//			actions.add(new WaitAction(new Interval(250)));
+			actions.add(new TravelTimeAndStopShooting(Robot.robot.shootingApparatus, 1700, 0.4));
+			//actions.add(new TurnToAngle(170. * Math.PI / 180.)); // off by 10 degrees
+
 		}
 		
 		robot.camera.setLEDRing(true);
-		robot.camera.tilt(77);
+		robot.camera.tilt(62);
 		actions.start();
 	}
 	

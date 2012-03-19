@@ -19,9 +19,9 @@ public class Wiring {
 	public static final String cameraAddress;
 	public static final Relay ledRing;
 	public static final Servo tiltServo;
-	public static final Gyro gyro;
-	public static final Accelerometer accelerometer;
-	public static final Encoder encoder;
+	//public static final Gyro gyro;
+	//public static final Accelerometer accelerometer;
+	//public static final Encoder encoder;
 	public static final DriverStationEnhancedIO buttonBox;
 	public static final DigitalInput dipSwitch1, dipSwitch2;
 	static {
@@ -60,10 +60,10 @@ public class Wiring {
 		cameraAddress = null;
 			ledRing = new Relay(1);
 			tiltServo = new Servo(7);
-			gyro = new Gyro("gyro".hashCode(), 2);
-			accelerometer = new Accelerometer("accelerometer".hashCode(), 3, 4, -1);
+	//		gyro = new Gyro("gyro".hashCode(), 2);
+	//		accelerometer = new Accelerometer("accelerometer".hashCode(), 3, 4, -1);
 			// Because of compression, wheels are actually 4 inch radius 
 			// (measured by turning a revolution, finding distance travelled, dividing by 2*pi)
-			encoder = new Encoder("encoder".hashCode(), 10, 11, 360*4, 4*0.0254); // 360-count, but quadrature
+			//encoder = new Encoder("encoder".hashCode(), 10, 11, 360*4, 4*0.0254); // 360-count, but quadrature
 	}
 }

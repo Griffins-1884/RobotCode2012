@@ -39,7 +39,7 @@ public class TeleopController extends Controller implements LightSensorListener 
 		
 		robot.driveSystem.move(new Movement(new Vector(0, 0, 0), 0));
 		robot.camera.setLEDRing(true);
-		robot.camera.tilt(77);
+		robot.camera.tilt(62);
 		robot.shootingApparatus.upperSensor.addListener(this);
 	}
 	
@@ -188,14 +188,22 @@ public class TeleopController extends Controller implements LightSensorListener 
 	
 
 	public static final double angleStep = 35./50.; // turn 35 degrees each second
-	public static final double maxAngle = 146;
-	public static final double minAngle = 26;
+	public static final double maxAngle = 146; // is pointing down
+	public static final double minAngle = 26; // is pointing up
 	
 	public void cameraServo()
 	{
 		double currentAngle = robot.camera.tiltServo.getAngle();
-						
-		if(rightJoystick.button(2))
+		
+		if(rightJoystick.button(3))
+		{
+			robot.camera.tilt(maxAngle);
+		}
+		else if(rightJoystick.button(4))
+		{
+			robot.camera.tilt(62);
+		}
+		else if(rightJoystick.button(2))
 		{
 			if(currentAngle-angleStep >= minAngle)
 			{
@@ -206,8 +214,7 @@ public class TeleopController extends Controller implements LightSensorListener 
 				robot.camera.tilt(minAngle);
 			}
 		}
-		
-		if(rightJoystick.button(1))
+		else if(rightJoystick.button(1))
 		{
 			if(currentAngle+angleStep <= maxAngle)
 			{
@@ -227,8 +234,8 @@ public class TeleopController extends Controller implements LightSensorListener 
 	boolean waitBeforeShooting = false;
 	long timeOfShot; // the time when the shot was made (i.e. when the ball left while shooting)
 	long targetReachedTime;
-	public static final int TIME_BETWEEN_SHOTS = 1100; // time in milliseconds
-	public static final int TIME_BEFORE_INTAKE = 3500;
+	public static final int TIME_BETWEEN_SHOTS = 2700; // time in milliseconds (was 1650)
+	public static final int TIME_BEFORE_INTAKE = 3150; // was 3400
 
 	public void dumbShoot(double targetPower) throws EnhancedIOException
 	{
@@ -244,7 +251,7 @@ public class TeleopController extends Controller implements LightSensorListener 
 		if(!targetWasReached)
 		{
 			int sign = 1;
-			double rampIncrement = 0.03;
+			double rampIncrement = 0.05;
 
 			if(targetPower < currentPower) {
 				sign *= -1;
@@ -585,16 +592,24 @@ public class TeleopController extends Controller implements LightSensorListener 
 		double currentX = oldVector.x;
 		double targetX; // for ramping Jaguars so Suryansh doesn't tip over the robot again
 		double rotation;
-
+		
 		if(singleJoystick) {
-			targetX = rightJoystick.forward();
-			rotation = (rightJoystick.right() + rightJoystick.clockwise()) / 2;
+			targetX = rightJoystick.forward() * (-rightJoystick.throttle() + 1)/2.0;
+			rotation = (rightJoystick.right() + rightJoystick.clockwise()) / 2 * (-rightJoystick.throttle() + 1)/2.0;
 
 		} else { // Double joystick
 			// Divide both by 2 so that sensitivity doesn't max out when both joysticks are at halfway
-			targetX = (rightJoystick.forward() + leftJoystick.forward()) / 2.0;
-			rotation = (rightJoystick.forward() - leftJoystick.forward()) / 2.0;
+			targetX = (rightJoystick.forward() + leftJoystick.forward()) / 2.0 * (-leftJoystick.throttle() + 1)/2.0;
+			rotation = (rightJoystick.forward() - leftJoystick.forward()) / 2.0 * (-leftJoystick.throttle() + 1)/2.0;
+			
+			// Uncomment for triple balance
+			/*if(Math.abs(rightJoystick.throttle()) == 1.0)
+			{
+				targetX = targetX*rightJoystick.throttle(); // allow us to invert which direction is forwards
+				// with the throttle. Useful for when we're backing up to balance three robots.
+			}*/
 		}
+		
 
 		if(Math.abs(currentX - targetX) < rampStep) {
 			robot.driveSystem.move(new Movement(new Vector(targetX, 0, 0), rotation)); // go to the target value if the step is small

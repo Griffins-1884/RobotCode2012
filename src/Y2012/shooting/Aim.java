@@ -18,8 +18,7 @@ public class Aim extends Apparatus.ApparatusAction {
 	protected void act() {
 		// Note: setPower() changes previousPower
 		double currentPower = ((ShootingApparatus) apparatus).previousPower;
-		final int millisecondsToWait = 50;
-		
+		final int millisecondsToWait = 40;
 		
 		while(currentPower != targetPower) {			
 			currentPower = ((ShootingApparatus) apparatus).previousPower;
